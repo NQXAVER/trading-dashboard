@@ -201,6 +201,86 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
 /* FITNESS JOURNAL */
 .fit-journal{width:100%;background:#0d0d0d;border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:rgba(255,255,255,0.85);font-family:'Inter',sans-serif;font-size:13px;padding:11px;outline:none;resize:vertical;min-height:80px;line-height:1.7;margin-bottom:14px}
 .fit-journal:focus{border-color:#00FF88}
+
+/* ============ MOBILE ============ */
+@media(max-width:640px){
+  .container{padding:1rem}
+
+  /* NAV */
+  .nav-btn{font-size:8px;letter-spacing:.5px;padding:12px 2px}
+
+  /* HEADER */
+  .hdr{flex-direction:column;gap:10px}
+  .brand{font-size:20px;letter-spacing:3px}
+  .bal-block{text-align:left}
+  .bal-val{font-size:20px}
+
+  /* STATS — 2x2 grid */
+  .stats{grid-template-columns:repeat(2,1fr)}
+
+  /* CALENDAR — single column compact cards */
+  .cal{grid-template-columns:1fr;gap:8px}
+  .day{min-height:auto;padding:12px 14px;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+  .today-pill{top:10px;right:10px}
+  .day-nm{font-size:9px;letter-spacing:1.5px;margin-bottom:0;width:30px;flex-shrink:0}
+  .day-dt{font-size:17px;margin-bottom:0;width:50px}
+  .day-pnl{font-size:14px;margin-bottom:0;flex:1}
+  .badge{margin-bottom:0}
+  .day-note{width:100%;margin-top:4px;font-size:11px}
+  .news-tag,.news-tag-o{font-size:9px;padding:2px 6px;margin-top:4px}
+
+  /* RULES */
+  .rules-grid{grid-template-columns:1fr}
+  .rule-txt{font-size:13px}
+  .mandate{font-size:13px}
+
+  /* EDIT PANEL */
+  .edit-grid{grid-template-columns:1fr}
+
+  /* CHALLENGE */
+  .streak-num{font-size:72px}
+  .pts-bar{flex-direction:column;gap:10px;align-items:flex-start}
+  .pts-big{font-size:30px}
+  .chal-grid{gap:5px}
+  .cday{border-radius:7px}
+  .cday .cday-n{font-size:12px}
+  .cday .cday-s{font-size:7px}
+  .cday .task-dots{gap:1px}
+  .cday .tdot{width:5px;height:5px}
+
+  /* TASK CARDS */
+  .task-card{padding:13px 14px;gap:12px}
+  .task-circle{width:32px;height:32px}
+  .task-name{font-size:14px}
+  .done-day-btn{font-size:12px;padding:14px;letter-spacing:1px}
+  .start-btn{font-size:11px;letter-spacing:1px;padding:14px}
+
+  /* FITNESS */
+  .fit-week{grid-template-columns:repeat(4,1fr)}
+  .fit-nm{font-size:8px}
+  .fit-val{font-size:12px}
+  .fit-sub-lbl{font-size:7px}
+  .tog-row{grid-template-columns:1fr}
+  .fit-card .edit-grid{grid-template-columns:1fr}
+
+  /* MONTHLY — scrollable table */
+  .month-tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .month-tbl{min-width:520px}
+  .month-hdr{font-size:16px;letter-spacing:2px}
+
+  /* REVIEW */
+  .rating-row{gap:5px}
+  .r-btn{padding:9px;font-size:13px}
+  .rv-ta{font-size:13px}
+
+  /* MISC OVERFLOW FIXES */
+  .buf-val{font-size:11px;word-break:break-word}
+  .grade-badge{font-size:11px;padding:2px 7px}
+  .sub{font-size:9px;letter-spacing:1px}
+  .s-card{padding:14px}
+  .sc-v{font-size:17px}
+  .sc{padding:11px 13px}
+}
 </style>
 </head>
 <body>
@@ -398,10 +478,10 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
 <!-- ======= MONTHLY ======= -->
 <div class="tab" id="tab-monthly"><div class="container">
   <div class="month-hdr" id="month-title">MAY 2026</div>
-  <table class="month-tbl">
+  <div class="month-tbl-wrap"><table class="month-tbl">
     <thead><tr><th>WK</th><th>DATES</th><th>P&L</th><th>WIN RATE</th><th>AVG RR</th><th>POINTS</th><th>GRADE</th></tr></thead>
     <tbody id="month-tbody"></tbody>
-  </table>
+  </table></div>
   <div class="stats" style="margin-top:1.5rem">
     <div class="sc"><div class="sc-l">MONTH P&L</div><div class="sc-v" id="m-pnl">—</div></div>
     <div class="sc"><div class="sc-l">AVG WIN RATE</div><div class="sc-v c-green" id="m-wr">—</div></div>
