@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NQXAVIER — Trading Dashboard</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#080808;color:#fff;font-family:'Courier New',monospace;min-height:100vh;padding:2rem}
+  .container{max-width:960px;margin:0 auto}
+
+  /* HEADER */
+  .hdr{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:1.25rem;border-bottom:1px solid rgba(0,255,136,0.2);margin-bottom:1.5rem}
+  .brand{font-size:28px;font-weight:700;color:#00FF88;letter-spacing:5px}
+  .sub{font-size:11px;color:rgba(0,255,136,0.6);margin-top:5px;letter-spacing:1.5px}
+  .bal-block{text-align:right}
+  .bal-lbl{font-size:11px;color:rgba(0,255,136,0.6);letter-spacing:1px}
+  .bal-val{font-size:24px;font-weight:700;color:#fff}
+  .buf-val{font-size:12px;color:#4D9FFF;margin-top:3px}
+
+  /* STATS */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.25rem}
+  .sc{background:#111;border:1px solid rgba(0,255,136,0.12);border-radius:8px;padding:12px 14px}
+  .sc-l{font-size:11px;color:rgba(0,255,136,0.7);letter-spacing:.5px;margin-bottom:5px}
+  .sc-v{font-size:18px;font-weight:700}
+  .c-green{color:#00FF88}.c-red{color:#FF4444}.c-blue{color:#4D9FFF}.c-white{color:#fff}
+
+  /* BUFFER BAR */
+  .buf-wrap{margin-bottom:1.25rem}
+  .buf-labels{display:flex;justify-content:space-between;font-size:11px;color:rgba(0,255,136,0.6);letter-spacing:.5px;margin-bottom:6px}
+  .buf-track{background:#1a1a1a;border-radius:3px;height:7px;overflow:hidden}
+  .buf-fill{height:100%;border-radius:3px;background:#4D9FFF;transition:width 0.6s}
+
+  /* CALENDAR */
+  .cal{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:1.25rem}
+  .day{background:#111;border:1px solid rgba(0,255,136,0.1);border-radius:10px;padding:14px 12px;min-height:190px;position:relative;cursor:pointer;transition:border-color 0.2s}
+  .day:hover{border-color:rgba(0,255,136,0.3)}
+  .day.done-loss{border-color:rgba(255,68,68,0.4)}
+  .day.done-win{border-color:rgba(0,255,136,0.5)}
+  .day.done-be{border-color:rgba(77,159,255,0.4)}
+  .day.has-news{border-color:rgba(255,68,68,0.2)}
+  .day.today-hl{border:2px solid #00FF88;background:#0a1a0f}
+  .today-pill{display:none;position:absolute;top:8px;right:8px;font-size:9px;font-weight:700;background:#00FF88;color:#080808;padding:2px 7px;border-radius:3px;letter-spacing:.5px}
+  .day.today-hl .today-pill{display:block}
+  .day-nm{font-size:10px;font-weight:700;color:rgba(0,255,136,0.6);letter-spacing:2px;margin-bottom:2px}
+  .day.today-hl .day-nm{color:#00FF88}
+  .day-dt{font-size:20px;font-weight:700;margin-bottom:10px}
+  .day.today-hl .day-dt{color:#00FF88}
+  .day-pnl{font-size:15px;font-weight:700;margin-bottom:6px}
+  .pnl-blank{color:rgba(255,255,255,0.15)}
+  .badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.5px;margin-bottom:8px}
+  .b-win{background:rgba(0,255,136,0.15);color:#00FF88}
+  .b-loss{background:rgba(255,68,68,0.15);color:#FF4444}
+  .b-be{background:rgba(77,159,255,0.15);color:#4D9FFF}
+  .b-up{background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.4)}
+  .day-note{font-size:11px;color:rgba(255,255,255,0.55);line-height:1.6}
+  .news-tag{display:block;font-size:10px;background:rgba(255,68,68,0.13);color:#FF7777;padding:3px 7px;border-radius:4px;margin-top:6px;border:1px solid rgba(255,68,68,0.3)}
+  .news-tag-o{display:block;font-size:10px;background:rgba(255,160,50,0.1);color:#FFA030;padding:3px 7px;border-radius:4px;margin-top:5px;border:1px solid rgba(255,160,50,0.25)}
+
+  /* RULES */
+  .rules-box{background:#111;border:1px solid rgba(0,255,136,0.12);border-radius:10px;padding:16px 18px;margin-bottom:1.25rem}
+  .rules-ttl{font-size:11px;color:#00FF88;letter-spacing:1.5px;margin-bottom:12px}
+  .rules-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}
+  .rule-row{display:flex;align-items:flex-start;gap:9px;padding:5px 0}
+  .dot{width:5px;height:5px;border-radius:50%;background:#00FF88;margin-top:7px;flex-shrink:0}
+  .rule-txt{font-size:12px;color:rgba(255,255,255,0.75);line-height:1.6}
+  .divider{border:none;border-top:1px solid rgba(0,255,136,0.1);margin:14px 0}
+  .mandate{font-size:13px;color:rgba(255,255,255,0.55);padding:3px 0;line-height:1.9}
+  .mandate span{color:#00FF88;font-weight:700}
+
+  /* EDIT PANEL */
+  .edit-btn{display:block;width:100%;background:transparent;border:1px solid rgba(0,255,136,0.3);color:#00FF88;font-family:'Courier New',monospace;font-size:12px;letter-spacing:1px;padding:10px;border-radius:8px;cursor:pointer;margin-bottom:1rem;transition:all 0.2s}
+  .edit-btn:hover{background:rgba(0,255,136,0.08);border-color:#00FF88}
+  .edit-panel{display:none;background:#111;border:1px solid rgba(0,255,136,0.2);border-radius:10px;padding:18px;margin-bottom:1.25rem}
+  .edit-panel.open{display:block}
+  .edit-ttl{font-size:11px;color:#00FF88;letter-spacing:1.5px;margin-bottom:14px}
+  .edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+  .field label{display:block;font-size:10px;color:rgba(0,255,136,0.6);letter-spacing:.5px;margin-bottom:5px}
+  .field input,.field select{width:100%;background:#0d0d0d;border:1px solid rgba(0,255,136,0.2);border-radius:6px;color:#fff;font-family:'Courier New',monospace;font-size:13px;padding:8px 10px;outline:none}
+  .field input:focus,.field select:focus{border-color:#00FF88}
+  .field select option{background:#111}
+  .save-btn{background:#00FF88;color:#080808;border:none;font-family:'Courier New',monospace;font-size:12px;font-weight:700;letter-spacing:1px;padding:10px 24px;border-radius:6px;cursor:pointer}
+  .save-btn:hover{background:#00cc6a}
+
+  /* FOOTER */
+  .footer{text-align:center;font-size:10px;color:rgba(0,255,136,0.25);padding-top:1rem;letter-spacing:1px}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="hdr">
+    <div>
+      <div class="brand">NQXAVIER</div>
+      <div class="sub">XFA ACCOUNT &nbsp;·&nbsp; MNQ / NQ PROP TRADER</div>
+    </div>
+    <div class="bal-block">
+      <div class="bal-lbl">ACCOUNT BALANCE</div>
+      <div class="bal-val" id="bal-display">$49,045.94</div>
+      <div class="buf-val" id="buf-display">BUFFER $1,045.94 · LIMIT $48,000</div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="sc"><div class="sc-l">WEEK P&L</div><div class="sc-v" id="week-pnl">—</div></div>
+    <div class="sc"><div class="sc-l">BUFFER USED</div><div class="sc-v c-blue" id="buf-pct">—</div></div>
+    <div class="sc"><div class="sc-l">DAYS DONE</div><div class="sc-v c-white" id="days-done">—</div></div>
+    <div class="sc"><div class="sc-l">WIN RATE</div><div class="sc-v" id="win-rate">—</div></div>
+  </div>
+
+  <div class="buf-wrap">
+    <div class="buf-labels">
+      <span id="buf-text">MAX DRAWDOWN</span>
+      <span id="buf-pct-label">—</span>
+    </div>
+    <div class="buf-track"><div class="buf-fill" id="buf-bar" style="width:0%"></div></div>
+  </div>
+
+  <!-- CALENDAR -->
+  <div class="cal" id="cal"></div>
+
+  <!-- RULES -->
+  <div class="rules-box">
+    <div class="rules-ttl">NON-NEGOTIABLE RULES</div>
+    <div class="rules-grid">
+      <div class="rule-row"><div class="dot"></div><div class="rule-txt">1 trade per day on XFA — no exceptions</div></div>
+      <div class="rule-row"><div class="dot"></div><div class="rule-txt">Full candle closure before entry — no mid-candle</div></div>
+      <div class="rule-row"><div class="dot"></div><div class="rule-txt">Check ES SMT before every single entry</div></div>
+      <div class="rule-row"><div class="dot"></div><div class="rule-txt">Momentum stalling → go BE immediately</div></div>
+      <div class="rule-row"><div class="dot"></div><div class="rule-txt">Close Tradovate the second the trade closes</div></div>
+      <div class="rule-row"><div class="dot"></div><div class="rule-txt">1 micro only until buffer is above $2,000</div></div>
+    </div>
+    <div class="divider"></div>
+    <div class="mandate">Your analysis is right. <span>Execution is the work.</span></div>
+    <div class="mandate">Stack clean days. <span>The money follows discipline.</span></div>
+  </div>
+
+  <!-- EDIT PANEL -->
+  <button class="edit-btn" onclick="toggleEdit()">+ UPDATE TODAY'S RESULT</button>
+  <div class="edit-panel" id="edit-panel">
+    <div class="edit-ttl">UPDATE ACCOUNT DATA</div>
+    <div class="edit-grid">
+      <div class="field">
+        <label>ACCOUNT BALANCE ($)</label>
+        <input type="number" id="inp-bal" placeholder="49045.94" step="0.01">
+      </div>
+      <div class="field">
+        <label>SELECT DAY</label>
+        <select id="inp-day">
+          <option value="0">Monday May 4</option>
+          <option value="1">Tuesday May 5</option>
+          <option value="2">Wednesday May 6</option>
+          <option value="3">Thursday May 7</option>
+          <option value="4">Friday May 8</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>DAY P&L ($)</label>
+        <input type="number" id="inp-pnl" placeholder="-208.92" step="0.01">
+      </div>
+      <div class="field">
+        <label>RESULT</label>
+        <select id="inp-result">
+          <option value="upcoming">Upcoming</option>
+          <option value="win">Win</option>
+          <option value="loss">Loss</option>
+          <option value="be">BreakEven</option>
+        </select>
+      </div>
+    </div>
+    <button class="save-btn" onclick="saveData()">SAVE</button>
+  </div>
+
+  <div class="footer">NQXAVIER · XFA PROP ACCOUNT · STARTED APR 8, 2026</div>
+</div>
+
+<script>
+const LIMIT = 48000;
+const START_BAL = 50000;
+const WEEK_START_BAL = 49254.86;
+
+const days = [
+  { nm:'MON', dt:'May 4', date:'2026-05-04', note:'Long → BE. Short rule break. Mid-candle entry.', news:[], newso:[] },
+  { nm:'TUE', dt:'May 5', date:'2026-05-05', note:'1 trade. Full candle closure. Lock out.', news:['RED — ISM SERVICES PMI 10:00am','RED — JOLTS JOB OPENINGS 10:00am'], newso:[] },
+  { nm:'WED', dt:'May 6', date:'2026-05-06', note:'1 trade. Full candle closure. Lock out.', news:[], newso:['MED — ADP EMPLOYMENT 8:15am'] },
+  { nm:'THU', dt:'May 7', date:'2026-05-07', note:'1 trade. Full candle closure. Lock out.', news:[], newso:['MED — UNEMPLOYMENT CLAIMS 8:30am'] },
+  { nm:'FRI', dt:'May 8', date:'2026-05-08', note:'NFP day. Wait for dust to settle.', news:['RED — NFP + AVG EARNINGS 8:30am','RED — UNEMPLOYMENT RATE 8:30am'], newso:[] }
+];
+
+let data = JSON.parse(localStorage.getItem('nqx-data') || 'null') || {
+  balance: 49045.94,
+  days: [
+    { result:'loss', pnl:-208.92 },
+    { result:'upcoming', pnl:0 },
+    { result:'upcoming', pnl:0 },
+    { result:'upcoming', pnl:0 },
+    { result:'upcoming', pnl:0 }
+  ]
+};
+
+function save() { localStorage.setItem('nqx-data', JSON.stringify(data)); }
+
+function getToday() {
+  const now = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  return now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
+}
+
+function fmt(n) {
+  const abs = Math.abs(n).toFixed(2);
+  return (n < 0 ? '-$' : '+$') + Number(abs).toLocaleString('en-US', {minimumFractionDigits:2});
+}
+
+function render() {
+  const bal = data.balance;
+  const buf = bal - LIMIT;
+  const ddUsed = START_BAL - bal;
+  const ddTotal = START_BAL - LIMIT;
+  const pct = Math.min(100, (ddUsed / ddTotal * 100)).toFixed(1);
+  const weekPnl = bal - WEEK_START_BAL;
+
+  document.getElementById('bal-display').textContent = '$' + bal.toLocaleString('en-US', {minimumFractionDigits:2});
+  document.getElementById('buf-display').textContent = 'BUFFER $' + buf.toLocaleString('en-US', {minimumFractionDigits:2}) + ' · LIMIT $48,000';
+
+  const wpEl = document.getElementById('week-pnl');
+  wpEl.textContent = fmt(weekPnl);
+  wpEl.className = 'sc-v ' + (weekPnl >= 0 ? 'c-green' : 'c-red');
+
+  document.getElementById('buf-pct').textContent = pct + '%';
+  document.getElementById('buf-pct-label').textContent = pct + '%';
+  document.getElementById('buf-text').textContent = 'MAX DRAWDOWN — $' + ddUsed.toFixed(2) + ' USED OF $2,000';
+  document.getElementById('buf-bar').style.width = pct + '%';
+
+  const done = data.days.filter(d => d.result !== 'upcoming').length;
+  document.getElementById('days-done').textContent = done + ' / 5';
+
+  const wins = data.days.filter(d => d.result === 'win').length;
+  const wrEl = document.getElementById('win-rate');
+  const wr = done > 0 ? Math.round(wins/done*100) : 0;
+  wrEl.textContent = wr + '%';
+  wrEl.className = 'sc-v ' + (wr >= 50 ? 'c-green' : 'c-red');
+
+  const todayStr = getToday();
+  const cal = document.getElementById('cal');
+  cal.innerHTML = '';
+
+  data.days.forEach((d, i) => {
+    const info = days[i];
+    const isToday = info.date === todayStr;
+    let cls = 'day';
+    if (d.result === 'win') cls += ' done-win';
+    else if (d.result === 'loss') cls += ' done-loss';
+    else if (d.result === 'be') cls += ' done-be';
+    else if (info.news.length > 0) cls += ' has-news';
+    if (isToday) cls += ' today-hl';
+
+    let pnlHtml = '';
+    if (d.result !== 'upcoming') {
+      const pnlCls = d.pnl > 0 ? 'c-green' : d.pnl < 0 ? 'c-red' : 'c-blue';
+      pnlHtml = `<div class="day-pnl ${pnlCls}">${fmt(d.pnl)}</div>`;
+    } else {
+      pnlHtml = `<div class="day-pnl pnl-blank">—</div>`;
+    }
+
+    let badgeCls = 'b-up', badgeTxt = 'UPCOMING';
+    if (d.result === 'win') { badgeCls = 'b-win'; badgeTxt = 'WIN'; }
+    else if (d.result === 'loss') { badgeCls = 'b-loss'; badgeTxt = 'LOSS'; }
+    else if (d.result === 'be') { badgeCls = 'b-be'; badgeTxt = 'BREAKEVEN'; }
+
+    const newsHtml = info.news.map(n => `<span class="news-tag">${n}</span>`).join('');
+    const newsoHtml = info.newso.map(n => `<span class="news-tag-o">${n}</span>`).join('');
+
+    cal.innerHTML += `
+      <div class="${cls}">
+        <div class="today-pill">TODAY</div>
+        <div class="day-nm">${info.nm}</div>
+        <div class="day-dt">${info.dt}</div>
+        ${pnlHtml}
+        <div class="badge ${badgeCls}">${badgeTxt}</div>
+        <div class="day-note">${info.note}</div>
+        ${newsHtml}${newsoHtml}
+      </div>`;
+  });
+}
+
+function toggleEdit() {
+  const p = document.getElementById('edit-panel');
+  p.classList.toggle('open');
+}
+
+function saveData() {
+  const bal = parseFloat(document.getElementById('inp-bal').value);
+  const day = parseInt(document.getElementById('inp-day').value);
+  const pnl = parseFloat(document.getElementById('inp-pnl').value);
+  const result = document.getElementById('inp-result').value;
+  if (!isNaN(bal)) data.balance = bal;
+  if (!isNaN(day)) {
+    if (!isNaN(pnl)) data.days[day].pnl = pnl;
+    data.days[day].result = result;
+  }
+  save();
+  render();
+  document.getElementById('edit-panel').classList.remove('open');
+}
+
+render();
+</script>
+</body>
+</html>
