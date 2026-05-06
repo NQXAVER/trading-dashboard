@@ -145,8 +145,10 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
 
 /* FITNESS */
 .fit-week{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:1.5rem}
-.fit-day{background:#161616;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:10px 7px;text-align:center}
+.fit-day{background:#161616;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:10px 7px;text-align:center;cursor:pointer;transition:border-color 0.15s,background 0.15s}
+.fit-day:hover{border-color:rgba(0,255,136,0.35);background:#121f17}
 .fit-day.ftoday{border-color:#00FF88;background:#0b1a10}
+.fit-day.fselected{border-color:#FFD700;background:#1a1900;box-shadow:0 0 0 1px rgba(255,215,0,0.3)}
 .fit-nm{font-size:9px;font-weight:700;color:rgba(0,255,136,0.55);letter-spacing:1px;margin-bottom:8px;font-family:'Courier New',monospace}
 .fit-day.ftoday .fit-nm{color:#00FF88}
 .fit-val{font-size:13px;font-weight:700;color:#e8e8e8;margin-bottom:1px}
@@ -460,9 +462,9 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
   </div>
   <div class="fit-week" id="fit-week"></div>
   <div class="fit-card">
-    <div class="edit-ttl">LOG TODAY</div>
+    <div class="edit-ttl" id="fit-log-ttl">LOG TODAY</div>
     <div class="edit-grid">
-      <div class="field"><label>STEPS TODAY</label><input type="number" id="fit-steps" placeholder="0" step="100"></div>
+      <div class="field"><label>STEPS</label><input type="number" id="fit-steps" placeholder="0" step="100"></div>
       <div class="field"><label>BODY WEIGHT (lbs)</label><input type="number" id="fit-weight" placeholder="0" step="0.1"></div>
     </div>
     <div class="tog-row">
@@ -472,7 +474,7 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
     </div>
     <span class="tog-btn-lbl" style="margin-top:4px">DAILY JOURNAL / NOTES</span>
     <textarea class="fit-journal" id="fit-journal" placeholder="How did the body feel today? Training notes, diet wins, anything worth logging..."></textarea>
-    <button class="save-btn" onclick="saveFitness()">SAVE TODAY</button>
+    <button class="save-btn" id="fit-save-btn" onclick="saveFitness()">SAVE TODAY</button>
   </div>
 </div></div>
 
@@ -579,6 +581,7 @@ let fitness=load('nqx-fitness',{days:{}});
 let monthly=load('nqx-monthly',{weeks:[{label:'Week 1 (Apr 28 – May 2)',pnl:254.86,wr:100,rr:1.65,pts:12,trades:2}]});
 let review=load('nqx-review',{weeks:{}});
 let fitState={gym:false,macros:false,stepsHit:false};
+let selectedFitDate=getToday();
 let currentRating=0;
 
 // ============ UTILS ============
@@ -780,17 +783,32 @@ function renderFitness(){
     const d=new Date(mon);d.setDate(mon.getDate()+i);
     const p=x=>String(x).padStart(2,'0'),ds=d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());
     const isToday=ds===todayStr,fd=fitness.days[ds]||{};
+    const isSelected=ds===selectedFitDate;
     if(fd.steps){stepSum+=fd.steps;stepCount++}
-    const div=document.createElement('div');div.className='fit-day'+(isToday?' ftoday':'');
+    const div=document.createElement('div');
+    div.className='fit-day'+(isToday?' ftoday':'')+(isSelected?' fselected':'');
     div.innerHTML=`<div class="fit-nm">${dayNames[i]}</div><div class="fit-val">${fd.steps?fd.steps.toLocaleString():'—'}</div><div class="fit-sub-lbl">STEPS</div><div><span class="pip ${fd.gym?'on':''}"></span><span class="pip ${fd.macros?'on':''}"></span><span class="pip ${fd.stepsHit?'on':''}"></span></div>`;
+    div.onclick=()=>selectFitDay(ds,dayNames[i]);
     wk.appendChild(div);
   }
   document.getElementById('avg-steps').textContent=stepCount>0?Math.round(stepSum/stepCount).toLocaleString():'—';
-  const td=fitness.days[todayStr]||{};
-  document.getElementById('fit-steps').value=td.steps||'';
-  document.getElementById('fit-weight').value=td.weight||'';
-  fitState={gym:td.gym||false,macros:td.macros||false,stepsHit:td.stepsHit||false};
-  document.getElementById('fit-journal').value=td.journal||'';
+  loadFitDayIntoForm(selectedFitDate);
+}
+function selectFitDay(ds,dayName){
+  selectedFitDate=ds;
+  const isToday=ds===getToday();
+  const lbl=document.getElementById('fit-log-ttl');
+  const btn=document.getElementById('fit-save-btn');
+  if(lbl)lbl.textContent=isToday?'LOG TODAY':'LOG — '+dayName+' ('+ds+')';
+  if(btn)btn.textContent=isToday?'SAVE TODAY':'SAVE '+dayName;
+  renderFitness();
+}
+function loadFitDayIntoForm(ds){
+  const fd=fitness.days[ds]||{};
+  document.getElementById('fit-steps').value=fd.steps||'';
+  document.getElementById('fit-weight').value=fd.weight||'';
+  fitState={gym:fd.gym||false,macros:fd.macros||false,stepsHit:fd.stepsHit||false};
+  document.getElementById('fit-journal').value=fd.journal||'';
   updateFitBtns();
 }
 function fitTog(k){fitState[k]=!fitState[k];updateFitBtns()}
@@ -802,7 +820,7 @@ function updateFitBtns(){
   });
 }
 function saveFitness(){
-  const t=getToday();
+  const t=selectedFitDate;
   fitness.days[t]={steps:parseInt(document.getElementById('fit-steps').value)||0,weight:parseFloat(document.getElementById('fit-weight').value)||0,gym:fitState.gym,macros:fitState.macros,stepsHit:fitState.stepsHit,journal:document.getElementById('fit-journal').value||''};
   store('nqx-fitness',fitness);renderFitness();
 }
