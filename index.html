@@ -291,6 +291,7 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
   <button class="nav-btn" onclick="showTab('fitness',this)">FITNESS</button>
   <button class="nav-btn" onclick="showTab('monthly',this)">MONTHLY</button>
   <button class="nav-btn" onclick="showTab('review',this)">REVIEW</button>
+  <div style="display:flex;align-items:center;padding:0 10px;flex-shrink:0"><span id="sync-status" style="font-family:'Courier New',monospace;font-size:8px;letter-spacing:.5px;color:rgba(255,255,255,0.3)">○ LOCAL</span></div>
 </div>
 
 <!-- ======= TRADING ======= -->
@@ -478,7 +479,7 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
 <!-- ======= MONTHLY ======= -->
 <div class="tab" id="tab-monthly"><div class="container">
   <div class="month-hdr" id="month-title">MAY 2026</div>
-  <div class="month-tbl-wrap"><table class="month-tbl">
+  <div class="month-tbl-wrap"><div class="month-tbl-wrap"><table class="month-tbl">
     <thead><tr><th>WK</th><th>DATES</th><th>P&L</th><th>WIN RATE</th><th>AVG RR</th><th>POINTS</th><th>GRADE</th></tr></thead>
     <tbody id="month-tbody"></tbody>
   </table></div>
@@ -535,7 +536,24 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
   <button class="save-btn" style="width:100%;padding:14px;margin-bottom:2rem" onclick="saveReview()">SAVE WEEKLY REVIEW</button>
 </div></div>
 
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
 <script>
+const FB_CONFIG = {
+  apiKey:            "AIzaSyCfQvFl98NZP940M-Q__ZlLXbBalLhDQp8",
+  authDomain:        "nqxavier-dashboard.firebaseapp.com",
+  databaseURL:       "https://nqxavier-dashboard-default-rtdb.firebaseio.com",
+  projectId:         "nqxavier-dashboard",
+  storageBucket:     "nqxavier-dashboard.firebasestorage.app",
+  messagingSenderId: "893478056163",
+  appId:             "1:893478056163:web:0735603527dcc4e40b95d6"
+};
+const USE_FB = FB_CONFIG.databaseURL !== "";
+let db = null;
+if(USE_FB){ firebase.initializeApp(FB_CONFIG); db = firebase.database(); }
+
 // ============ CONSTANTS ============
 const LIMIT=48000,START_BAL=50000,WEEK_START_BAL=49254.86;
 const TASK_KEYS=['steps','gym','macros','trading','lockout'];
@@ -549,7 +567,11 @@ const WEEK_DAYS=[
 
 // ============ DATA ============
 function load(k,d){try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}}
-function store(k,v){localStorage.setItem(k,JSON.stringify(v))}
+function localStore(k,v){localStorage.setItem(k,JSON.stringify(v))}
+function store(k,v){
+  localStore(k,v);
+  if(USE_FB) db.ref('nqxavier/'+k).set(v);
+}
 
 let trading=load('nqx-data',{balance:49045.14,days:[{result:'loss',pnl:-208.92},{result:'be',pnl:-0.80},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0}]});
 let challenge=load('nqx-challenge',{started:false,startDate:null,days:{}});
@@ -848,6 +870,13 @@ function saveReview(){
   ['well','wrong','focus','gym','nutrition'].forEach(k=>{const e=document.getElementById('rv-'+k);if(e)review.weeks[wk][k]=e.value});
   review.weeks[wk].rating=currentRating;store('nqx-review',review);alert('✅ Weekly review saved.');renderReview();
 }
+
+
+// ============ FIREBASE REAL-TIME SYNC ============
+function getActiveTabName(){const b=document.querySelector('.nav-btn.active');if(!b)return'trading';const t=b.textContent.trim();if(t==='21-DAY')return'challenge';if(t==='FITNESS')return'fitness';if(t==='MONTHLY')return'monthly';if(t==='REVIEW')return'review';return'trading';}
+function reRenderActive(){const t=getActiveTabName();if(t==='trading')renderTrading();else if(t==='challenge')renderChallenge();else if(t==='fitness')renderFitness();else if(t==='monthly')renderMonthly();else if(t==='review')renderReview();}
+function setSyncStatus(s){const el=document.getElementById('sync-status');if(!el)return;if(s==='live'){el.textContent='● SYNCED';el.style.color='#00FF88';}else if(s==='saving'){el.textContent='↑ SAVING...';el.style.color='#FFC107';}else{el.textContent='○ OFFLINE';el.style.color='rgba(255,255,255,0.3)';}}
+if(USE_FB){setSyncStatus('saving');db.ref('nqxavier').on('value',snap=>{const data=snap.val()||{};let updated=false;if(data['nqx-data']){trading=data['nqx-data'];localStore('nqx-data',trading);updated=true;}if(data['nqx-challenge']){challenge=data['nqx-challenge'];localStore('nqx-challenge',challenge);updated=true;}if(data['nqx-fitness']){fitness=data['nqx-fitness'];localStore('nqx-fitness',fitness);updated=true;}if(data['nqx-monthly']){monthly=data['nqx-monthly'];localStore('nqx-monthly',monthly);updated=true;}if(data['nqx-review']){review=data['nqx-review'];localStore('nqx-review',review);updated=true;}setSyncStatus('live');if(updated)reRenderActive();});db.ref('.info/connected').on('value',snap=>{if(!snap.val())setSyncStatus('offline');});}else{setSyncStatus('offline');}
 
 // ============ INIT ============
 renderTrading();
