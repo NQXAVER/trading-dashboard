@@ -200,6 +200,24 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
 .live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#00FF88;margin-right:6px;animation:pulse 1.5s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 
+/* MORNING BRIEF */
+#morning-brief{display:none}
+.brief-inner{background:#0f0f0f;border:1px solid rgba(255,85,85,0.25);border-radius:12px;padding:16px 18px;margin-bottom:1.25rem}
+.brief-hdr{font-family:'Courier New',monospace;font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:1.5px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.brief-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#FF5555;animation:pulse 1.5s infinite;flex-shrink:0}
+.brief-note{font-size:13px;color:rgba(255,255,255,0.85);line-height:1.6;margin-bottom:12px;padding:8px 12px;background:rgba(255,255,255,0.04);border-radius:7px;border-left:2px solid #FFD700}
+.brief-section-lbl{font-family:'Courier New',monospace;font-size:9px;color:rgba(0,255,136,0.5);letter-spacing:2px;margin-bottom:6px}
+.brief-event{display:flex;align-items:baseline;gap:10px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.brief-event:last-child{border-bottom:none}
+.brief-time{font-family:'Courier New',monospace;font-size:11px;color:#FF5555;font-weight:700;flex-shrink:0;min-width:80px}
+.brief-evname{font-size:13px;color:rgba(255,255,255,0.85);flex:1}
+.brief-vals{font-family:'Courier New',monospace;font-size:10px;color:rgba(255,255,255,0.35);flex-shrink:0}
+.brief-news-row{display:flex;align-items:flex-start;gap:10px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.brief-news-row:last-child{border-bottom:none}
+.brief-cat{font-family:'Courier New',monospace;font-size:9px;font-weight:700;letter-spacing:.5px;flex-shrink:0;min-width:130px;padding-top:2px}
+.brief-headline{font-size:12px;color:rgba(255,255,255,0.7);line-height:1.5;flex:1}
+.brief-gen{font-family:'Courier New',monospace;font-size:9px;color:rgba(255,255,255,0.2);margin-top:10px;text-align:right}
+
 /* FITNESS JOURNAL */
 .fit-journal{width:100%;background:#0d0d0d;border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:rgba(255,255,255,0.85);font-family:'Inter',sans-serif;font-size:13px;padding:11px;outline:none;resize:vertical;min-height:80px;line-height:1.7;margin-bottom:14px}
 .fit-journal:focus{border-color:#00FF88}
@@ -316,6 +334,7 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
     <div class="buf-labels"><span id="buf-text">MAX DRAWDOWN</span><span id="buf-pct-label">—</span></div>
     <div class="buf-track"><div class="buf-fill" id="buf-bar" style="width:0%"></div></div>
   </div>
+  <div id="morning-brief"></div>
   <div class="cal" id="cal"></div>
   <div class="rules-box">
     <div class="rules-ttl">NON-NEGOTIABLE RULES</div>
@@ -580,6 +599,7 @@ let challenge=load('nqx-challenge',{started:false,startDate:null,days:{}});
 let fitness=load('nqx-fitness',{days:{}});
 let monthly=load('nqx-monthly',{weeks:[{label:'Week 1 (Apr 28 – May 2)',pnl:254.86,wr:100,rr:1.65,pts:12,trades:2}]});
 let review=load('nqx-review',{weeks:{}});
+let brief={};
 let fitState={gym:false,macros:false,stepsHit:false};
 let selectedFitDate=getToday();
 let currentRating=0;
@@ -894,10 +914,27 @@ function saveReview(){
 function getActiveTabName(){const b=document.querySelector('.nav-btn.active');if(!b)return'trading';const t=b.textContent.trim();if(t==='21-DAY')return'challenge';if(t==='FITNESS')return'fitness';if(t==='MONTHLY')return'monthly';if(t==='REVIEW')return'review';return'trading';}
 function reRenderActive(){const t=getActiveTabName();if(t==='trading')renderTrading();else if(t==='challenge')renderChallenge();else if(t==='fitness')renderFitness();else if(t==='monthly')renderMonthly();else if(t==='review')renderReview();}
 function setSyncStatus(s){const el=document.getElementById('sync-status');if(!el)return;if(s==='live'){el.textContent='● SYNCED';el.style.color='#00FF88';}else if(s==='saving'){el.textContent='↑ SAVING...';el.style.color='#FFC107';}else{el.textContent='○ OFFLINE';el.style.color='rgba(255,255,255,0.3)';}}
-if(USE_FB){setSyncStatus('saving');db.ref('nqxavier').on('value',snap=>{const data=snap.val()||{};let updated=false;if(data['nqx-data']){trading=data['nqx-data'];localStore('nqx-data',trading);updated=true;}if(data['nqx-challenge']){challenge=data['nqx-challenge'];localStore('nqx-challenge',challenge);updated=true;}if(data['nqx-fitness']){fitness=data['nqx-fitness'];localStore('nqx-fitness',fitness);updated=true;}if(data['nqx-monthly']){monthly=data['nqx-monthly'];localStore('nqx-monthly',monthly);updated=true;}if(data['nqx-review']){review=data['nqx-review'];localStore('nqx-review',review);updated=true;}setSyncStatus('live');if(updated)reRenderActive();});db.ref('.info/connected').on('value',snap=>{if(!snap.val())setSyncStatus('offline');});}else{setSyncStatus('offline');}
+if(USE_FB){setSyncStatus('saving');db.ref('nqxavier').on('value',snap=>{const data=snap.val()||{};let updated=false;if(data['nqx-data']){trading=data['nqx-data'];localStore('nqx-data',trading);updated=true;}if(data['nqx-challenge']){challenge=data['nqx-challenge'];localStore('nqx-challenge',challenge);updated=true;}if(data['nqx-fitness']){fitness=data['nqx-fitness'];localStore('nqx-fitness',fitness);updated=true;}if(data['nqx-monthly']){monthly=data['nqx-monthly'];localStore('nqx-monthly',monthly);updated=true;}if(data['nqx-review']){review=data['nqx-review'];localStore('nqx-review',review);updated=true;}
+    if(data['nqx-brief']){brief=data['nqx-brief'];renderBrief();}setSyncStatus('live');if(updated)reRenderActive();});db.ref('.info/connected').on('value',snap=>{if(!snap.val())setSyncStatus('offline');});}else{setSyncStatus('offline');}
+
+// ============ MORNING BRIEF ============
+function renderBrief(){
+  const el=document.getElementById('morning-brief');if(!el)return;
+  if(!brief||!brief.date){el.style.display='none';return;}
+  const today=getToday();
+  const daysDiff=Math.abs((new Date(today)-new Date(brief.date))/(1000*60*60*24));
+  if(daysDiff>1){el.style.display='none';return;}
+  el.style.display='block';
+  if(brief.weekend){el.innerHTML=`<div class="brief-inner"><div class="brief-hdr"><span class="brief-dot"></span>WEEKEND</div><div class="brief-note">Markets closed — enjoy the weekend.</div></div>`;return;}
+  const sentColor=brief.marketSentiment==='RISK-ON'?'#00FF88':brief.marketSentiment==='RISK-OFF'?'#FF5555':'#FFC107';
+  const ffHtml=(brief.ffEvents&&brief.ffEvents.length>0)?brief.ffEvents.map(e=>`<div class="brief-event"><span class="brief-time">${e.time}</span><span class="brief-evname">${e.name}</span><span class="brief-vals">${e.forecast?'F: '+e.forecast:''} ${e.previous?'P: '+e.previous:''}</span></div>`).join(''):'<div class="brief-event" style="color:rgba(255,255,255,0.3)">No high-impact USD events today</div>';
+  const newsHtml=(brief.news&&brief.news.length>0)?brief.news.map(n=>{const sc=n.sentiment==='bullish'?'#00FF88':n.sentiment==='bearish'?'#FF5555':'rgba(255,255,255,0.5)';return`<div class="brief-news-row"><span class="brief-cat" style="color:${sc}">${n.category}</span><span class="brief-headline">${n.headline}</span></div>`;}).join(''):'';
+  el.innerHTML=`<div class="brief-inner"><div class="brief-hdr"><span class="brief-dot"></span>MORNING BRIEF &nbsp;·&nbsp; ${brief.dayLabel||brief.date} &nbsp;·&nbsp; <span style="color:${sentColor};font-weight:700">${brief.marketSentiment||'—'}</span></div>${brief.traderNote?'<div class="brief-note">⚡ '+brief.traderNote+'</div>':''}${brief.ffEvents&&brief.ffEvents.length>0?'<div class="brief-section-lbl">HIGH-IMPACT EVENTS TODAY</div>'+ffHtml:''}${brief.news&&brief.news.length>0?'<div class="brief-section-lbl" style="margin-top:10px">MARKET NEWS</div>'+newsHtml:''}<div class="brief-gen">Generated ${brief.generatedAt||''}</div></div>`;
+}
 
 // ============ INIT ============
 renderTrading();
+renderBrief();
 </script>
 </body>
 </html>
