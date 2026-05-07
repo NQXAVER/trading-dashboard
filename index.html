@@ -691,7 +691,7 @@ function renderChallenge(){
   const todaySubmitted=todayData.submitted||false;
 
   if(!challenge.started){
-    document.getElementById('streak-sub').textContent='Start your challenge — Day 1 begins tomorrow';
+    document.getElementById('streak-sub').textContent='Start your challenge — Day 1 starts today';
     document.getElementById('start-wrap').style.display='block';
     document.getElementById('tasks-section').style.display='none';
   } else {
@@ -782,12 +782,8 @@ function submitDay(){
 }
 
 function startChallenge(){
-  if(confirm('Challenge starts TOMORROW. Today is Day 0 — prep day. Every task must be completed daily or the streak resets. You ready?')){
-    // Set start date to tomorrow so Day 1 = tomorrow
-    const tomorrow=new Date();tomorrow.setDate(tomorrow.getDate()+1);
-    const p=x=>String(x).padStart(2,'0');
-    const tomorrowStr=tomorrow.getFullYear()+'-'+p(tomorrow.getMonth()+1)+'-'+p(tomorrow.getDate());
-    challenge={started:true,startDate:tomorrowStr,days:{}};
+  if(confirm('Challenge starts TODAY. Day 1 is now. Every task must be completed daily or the streak resets. You ready?')){
+    challenge={started:true,startDate:getToday(),days:{}};
     store('nqx-challenge',challenge);renderChallenge();
   }
 }
