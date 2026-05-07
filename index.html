@@ -594,7 +594,7 @@ function store(k,v){
   if(USE_FB) db.ref('nqxavier/'+k).set(v);
 }
 
-let trading=load('nqx-data',{balance:49358.32,days:[{result:'loss',pnl:-208.92},{result:'be',pnl:-0.80},{result:'win',pnl:313.18},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0}]});
+let trading=load('nqx-data',{balance:49504.00,days:[{result:'loss',pnl:-208.92},{result:'be',pnl:-0.80},{result:'win',pnl:313.18},{result:'win',pnl:145.68},{result:'upcoming',pnl:0}]});
 let challenge=load('nqx-challenge',{started:false,startDate:null,days:{}});
 let fitness=load('nqx-fitness',{days:{}});
 let monthly=load('nqx-monthly',{weeks:[{label:'Week 1 (Apr 28 – May 2)',pnl:254.86,wr:100,rr:1.65,pts:12,trades:2}]});
