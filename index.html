@@ -578,13 +578,8 @@ if(USE_FB){ firebase.initializeApp(FB_CONFIG); db = firebase.database(); }
 // ============ CONSTANTS ============
 const LIMIT=48000,START_BAL=50000,WEEK_START_BAL=49254.86;
 const TASK_KEYS=['steps','gym','macros','trading','lockout'];
-const WEEK_DAYS=[
-  {nm:'MON',dt:'May 4',date:'2026-05-04',note:'Long → BE. Short rule break.',news:[],newso:[]},
-  {nm:'TUE',dt:'May 5',date:'2026-05-05',note:'1 trade. Full candle closure. Lock out.',news:['RED — ISM SERVICES PMI 10:00am','RED — JOLTS JOB OPENINGS 10:00am'],newso:[]},
-  {nm:'WED',dt:'May 6',date:'2026-05-06',note:'1 trade. Full candle closure. Lock out.',news:[],newso:['MED — ADP EMPLOYMENT 8:15am']},
-  {nm:'THU',dt:'May 7',date:'2026-05-07',note:'1 trade. Full candle closure. Lock out.',news:[],newso:['MED — UNEMPLOYMENT CLAIMS 8:30am']},
-  {nm:'FRI',dt:'May 8',date:'2026-05-08',note:'NFP day. Wait for dust to settle.',news:['RED — NFP + AVG EARNINGS 8:30am','RED — UNEMPLOYMENT RATE 8:30am'],newso:[]}
-];
+function _buildWeek(){const n=new Date(),dw=n.getDay(),m=new Date(n);m.setDate(n.getDate()-(dw===0?6:dw-1));m.setHours(0,0,0,0);const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],nms=['MON','TUE','WED','THU','FRI'],p=x=>String(x).padStart(2,'0');return nms.map((nm,i)=>{const d=new Date(m);d.setDate(m.getDate()+i);const ds=d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());return {nm,dt:mo[d.getMonth()]+' '+d.getDate(),date:ds};});}
+const WEEK_DAYS=_buildWeek()];
 
 // ============ DATA ============
 function load(k,d){try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}}
@@ -594,9 +589,10 @@ function store(k,v){
   if(USE_FB) db.ref('nqxavier/'+k).set(v);
 }
 
+function _getMonKey(){const n=new Date(),dw=n.getDay(),m=new Date(n);m.setDate(n.getDate()-(dw===0?6:dw-1));const p=x=>String(x).padStart(2,'0');return m.getFullYear()+'-'+p(m.getMonth()+1)+'-'+p(m.getDate());}
 const BLANK_DAYS=()=>[{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0}];
 let trading=load('nqx-data',{weekKey:'',balance:49504.00,days:[{result:'loss',pnl:-208.92},{result:'be',pnl:-0.80},{result:'win',pnl:313.18},{result:'win',pnl:145.68},{result:'upcoming',pnl:0}]});
-const _thisWeek=getMonWeekKey();
+const _thisWeek=_getMonKey();
 if(trading.weekKey!==_thisWeek){
   trading={weekKey:_thisWeek,weekStartBal:trading.balance,balance:trading.balance,days:BLANK_DAYS()};
   localStore('nqx-data',trading);
