@@ -579,7 +579,7 @@ if(USE_FB){ firebase.initializeApp(FB_CONFIG); db = firebase.database(); }
 const LIMIT=48000,START_BAL=50000,WEEK_START_BAL=49254.86;
 const TASK_KEYS=['steps','gym','macros','trading','lockout'];
 function _buildWeek(){const n=new Date(),dw=n.getDay(),m=new Date(n);m.setDate(n.getDate()-(dw===0?6:dw-1));m.setHours(0,0,0,0);const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],nms=['MON','TUE','WED','THU','FRI'],p=x=>String(x).padStart(2,'0');return nms.map((nm,i)=>{const d=new Date(m);d.setDate(m.getDate()+i);const ds=d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());return {nm,dt:mo[d.getMonth()]+' '+d.getDate(),date:ds};});}
-const WEEK_DAYS=_buildWeek()];
+const WEEK_DAYS=_buildWeek();
 
 // ============ DATA ============
 function load(k,d){try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}}
