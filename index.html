@@ -77,6 +77,13 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
 .mandate{font-size:14px;color:rgba(255,255,255,0.6);padding:4px 0;line-height:1.9}
 .mandate span{color:#00FF88;font-weight:700}
 
+/* FF NEWS */
+.ff-news-wrap{margin-top:6px;border-top:1px solid rgba(255,85,85,0.2);padding-top:5px}
+.ff-event{font-size:9px;color:#FF5555;line-height:1.5;font-family:'Courier New',monospace;display:flex;align-items:flex-start;gap:3px;margin-bottom:2px}
+.ff-event-flag{opacity:0.7;flex-shrink:0}
+.ff-event-name{word-break:break-word}
+.ff-event-time{color:rgba(255,85,85,0.55);font-size:8px;margin-left:auto;flex-shrink:0;padding-left:3px}
+
 /* PANELS */
 .edit-btn{display:block;width:100%;background:transparent;border:1px solid rgba(0,255,136,0.35);color:#00FF88;font-family:'Courier New',monospace;font-size:12px;letter-spacing:1px;padding:11px;border-radius:8px;cursor:pointer;margin-bottom:1rem;transition:all 0.2s}
 .edit-btn:hover{background:rgba(0,255,136,0.08);border-color:#00FF88}
@@ -597,6 +604,7 @@ let review=load('nqx-review',{weeks:{}});
 let fitState={gym:false,macros:false,stepsHit:false};
 let selectedFitDate=getToday();
 let currentRating=0;
+let ffNews={};
 
 // ============ UTILS ============
 function getToday(){const n=new Date(),p=x=>String(x).padStart(2,'0');return n.getFullYear()+'-'+p(n.getMonth()+1)+'-'+p(n.getDate())}
@@ -641,7 +649,8 @@ function renderTrading(){
     let bc='b-up',bt='UPCOMING';
     if(d.result==='win'){bc='b-win';bt='WIN'}else if(d.result==='loss'){bc='b-loss';bt='LOSS'}else if(d.result==='be'){bc='b-be';bt='BREAKEVEN'}
     const gradeHtml=d.grade?`<div class="grade-badge ${gradeClass(d.grade)}">${d.grade}${d.rr?' · '+d.rr+'R':''}</div>`:'';
-    cal.innerHTML+=`<div class="${cls}"><div class="today-pill">TODAY</div><div class="day-nm">${info.nm}</div><div class="day-dt">${info.dt}</div>${pnlHtml}<div class="badge ${bc}">${bt}</div>${gradeHtml}</div>`;
+    const newsHtml=(ffNews[info.date]||[]).length>0?`<div class="ff-news-wrap">${(ffNews[info.date]).map(n=>`<div class="ff-event"><span class="ff-event-flag">🔴</span><span class="ff-event-name">${n.title}</span><span class="ff-event-time">${n.time}</span></div>`).join('')}</div>`:'';
+    cal.innerHTML+=`<div class="${cls}"><div class="today-pill">TODAY</div><div class="day-nm">${info.nm}</div><div class="day-dt">${info.dt}</div>${pnlHtml}<div class="badge ${bc}">${bt}</div>${gradeHtml}${newsHtml}</div>`;
   });
 }
 function toggleEdit(){document.getElementById('edit-panel').classList.toggle('open')}
@@ -905,26 +914,27 @@ function getActiveTabName(){const b=document.querySelector('.nav-btn.active');if
 function reRenderActive(){const t=getActiveTabName();if(t==='trading')renderTrading();else if(t==='challenge')renderChallenge();else if(t==='fitness')renderFitness();else if(t==='monthly')renderMonthly();else if(t==='review')renderReview();}
 function setSyncStatus(s){const el=document.getElementById('sync-status');if(!el)return;if(s==='live'){el.textContent='● SYNCED';el.style.color='#00FF88';}else if(s==='saving'){el.textContent='↑ SAVING...';el.style.color='#FFC107';}else{el.textContent='○ OFFLINE';el.style.color='rgba(255,255,255,0.3)';}}
 if(USE_FB){setSyncStatus('saving');db.ref('nqxavier').on('value',snap=>{const data=snap.val()||{};let updated=false;if(data['nqx-data']){trading=data['nqx-data'];localStore('nqx-data',trading);updated=true;}if(data['nqx-challenge']){challenge=data['nqx-challenge'];localStore('nqx-challenge',challenge);updated=true;}if(data['nqx-fitness']){fitness=data['nqx-fitness'];localStore('nqx-fitness',fitness);updated=true;}if(data['nqx-monthly']){monthly=data['nqx-monthly'];localStore('nqx-monthly',monthly);updated=true;}if(data['nqx-review']){review=data['nqx-review'];localStore('nqx-review',review);updated=true;}
-    if(data['nqx-brief']){brief=data['nqx-brief'];renderBrief();}setSyncStatus('live');if(updated)reRenderActive();});db.ref('.info/connected').on('value',snap=>{if(!snap.val())setSyncStatus('offline');});}else{setSyncStatus('offline');}
+    if(data['nqx-brief']){}setSyncStatus('live');if(updated)reRenderActive();});db.ref('.info/connected').on('value',snap=>{if(!snap.val())setSyncStatus('offline');});}else{setSyncStatus('offline');}
 
 // ============ MORNING BRIEF ============
-function renderBrief(){
-  const el=document.getElementById('morning-brief');if(!el)return;
-  if(!brief||!brief.date){el.style.display='none';return;}
-  const today=getToday();
-  const daysDiff=Math.abs((new Date(today)-new Date(brief.date))/(1000*60*60*24));
-  if(daysDiff>1){el.style.display='none';return;}
-  el.style.display='block';
-  if(brief.weekend){el.innerHTML=`<div class="brief-inner"><div class="brief-hdr"><span class="brief-dot"></span>WEEKEND</div><div class="brief-note">Markets closed — enjoy the weekend.</div></div>`;return;}
-  const sentColor=brief.marketSentiment==='RISK-ON'?'#00FF88':brief.marketSentiment==='RISK-OFF'?'#FF5555':'#FFC107';
-  const ffHtml=(brief.ffEvents&&brief.ffEvents.length>0)?brief.ffEvents.map(e=>`<div class="brief-event"><span class="brief-time">${e.time}</span><span class="brief-evname">${e.name}</span><span class="brief-vals">${e.forecast?'F: '+e.forecast:''} ${e.previous?'P: '+e.previous:''}</span></div>`).join(''):'<div class="brief-event" style="color:rgba(255,255,255,0.3)">No high-impact USD events today</div>';
-  const newsHtml=(brief.news&&brief.news.length>0)?brief.news.map(n=>{const sc=n.sentiment==='bullish'?'#00FF88':n.sentiment==='bearish'?'#FF5555':'rgba(255,255,255,0.5)';return`<div class="brief-news-row"><span class="brief-cat" style="color:${sc}">${n.category}</span><span class="brief-headline">${n.headline}</span></div>`;}).join(''):'';
-  el.innerHTML=`<div class="brief-inner"><div class="brief-hdr"><span class="brief-dot"></span>MORNING BRIEF &nbsp;·&nbsp; ${brief.dayLabel||brief.date} &nbsp;·&nbsp; <span style="color:${sentColor};font-weight:700">${brief.marketSentiment||'—'}</span></div>${brief.traderNote?'<div class="brief-note">⚡ '+brief.traderNote+'</div>':''}${brief.ffEvents&&brief.ffEvents.length>0?'<div class="brief-section-lbl">HIGH-IMPACT EVENTS TODAY</div>'+ffHtml:''}${brief.news&&brief.news.length>0?'<div class="brief-section-lbl" style="margin-top:10px">MARKET NEWS</div>'+newsHtml:''}<div class="brief-gen">Generated ${brief.generatedAt||''}</div></div>`;
+
+// ============ FOREX FACTORY NEWS ============
+async function loadFFNews(){
+  try{
+    const r=await fetch('https://nfs.faireconomy.media/ff_calendar_thisweek.json');
+    const data=await r.json();
+    ffNews={};
+    data.filter(e=>e.impact==='High').forEach(e=>{
+      const d=e.date.split('T')[0];
+      if(!ffNews[d])ffNews[d]=[];
+      ffNews[d].push({title:e.title,time:e.date.split('T')[1]?.slice(0,5)||'',country:e.country});
+    });
+  }catch(e){}
+  renderTrading();
 }
 
 // ============ INIT ============
-renderTrading();
-renderBrief();
+loadFFNews();
 </script>
 </body>
 </html>
