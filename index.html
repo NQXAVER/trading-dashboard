@@ -1,4 +1,4 @@
-h<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -47,7 +47,6 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
 .day.done-loss{border-color:rgba(255,85,85,0.5);background:#160f0f}
 .day.done-win{border-color:rgba(0,255,136,0.5);background:#0c160f}
 .day.done-be{border-color:rgba(91,184,255,0.4);background:#0c1119}
-.day.has-news{border-color:rgba(255,85,85,0.25)}
 .day.today-hl{border:2px solid #00FF88;background:#0b1a10}
 .today-pill{display:none;position:absolute;top:8px;right:8px;font-size:9px;font-weight:700;background:#00FF88;color:#080808;padding:2px 8px;border-radius:3px;letter-spacing:.5px;font-family:'Courier New',monospace}
 .day.today-hl .today-pill{display:block}
@@ -63,8 +62,6 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
 .b-be{background:rgba(91,184,255,0.15);color:#5BB8FF}
 .b-up{background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.45)}
 .day-note{font-size:12px;color:rgba(255,255,255,0.6);line-height:1.6}
-.news-tag{display:block;font-size:10px;background:rgba(255,85,85,0.12);color:#FF8888;padding:3px 7px;border-radius:4px;margin-top:5px;border:1px solid rgba(255,85,85,0.3)}
-.news-tag-o{display:block;font-size:10px;background:rgba(255,160,50,0.1);color:#FFA030;padding:3px 7px;border-radius:4px;margin-top:5px;border:1px solid rgba(255,160,50,0.25)}
 
 /* RULES */
 .rules-box{background:#161616;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:18px 20px;margin-bottom:1.25rem}
@@ -76,6 +73,17 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
 .divider{border:none;border-top:1px solid rgba(255,255,255,0.07);margin:14px 0}
 .mandate{font-size:14px;color:rgba(255,255,255,0.6);padding:4px 0;line-height:1.9}
 .mandate span{color:#00FF88;font-weight:700}
+
+/* ECONOMIC CALENDAR */
+.econ-cal{background:#161616;border:1px solid rgba(255,85,85,0.25);border-radius:12px;padding:18px 20px;margin-bottom:1.25rem}
+.econ-cal-ttl{font-size:11px;color:#FF5555;letter-spacing:1.5px;margin-bottom:14px;font-family:'Courier New',monospace;font-weight:700}
+.econ-cal-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.econ-day{background:#0d0d0d;border:1px solid rgba(255,85,85,0.15);border-radius:8px;padding:12px;min-height:140px}
+.econ-day-label{font-size:10px;color:#FF5555;letter-spacing:1px;margin-bottom:8px;font-family:'Courier New',monospace;font-weight:700}
+.econ-event{font-size:11px;color:rgba(255,255,255,0.75);line-height:1.5;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid rgba(255,85,85,0.1)}
+.econ-event:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.econ-time{font-size:9px;color:rgba(255,85,85,0.6);font-family:'Courier New',monospace;margin-top:2px}
+.econ-impact{display:inline-block;font-size:8px;color:#FF5555;font-weight:700;letter-spacing:1px;margin-top:1px;font-family:'Courier New',monospace}
 
 /* FF NEWS */
 .ff-news-wrap{margin-top:6px;border-top:1px solid rgba(255,85,85,0.2);padding-top:5px}
@@ -207,23 +215,6 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
 .live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#00FF88;margin-right:6px;animation:pulse 1.5s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 
-/* MORNING BRIEF */
-#morning-brief{display:none}
-.brief-inner{background:#0f0f0f;border:1px solid rgba(255,85,85,0.25);border-radius:12px;padding:16px 18px;margin-bottom:1.25rem}
-.brief-hdr{font-family:'Courier New',monospace;font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:1.5px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.brief-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#FF5555;animation:pulse 1.5s infinite;flex-shrink:0}
-.brief-note{font-size:13px;color:rgba(255,255,255,0.85);line-height:1.6;margin-bottom:12px;padding:8px 12px;background:rgba(255,255,255,0.04);border-radius:7px;border-left:2px solid #FFD700}
-.brief-section-lbl{font-family:'Courier New',monospace;font-size:9px;color:rgba(0,255,136,0.5);letter-spacing:2px;margin-bottom:6px}
-.brief-event{display:flex;align-items:baseline;gap:10px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
-.brief-event:last-child{border-bottom:none}
-.brief-time{font-family:'Courier New',monospace;font-size:11px;color:#FF5555;font-weight:700;flex-shrink:0;min-width:80px}
-.brief-evname{font-size:13px;color:rgba(255,255,255,0.85);flex:1}
-.brief-vals{font-family:'Courier New',monospace;font-size:10px;color:rgba(255,255,255,0.35);flex-shrink:0}
-.brief-news-row{display:flex;align-items:flex-start;gap:10px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
-.brief-news-row:last-child{border-bottom:none}
-.brief-cat{font-family:'Courier New',monospace;font-size:9px;font-weight:700;letter-spacing:.5px;flex-shrink:0;min-width:130px;padding-top:2px}
-.brief-headline{font-size:12px;color:rgba(255,255,255,0.7);line-height:1.5;flex:1}
-.brief-gen{font-family:'Courier New',monospace;font-size:9px;color:rgba(255,255,255,0.2);margin-top:10px;text-align:right}
 
 /* FITNESS JOURNAL */
 .fit-journal{width:100%;background:#0d0d0d;border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:rgba(255,255,255,0.85);font-family:'Inter',sans-serif;font-size:13px;padding:11px;outline:none;resize:vertical;min-height:80px;line-height:1.7;margin-bottom:14px}
@@ -254,7 +245,6 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
   .day-pnl{font-size:14px;margin-bottom:0;flex:1}
   .badge{margin-bottom:0}
   .day-note{width:100%;margin-top:4px;font-size:11px}
-  .news-tag,.news-tag-o{font-size:9px;padding:2px 6px;margin-top:4px}
 
   /* RULES */
   .rules-grid{grid-template-columns:1fr}
@@ -318,7 +308,9 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
   <button class="nav-btn" onclick="showTab('fitness',this)">FITNESS</button>
   <button class="nav-btn" onclick="showTab('monthly',this)">MONTHLY</button>
   <button class="nav-btn" onclick="showTab('review',this)">REVIEW</button>
-  <div style="display:flex;align-items:center;padding:0 10px;flex-shrink:0"><span id="sync-status" style="font-family:'Courier New',monospace;font-size:8px;letter-spacing:.5px;color:rgba(255,255,255,0.3)">○ LOCAL</span></div>
+  <div style="display:flex;align-items:center;padding:0 10px;flex-shrink:0">
+    <span id="sync-status" style="font-family:'Courier New',monospace;font-size:8px;letter-spacing:.5px;color:rgba(255,255,255,0.3)">○ LOCAL</span>
+  </div>
 </div>
 
 <!-- ======= TRADING ======= -->
@@ -341,7 +333,7 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
     <div class="buf-labels"><span id="buf-text">MAX DRAWDOWN</span><span id="buf-pct-label">—</span></div>
     <div class="buf-track"><div class="buf-fill" id="buf-bar" style="width:0%"></div></div>
   </div>
-  <div id="morning-brief"></div>
+  <div class="econ-cal" id="econ-cal"></div>
   <div class="cal" id="cal"></div>
   <div class="rules-box">
     <div class="rules-ttl">NON-NEGOTIABLE RULES</div>
@@ -507,7 +499,7 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
 <!-- ======= MONTHLY ======= -->
 <div class="tab" id="tab-monthly"><div class="container">
   <div class="month-hdr" id="month-title">MAY 2026</div>
-  <div class="month-tbl-wrap"><div class="month-tbl-wrap"><table class="month-tbl">
+  <div class="month-tbl-wrap"><table class="month-tbl">
     <thead><tr><th>WK</th><th>DATES</th><th>P&L</th><th>WIN RATE</th><th>AVG RR</th><th>POINTS</th><th>GRADE</th></tr></thead>
     <tbody id="month-tbody"></tbody>
   </table></div>
@@ -569,6 +561,10 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
+// ============================================================
+//  FIREBASE CONFIG — paste your config here to enable sync
+//  Get it from: Firebase Console → Project Settings → Your Apps
+// ============================================================
 const FB_CONFIG = {
   apiKey:            "AIzaSyCfQvFl98NZP940M-Q__ZlLXbBalLhDQp8",
   authDomain:        "nqxavier-dashboard.firebaseapp.com",
@@ -580,23 +576,55 @@ const FB_CONFIG = {
 };
 const USE_FB = FB_CONFIG.databaseURL !== "";
 let db = null;
-if(USE_FB){ firebase.initializeApp(FB_CONFIG); db = firebase.database(); }
+if(USE_FB){
+  firebase.initializeApp(FB_CONFIG);
+  db = firebase.database();
+}
+// ============================================================
 
 // ============ CONSTANTS ============
 const LIMIT=48000,START_BAL=50000,WEEK_START_BAL=49254.86;
 const TASK_KEYS=['steps','gym','macros','trading','lockout'];
-function _buildWeek(){const n=new Date(),dw=n.getDay(),m=new Date(n);m.setDate(n.getDate()-(dw===0?6:dw-1));m.setHours(0,0,0,0);const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],nms=['MON','TUE','WED','THU','FRI'],p=x=>String(x).padStart(2,'0');return nms.map((nm,i)=>{const d=new Date(m);d.setDate(m.getDate()+i);const ds=d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());return {nm,dt:mo[d.getMonth()]+' '+d.getDate(),date:ds};});}
-const WEEK_DAYS=_buildWeek();
+function buildWeekDays(){
+  const now=new Date(),dow=now.getDay();
+  const mon=new Date(now);
+  mon.setDate(now.getDate()-(dow===0?6:dow-1));
+  mon.setHours(0,0,0,0);
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const nms=['MON','TUE','WED','THU','FRI'];
+  const p=x=>String(x).padStart(2,'0');
+  return nms.map((nm,i)=>{
+    const d=new Date(mon);d.setDate(mon.getDate()+i);
+    const ds=d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());
+    return {nm,dt:months[d.getMonth()]+' '+d.getDate(),date:ds};
+  });
+}
+function getMonWeekKey(){
+  const now=new Date(),dow=now.getDay();
+  const mon=new Date(now);
+  mon.setDate(now.getDate()-(dow===0?6:dow-1));
+  const p=x=>String(x).padStart(2,'0');
+  return mon.getFullYear()+'-'+p(mon.getMonth()+1)+'-'+p(mon.getDate());
+}
+const WEEK_DAYS=buildWeekDays();
 
 // ============ DATA ============
 function load(k,d){try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}}
 function localStore(k,v){localStorage.setItem(k,JSON.stringify(v))}
 function store(k,v){
-  localStore(k,v);
-  if(USE_FB) db.ref('nqxavier/'+k).set(v);
+  localStore(k,v); // always write locally (instant)
+  if(USE_FB) db.ref('nqxavier/'+k).set(v); // sync to cloud
 }
 
-let trading=load('nqx-data',{balance:49504.00,days:[{result:'loss',pnl:-208.92},{result:'be',pnl:-0.80},{result:'win',pnl:313.18},{result:'win',pnl:145.68},{result:'upcoming',pnl:0}]});
+const BLANK_DAYS=()=>[{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0}];
+let trading=load('nqx-data',{weekKey:'',balance:49504.00,days:[{result:'loss',pnl:-208.92},{result:'be',pnl:-0.80},{result:'win',pnl:313.18},{result:'win',pnl:145.68},{result:'upcoming',pnl:0}]});
+// Auto-reset days on new week, carry balance forward
+const _thisWeek=getMonWeekKey();
+if(trading.weekKey!==_thisWeek){
+  trading={weekKey:_thisWeek,weekStartBal:trading.balance,balance:trading.balance,days:BLANK_DAYS()};
+  localStore('nqx-data',trading);
+}
+if(!trading.weekStartBal)trading.weekStartBal=WEEK_START_BAL;
 let challenge=load('nqx-challenge',{started:false,startDate:null,days:{}});
 let fitness=load('nqx-fitness',{days:{}});
 let monthly=load('nqx-monthly',{weeks:[{label:'Week 1 (Apr 28 – May 2)',pnl:254.86,wr:100,rr:1.65,pts:12,trades:2}]});
@@ -624,10 +652,53 @@ function showTab(name,btn){
   if(name==='review')renderReview();
 }
 
+// ============ ECONOMIC CALENDAR ============
+let econCalendarData = {
+  '2026-05-09': [],
+  '2026-05-10': [],
+  '2026-05-11': [
+    {time: '08:30 AM ET', title: 'CPI (April)', impact: 'HIGH', key: 'CPI'}
+  ],
+  '2026-05-12': [],
+  '2026-05-13': [
+    {time: '02:00 PM ET', title: 'Fed Powell Speaks', impact: 'HIGH', key: 'FED'}
+  ],
+  '2026-05-14': [],
+  '2026-05-15': []
+};
+
+function renderEconomicCalendar(){
+  const cal = document.getElementById('econ-cal');
+  if(!cal) return;
+  const days = ['2026-05-09', '2026-05-10', '2026-05-11', '2026-05-12', '2026-05-13'];
+  const dayNames = ['FRI', 'MON', 'TUE', 'WED', 'THU'];
+  let html = '<div class="econ-cal-ttl">RED FOLDER — UPCOMING WEEK</div><div class="econ-cal-grid">';
+
+  days.forEach((dateStr, idx) => {
+    const events = econCalendarData[dateStr] || [];
+    const dayParts = dateStr.split('-');
+    const dayNum = dayParts[2];
+    html += `<div class="econ-day"><div class="econ-day-label">${dayNames[idx]} ${dayNum}</div>`;
+
+    if(events.length === 0) {
+      html += '<div style="font-size:10px;color:rgba(255,255,255,0.35)">—</div>';
+    } else {
+      events.forEach(e => {
+        html += `<div class="econ-event"><strong>${e.title}</strong><div class="econ-time">${e.time}</div><div class="econ-impact">🔴 ${e.impact}</div></div>`;
+      });
+    }
+    html += '</div>';
+  });
+
+  html += '</div>';
+  cal.innerHTML = html;
+}
+
 // ============ TRADING ============
 function renderTrading(){
+  renderEconomicCalendar();
   const bal=trading.balance,buf=bal-LIMIT,ddUsed=START_BAL-bal,ddTotal=START_BAL-LIMIT;
-  const pct=Math.min(100,(ddUsed/ddTotal*100)).toFixed(1),weekPnl=bal-WEEK_START_BAL;
+  const pct=Math.min(100,(ddUsed/ddTotal*100)).toFixed(1),weekPnl=bal-(trading.weekStartBal||WEEK_START_BAL);
   document.getElementById('bal-display').textContent='$'+bal.toLocaleString('en-US',{minimumFractionDigits:2});
   document.getElementById('buf-display').textContent='Buffer $'+buf.toLocaleString('en-US',{minimumFractionDigits:2})+' · Limit $48,000';
   const wp=document.getElementById('week-pnl');wp.textContent=fmt(weekPnl);wp.className='sc-v '+(weekPnl>=0?'c-green':'c-red');
@@ -814,7 +885,8 @@ function renderFitness(){
     const isSelected=ds===selectedFitDate;
     if(fd.steps){stepSum+=fd.steps;stepCount++}
     const div=document.createElement('div');
-    div.className='fit-day'+(isToday?' ftoday':'')+(isSelected?' fselected':'');
+    let cls='fit-day'+(isToday?' ftoday':'')+(isSelected?' fselected':'');
+    div.className=cls;
     div.innerHTML=`<div class="fit-nm">${dayNames[i]}</div><div class="fit-val">${fd.steps?fd.steps.toLocaleString():'—'}</div><div class="fit-sub-lbl">STEPS</div><div><span class="pip ${fd.gym?'on':''}"></span><span class="pip ${fd.macros?'on':''}"></span><span class="pip ${fd.stepsHit?'on':''}"></span></div>`;
     div.onclick=()=>selectFitDay(ds,dayNames[i]);
     wk.appendChild(div);
@@ -824,11 +896,14 @@ function renderFitness(){
 }
 function selectFitDay(ds,dayName){
   selectedFitDate=ds;
-  const isToday=ds===getToday();
+  const todayStr=getToday();
+  const isToday=ds===todayStr;
+  // Update labels
   const lbl=document.getElementById('fit-log-ttl');
   const btn=document.getElementById('fit-save-btn');
   if(lbl)lbl.textContent=isToday?'LOG TODAY':'LOG — '+dayName+' ('+ds+')';
   if(btn)btn.textContent=isToday?'SAVE TODAY':'SAVE '+dayName;
+  // Re-render week to update selected highlight + load form
   renderFitness();
 }
 function loadFitDayIntoForm(ds){
@@ -917,15 +992,50 @@ function saveReview(){
   review.weeks[wk].rating=currentRating;store('nqx-review',review);alert('✅ Weekly review saved.');renderReview();
 }
 
-
 // ============ FIREBASE REAL-TIME SYNC ============
-function getActiveTabName(){const b=document.querySelector('.nav-btn.active');if(!b)return'trading';const t=b.textContent.trim();if(t==='21-DAY')return'challenge';if(t==='FITNESS')return'fitness';if(t==='MONTHLY')return'monthly';if(t==='REVIEW')return'review';return'trading';}
-function reRenderActive(){const t=getActiveTabName();if(t==='trading')renderTrading();else if(t==='challenge')renderChallenge();else if(t==='fitness')renderFitness();else if(t==='monthly')renderMonthly();else if(t==='review')renderReview();}
-function setSyncStatus(s){const el=document.getElementById('sync-status');if(!el)return;if(s==='live'){el.textContent='● SYNCED';el.style.color='#00FF88';}else if(s==='saving'){el.textContent='↑ SAVING...';el.style.color='#FFC107';}else{el.textContent='○ OFFLINE';el.style.color='rgba(255,255,255,0.3)';}}
-if(USE_FB){setSyncStatus('saving');db.ref('nqxavier').on('value',snap=>{const data=snap.val()||{};let updated=false;if(data['nqx-data']){trading=data['nqx-data'];localStore('nqx-data',trading);updated=true;}if(data['nqx-challenge']){challenge=data['nqx-challenge'];localStore('nqx-challenge',challenge);updated=true;}if(data['nqx-fitness']){fitness=data['nqx-fitness'];localStore('nqx-fitness',fitness);updated=true;}if(data['nqx-monthly']){monthly=data['nqx-monthly'];localStore('nqx-monthly',monthly);updated=true;}if(data['nqx-review']){review=data['nqx-review'];localStore('nqx-review',review);updated=true;}
-    if(data['nqx-brief']){}setSyncStatus('live');if(updated)reRenderActive();});db.ref('.info/connected').on('value',snap=>{if(!snap.val())setSyncStatus('offline');});}else{setSyncStatus('offline');}
-
-// ============ MORNING BRIEF ============
+function getActiveTabName(){
+  const b=document.querySelector('.nav-btn.active');
+  if(!b)return'trading';
+  const t=b.textContent.trim();
+  if(t==='21-DAY')return'challenge';
+  if(t==='FITNESS')return'fitness';
+  if(t==='MONTHLY')return'monthly';
+  if(t==='REVIEW')return'review';
+  return'trading';
+}
+function reRenderActive(){
+  const t=getActiveTabName();
+  if(t==='trading')renderTrading();
+  else if(t==='challenge')renderChallenge();
+  else if(t==='fitness')renderFitness();
+  else if(t==='monthly')renderMonthly();
+  else if(t==='review')renderReview();
+}
+function setSyncStatus(status){
+  const el=document.getElementById('sync-status');if(!el)return;
+  if(status==='live'){el.textContent='● SYNCED';el.style.color='#00FF88';}
+  else if(status==='saving'){el.textContent='↑ SAVING...';el.style.color='#FFC107';}
+  else if(status==='offline'){el.textContent='○ OFFLINE';el.style.color='rgba(255,255,255,0.3)';}
+}
+if(USE_FB){
+  setSyncStatus('saving');
+  db.ref('nqxavier').on('value', snap=>{
+    const data=snap.val()||{};
+    let updated=false;
+    if(data['nqx-data']){trading=data['nqx-data'];localStore('nqx-data',trading);updated=true;}
+    if(data['nqx-challenge']){challenge=data['nqx-challenge'];localStore('nqx-challenge',challenge);updated=true;}
+    if(data['nqx-fitness']){fitness=data['nqx-fitness'];localStore('nqx-fitness',fitness);updated=true;}
+    if(data['nqx-monthly']){monthly=data['nqx-monthly'];localStore('nqx-monthly',monthly);updated=true;}
+    if(data['nqx-review']){review=data['nqx-review'];localStore('nqx-review',review);updated=true;}
+    setSyncStatus('live');
+    if(updated)reRenderActive();
+  });
+  db.ref('.info/connected').on('value',snap=>{
+    if(!snap.val())setSyncStatus('offline');
+  });
+} else {
+  setSyncStatus('offline');
+}
 
 // ============ FOREX FACTORY NEWS ============
 async function loadFFNews(){
