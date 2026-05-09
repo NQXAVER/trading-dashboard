@@ -684,6 +684,12 @@ function getStreak(){
   return s;
 }
 function getTotalPts(){return Object.values(challenge.days).reduce((a,d)=>a+(d.submitted?(d.points||0):0),0)}
+function getWeekdayN(startStr,n){
+  const d=new Date(startStr+'T00:00:00');
+  let count=0;
+  while(count<n){d.setDate(d.getDate()+1);if(d.getDay()!==0&&d.getDay()!==6)count++;}
+  return d;
+}
 
 function renderChallenge(){
   const streak=getStreak(),totalPts=getTotalPts();
@@ -701,12 +707,15 @@ function renderChallenge(){
     const passedDays=Object.values(challenge.days).filter(d=>d.submitted&&d.pass).length;
     const startD=new Date(challenge.startDate+'T00:00:00'),nowD=new Date(getToday()+'T00:00:00');
     const isPrepDay=nowD<startD;
+    const todayDow=new Date(todayStr+'T00:00:00').getDay();
+    const isWeekend=todayDow===0||todayDow===6;
     if(isPrepDay) document.getElementById('streak-sub').textContent='DAY 0 — Challenge starts tomorrow. Get ready.';
+    else if(isWeekend) document.getElementById('streak-sub').textContent='WEEKEND — Weekdays only. Rest up, back Monday.';
     else if(streak===21) document.getElementById('streak-sub').textContent='🏆 CHALLENGE COMPLETE — LEGEND';
     else document.getElementById('streak-sub').textContent=`${21-passedDays} days remaining`;
     document.getElementById('start-wrap').style.display='none';
-    // Hide task checklist on prep day — nothing to submit yet
-    document.getElementById('tasks-section').style.display=isPrepDay?'none':'block';
+    // Hide task checklist on prep day or weekend — nothing to submit
+    document.getElementById('tasks-section').style.display=(isPrepDay||isWeekend)?'none':'block';
     document.getElementById('today-lbl').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'}).toUpperCase();
 
     if(todaySubmitted){
@@ -738,7 +747,7 @@ function renderChallenge(){
   for(let i=1;i<=21;i++){
     const div=document.createElement('div');
     if(challenge.started){
-      const sd=new Date(challenge.startDate),dd=new Date(sd);dd.setDate(sd.getDate()+i-1);
+      const dd=getWeekdayN(challenge.startDate,i-1);
       const p=x=>String(x).padStart(2,'0'),ds=dd.getFullYear()+'-'+p(dd.getMonth()+1)+'-'+p(dd.getDate());
       const dayData=challenge.days[ds];
       if(dayData&&dayData.submitted){
