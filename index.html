@@ -605,9 +605,30 @@ function buildWeekDays(){
   });
 }
 function getMonWeekKey(){
-  const now=new Date(),dow=now.getDay();
-  const mon=new Date(now);
-  mon.setDate(now.getDate()-(dow===0?6:dow-1));
+  // Week resets on Sunday 6 PM ET (when Asia opens)
+  // Returns the Monday of that week as the key
+  const now=new Date();
+  const etTime=new Date(now.toLocaleString('en-US',{timeZone:'America/New_York'}));
+  const dow=etTime.getDay();
+  const hrs=etTime.getHours();
+
+  // Calculate last Sunday 6 PM ET
+  let daysSinceSunday;
+  if(dow===0){ // It's Sunday
+    daysSinceSunday = hrs<18 ? 7 : 0; // If before 6 PM, use last week's Sunday
+  } else {
+    daysSinceSunday = dow;
+  }
+
+  const sun=new Date(etTime);
+  sun.setDate(etTime.getDate()-daysSinceSunday);
+  sun.setHours(18,0,0,0); // 6 PM ET
+
+  // Get Monday of that week (1 day after Sunday)
+  const mon=new Date(sun);
+  mon.setDate(sun.getDate()+1);
+  mon.setHours(0,0,0,0);
+
   const p=x=>String(x).padStart(2,'0');
   return mon.getFullYear()+'-'+p(mon.getMonth()+1)+'-'+p(mon.getDate());
 }
@@ -622,7 +643,7 @@ function store(k,v){
 }
 
 const BLANK_DAYS=()=>[{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0}];
-let trading=load('nqx-data',{weekKey:'',balance:49504.00,days:[{result:'loss',pnl:-208.92},{result:'be',pnl:-0.80},{result:'win',pnl:313.18},{result:'win',pnl:145.68},{result:'upcoming',pnl:0}]});
+let trading=load('nqx-data',{weekKey:'',balance:49504.00,days:BLANK_DAYS()});
 // Auto-reset days on new week, carry balance forward
 const _thisWeek=getMonWeekKey();
 if(trading.weekKey!==_thisWeek){
