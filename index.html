@@ -1179,9 +1179,9 @@ function renderAnalytics(){
 
     const cellStyle=`background:${cls};border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:12px;text-align:center;min-height:90px;display:flex;flex-direction:column;justify-content:center;align-items:center${isToday?';border:2px solid #00FF88;box-shadow:0 0 10px rgba(0,255,136,0.3)':''}${!isWeekend?';cursor:pointer;transition:all 0.2s':''}`;
 
-    const clickHandler=!isWeekend?`onclick="openDayDetail('${ds}')" onmouseover="this.style.background='#161616'" onmouseout="this.style.background='${cls}'"` : '';
+    const cellId=`cal-cell-${ds}`;
 
-    cal.innerHTML+=`<div style="${cellStyle}" ${clickHandler}>
+    cal.innerHTML+=`<div id="${cellId}" style="${cellStyle}">
       <div style="font-size:14px;font-weight:700;color:${isWeekend?'rgba(255,255,255,0.3)':'rgba(255,255,255,0.8)'}">
         ${i}
       </div>
@@ -1190,6 +1190,18 @@ function renderAnalytics(){
       </div>
       ${!isWeekend?`<div style="font-size:8px;color:rgba(0,255,136,0.4);margin-top:4px">view</div>`:''}
     </div>`;
+
+    // Attach click handler for non-weekend days
+    if(!isWeekend){
+      setTimeout(()=>{
+        const cell=document.getElementById(cellId);
+        if(cell){
+          cell.addEventListener('click',()=>openDayDetail(ds));
+          cell.addEventListener('mouseover',()=>{cell.style.background='#161616'});
+          cell.addEventListener('mouseout',()=>{cell.style.background=cls});
+        }
+      },0);
+    }
   }
 
   // Counts
@@ -1200,75 +1212,95 @@ function renderAnalytics(){
 }
 
 function openDayDetail(dateStr){
-  try{
-    const d=new Date(dateStr+'T00:00:00');
-    const dow=d.getDay();
+  const modal=document.getElementById('day-detail-modal');
+  if(!modal){
+    console.error('Modal not found');
+    return;
+  }
 
-    // Only allow Mon-Fri
-    if(dow===0||dow===6)return;
+  const d=new Date(dateStr);
+  const dow=d.getDay();
 
-    // Find which archived week this date belongs to
-    const p=x=>String(x).padStart(2,'0');
-    const diff=d.getDate()-dow+(dow===0?-6:1);
-    const weekMonday=new Date(d.getFullYear(),d.getMonth(),diff);
-    const weekKeyForDate=weekMonday.getFullYear()+'-'+p(weekMonday.getMonth()+1)+'-'+p(weekMonday.getDate());
+  if(dow===0||dow===6){
+    console.log('Weekend, skipping');
+    return; // Skip weekends
+  }
 
-    // Get day index (0-4 for Mon-Fri)
-    const dayIdx=dow-1;
+  const p=x=>String(x).padStart(2,'0');
+  const dayNames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const monthNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-    // Find the archived week
-    const archivedWeek=analytics?.weeks?.find(w=>w.weekKey===weekKeyForDate);
-    const dayName=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][dow];
-    const monthName=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()];
+  // Set header
+  const headerEl=document.getElementById('modal-day-header');
+  if(headerEl)headerEl.textContent=dayNames[dow]+', '+monthNames[d.getMonth()]+' '+d.getDate();
 
-    document.getElementById('modal-day-header').textContent=dayName+', '+monthName+' '+d.getDate();
+  // Find week
+  const diff=d.getDate()-dow+(dow===0?-6:1);
+  const weekMonday=new Date(d.getFullYear(),d.getMonth(),diff);
+  const weekKeyForDate=weekMonday.getFullYear()+'-'+p(weekMonday.getMonth()+1)+'-'+p(weekMonday.getDate());
+  const dayIdx=dow-1;
+  const archivedWeek=analytics&&analytics.weeks?analytics.weeks.find(w=>w.weekKey===weekKeyForDate):null;
 
-    // Trading data
-    if(archivedWeek&&archivedWeek.trading?.days[dayIdx]){
-      const td=archivedWeek.trading.days[dayIdx];
-      document.getElementById('day-pnl').textContent=fmt(td.pnl);
-      document.getElementById('day-pnl').className=td.pnl>=0?'c-green':'c-red';
-      document.getElementById('day-result').textContent=td.result.toUpperCase();
-      document.getElementById('day-result').className=td.result==='win'?'c-green':td.result==='loss'?'c-red':'c-blue';
-      document.getElementById('day-grade').textContent=td.grade||'—';
-      document.getElementById('day-rr').textContent=td.rr?td.rr+'R':'—';
-    } else {
-      document.getElementById('day-pnl').textContent='—';
-      document.getElementById('day-result').textContent='—';
-      document.getElementById('day-grade').textContent='—';
-      document.getElementById('day-rr').textContent='—';
-    }
+  // Trading data
+  let pnl='—',result='—',grade='—',rr='—',pnlColor='rgba(255,255,255,0.3)';
+  if(archivedWeek&&archivedWeek.trading&&archivedWeek.trading.days[dayIdx]){
+    const td=archivedWeek.trading.days[dayIdx];
+    pnl=fmt(td.pnl);
+    result=td.result?td.result.toUpperCase():'—';
+    grade=td.grade||'—';
+    rr=td.rr?(td.rr+'R'):'—';
+    pnlColor=td.pnl>=0?'#00FF88':'#FF5555';
+  }
 
-    // Challenge tasks for this day
-    const tasksGrid=document.getElementById('day-tasks-grid');
+  const pnlEl=document.getElementById('day-pnl');
+  if(pnlEl){pnlEl.textContent=pnl;pnlEl.style.color=pnlColor;}
+
+  const resultEl=document.getElementById('day-result');
+  if(resultEl){resultEl.textContent=result;const resultColor=result==='WIN'?'#00FF88':result==='LOSS'?'#FF5555':'#5BB8FF';resultEl.style.color=resultColor;}
+
+  const gradeEl=document.getElementById('day-grade');
+  if(gradeEl)gradeEl.textContent=grade;
+
+  const rrEl=document.getElementById('day-rr');
+  if(rrEl)rrEl.textContent=rr;
+
+  // Challenge tasks
+  const tasksGrid=document.getElementById('day-tasks-grid');
+  if(tasksGrid){
     tasksGrid.innerHTML='';
-    const dayData=challenge?.days?.[dateStr]||{};
-    const taskLabels={steps:'10K Steps',gym:'Gym/Mobility',macros:'Tracked Macros',trading:'Trading Rules',lockout:'Locked Out'};
-    TASK_KEYS.forEach(k=>{
+    const dayData=challenge&&challenge.days?challenge.days[dateStr]:{};
+    const taskLabels=['10K Steps','Gym/Mobility','Tracked Macros','Trading Rules','Locked Out'];
+    ['steps','gym','macros','trading','lockout'].forEach((k,i)=>{
       const done=dayData[k];
       const div=document.createElement('div');
-      div.style.cssText=`background:${done?'rgba(0,255,136,0.12)':'rgba(255,85,85,0.12)'};border:1px solid ${done?'rgba(0,255,136,0.3)':'rgba(255,85,85,0.3)'};border-radius:6px;padding:10px;text-align:center`;
-      div.innerHTML=`<div style="font-weight:700;color:${done?'#00FF88':'#FF5555'};font-size:11px">${done?'✓':'✗'}</div><div style="color:${done?'#00FF88':'#FF5555'};font-size:10px;margin-top:4px">${taskLabels[k]}</div>`;
+      div.style.background=done?'rgba(0,255,136,0.12)':'rgba(255,85,85,0.12)';
+      div.style.border='1px solid '+(done?'rgba(0,255,136,0.3)':'rgba(255,85,85,0.3)');
+      div.style.borderRadius='6px';
+      div.style.padding='10px';
+      div.style.textAlign='center';
+      div.innerHTML=`<div style="font-weight:700;color:${done?'#00FF88':'#FF5555'};font-size:11px">${done?'✓':'✗'}</div><div style="color:${done?'#00FF88':'#FF5555'};font-size:10px;margin-top:4px">${taskLabels[i]}</div>`;
       tasksGrid.appendChild(div);
     });
-
-    // Fitness data for this day
-    const fitData=fitness?.days?.[dateStr]||{};
-    document.getElementById('day-steps').textContent=fitData.steps?fitData.steps.toLocaleString():'—';
-    document.getElementById('day-weight').textContent=fitData.weight?fitData.weight+'lbs':'—';
-
-    // Daily notes (from fitness journal)
-    document.getElementById('day-notes').textContent=fitData.journal||'—';
-
-    // Show modal
-    document.getElementById('day-detail-modal').style.display='block';
-  }catch(e){
-    console.error('Error opening day detail:',e);
   }
+
+  // Fitness data
+  const fitData=fitness&&fitness.days?fitness.days[dateStr]:{};
+  const stepsEl=document.getElementById('day-steps');
+  if(stepsEl)stepsEl.textContent=fitData.steps?(fitData.steps.toLocaleString()):'—';
+  const weightEl=document.getElementById('day-weight');
+  if(weightEl)weightEl.textContent=fitData.weight?(fitData.weight+'lbs'):'—';
+  const notesEl=document.getElementById('day-notes');
+  if(notesEl)notesEl.textContent=fitData.journal||'—';
+
+  // Show modal - ensure visibility
+  modal.style.display='block';
+  modal.style.visibility='visible';
+  modal.style.opacity='1';
 }
 
 function closeDayDetail(){
-  document.getElementById('day-detail-modal').style.display='none';
+  const modal=document.getElementById('day-detail-modal');
+  if(modal)modal.style.display='none';
 }
 
 // ============ FIREBASE REAL-TIME SYNC ============
