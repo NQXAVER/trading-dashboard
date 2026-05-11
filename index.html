@@ -703,16 +703,20 @@ const wrongWeek=storedTrading.weekKey && storedTrading.weekKey!==_thisWeek;
 if((hasOldPnL || wrongWeek) && storedTrading.weekKey && storedTrading.weekKey!==_thisWeek){
   // Save to analytics before clearing
   if(!analytics.weeks)analytics.weeks=[];
-  analytics.weeks.push({
-    weekKey:storedTrading.weekKey,
-    weekStartBal:storedTrading.weekStartBal,
-    balance:storedTrading.balance,
-    trading:{pnl:storedTrading.balance-(storedTrading.weekStartBal||49309.22),days:storedTrading.days},
-    challenge:{streak:0,points:0,days:storedChallenge.days||{}},
-    fitness:{days:storedFitness.days||{}},
-    review:storedReview.weeks?storedReview.weeks[storedTrading.weekKey]||{}:{}
-  });
-  localStorage.setItem('nqx-analytics',JSON.stringify(analytics));
+  // Don't add duplicate if already exists
+  const weekExists=analytics.weeks.some(w=>w.weekKey===storedTrading.weekKey);
+  if(!weekExists){
+    analytics.weeks.push({
+      weekKey:storedTrading.weekKey,
+      weekStartBal:storedTrading.weekStartBal,
+      balance:storedTrading.balance,
+      trading:{pnl:storedTrading.balance-(storedTrading.weekStartBal||49309.22),days:storedTrading.days},
+      challenge:{streak:0,points:Object.values(storedChallenge.days||{}).reduce((a,d)=>a+(d.submitted?(d.points||0):0),0),days:storedChallenge.days||{}},
+      fitness:{days:storedFitness.days||{}},
+      review:storedReview.weeks?storedReview.weeks[storedTrading.weekKey]||{}:{}
+    });
+    localStorage.setItem('nqx-analytics',JSON.stringify(analytics));
+  }
 }
 
 // Now clear old data
