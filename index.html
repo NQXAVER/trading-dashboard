@@ -688,7 +688,7 @@ const storedReview=JSON.parse(localStorage.getItem('nqx-review')||'{}');
 // Load analytics - use hardcoded data if localStorage is empty
 let analytics=load('nqx-analytics',{weeks:[]});
 if(!analytics.weeks || analytics.weeks.length===0){
-  console.log('⚠️ Analytics empty - using hardcoded May 4-8 data');
+  console.log('⚠️ Analytics empty - initializing with hardcoded May 4-8 data');
   analytics=JSON.parse(JSON.stringify(INITIAL_ANALYTICS_DATA));
   localStorage.setItem('nqx-analytics',JSON.stringify(analytics));
   console.log('✅ Data initialized. Analytics weeks:', analytics.weeks.length, 'Week 0:', analytics.weeks[0]);
@@ -697,16 +697,6 @@ if(!analytics.weeks || analytics.weeks.length===0){
   // Verify the data has correct structure
   if(analytics.weeks[0]){
     console.log('📊 Week 0 data:', {weekKey: analytics.weeks[0].weekKey, pnl: analytics.weeks[0].trading?.pnl, challengePts: analytics.weeks[0].challenge?.points, rating: analytics.weeks[0].review?.rating});
-  }
-}
-
-// ENSURE INITIAL DATA IS ALWAYS SAVED (fixes GitHub Pages issue)
-if(!analytics.weeks || analytics.weeks.length===0 || !analytics.weeks.find(w=>w.weekKey==='2026-05-04')){
-  if(!analytics.weeks)analytics.weeks=[];
-  if(!analytics.weeks.find(w=>w.weekKey==='2026-05-04')){
-    analytics.weeks.unshift(INITIAL_ANALYTICS_DATA.weeks[0]);
-    localStorage.setItem('nqx-analytics',JSON.stringify(analytics));
-    console.log('✅ Ensured INITIAL_ANALYTICS_DATA in storage. Week points:', analytics.weeks[0].challenge?.points);
   }
 }
 
