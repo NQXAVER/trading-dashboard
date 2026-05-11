@@ -305,8 +305,6 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
 <div class="nav">
   <button class="nav-btn active" onclick="showTab('trading',this)">TRADING</button>
   <button class="nav-btn" onclick="showTab('challenge',this)">21-DAY</button>
-  <button class="nav-btn" onclick="showTab('fitness',this)">FITNESS</button>
-  <button class="nav-btn" onclick="showTab('monthly',this)">MONTHLY</button>
   <button class="nav-btn" onclick="showTab('review',this)">REVIEW</button>
   <button class="nav-btn" onclick="showTab('analytics',this)">ANALYTICS</button>
   <div style="display:flex;align-items:center;padding:0 10px;flex-shrink:0">
@@ -475,59 +473,6 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
   </div>
 </div></div>
 
-<!-- ======= FITNESS ======= -->
-<div class="tab" id="tab-fitness"><div class="container">
-  <div class="hdr">
-    <div><div class="brand" style="font-size:20px">FITNESS</div><div class="sub">PHYSIQUE MISSION · DAILY LOG</div></div>
-    <div class="bal-block">
-      <div class="bal-lbl">WEEK AVG STEPS</div>
-      <div class="bal-val" id="avg-steps" style="font-size:20px">—</div>
-    </div>
-  </div>
-  <div class="fit-week" id="fit-week"></div>
-  <div class="fit-card">
-    <div class="edit-ttl" id="fit-log-ttl">LOG TODAY</div>
-    <div class="edit-grid">
-      <div class="field"><label>STEPS</label><input type="number" id="fit-steps" placeholder="0" step="100"></div>
-      <div class="field"><label>BODY WEIGHT (lbs)</label><input type="number" id="fit-weight" placeholder="0" step="0.1"></div>
-    </div>
-    <div class="tog-row">
-      <div><span class="tog-btn-lbl">GYM / MOBILITY</span><button class="tog-btn" id="btn-gym" onclick="fitTog('gym')">OFF</button></div>
-      <div><span class="tog-btn-lbl">MACROS TRACKED</span><button class="tog-btn" id="btn-macros" onclick="fitTog('macros')">OFF</button></div>
-      <div><span class="tog-btn-lbl">10K STEPS HIT</span><button class="tog-btn" id="btn-stepsHit" onclick="fitTog('stepsHit')">OFF</button></div>
-    </div>
-    <span class="tog-btn-lbl" style="margin-top:4px">DAILY JOURNAL / NOTES</span>
-    <textarea class="fit-journal" id="fit-journal" placeholder="How did the body feel today? Training notes, diet wins, anything worth logging..."></textarea>
-    <button class="save-btn" id="fit-save-btn" onclick="saveFitness()">SAVE TODAY</button>
-  </div>
-</div></div>
-
-<!-- ======= MONTHLY ======= -->
-<div class="tab" id="tab-monthly"><div class="container">
-  <div class="month-hdr" id="month-title">MAY 2026</div>
-  <div class="month-tbl-wrap"><table class="month-tbl">
-    <thead><tr><th>WK</th><th>DATES</th><th>P&L</th><th>WIN RATE</th><th>AVG RR</th><th>POINTS</th><th>GRADE</th></tr></thead>
-    <tbody id="month-tbody"></tbody>
-  </table></div>
-  <div class="stats" style="margin-top:1.5rem">
-    <div class="sc"><div class="sc-l">MONTH P&L</div><div class="sc-v" id="m-pnl">—</div></div>
-    <div class="sc"><div class="sc-l">AVG WIN RATE</div><div class="sc-v c-green" id="m-wr">—</div></div>
-    <div class="sc"><div class="sc-l">TOTAL PTS</div><div class="sc-v c-gold" id="m-pts">—</div></div>
-    <div class="sc"><div class="sc-l">WEEKS</div><div class="sc-v c-white" id="m-wks">—</div></div>
-  </div>
-  <div class="s-card" style="margin-top:1rem">
-    <div class="edit-ttl">ADD WEEK</div>
-    <div class="edit-grid">
-      <div class="field"><label>WEEK LABEL</label><input type="text" id="m-lbl" placeholder="Week 1 (Apr 28 – May 2)"></div>
-      <div class="field"><label>P&L ($)</label><input type="number" id="m-pnl-in" placeholder="245.86" step="0.01"></div>
-      <div class="field"><label>WIN RATE (%)</label><input type="number" id="m-wr-in" placeholder="75"></div>
-      <div class="field"><label>AVG RR</label><input type="number" id="m-rr-in" placeholder="1.65" step="0.01"></div>
-      <div class="field"><label>POINTS</label><input type="number" id="m-pts-in" placeholder="28"></div>
-      <div class="field"><label>TRADES</label><input type="number" id="m-tr-in" placeholder="5"></div>
-    </div>
-    <button class="save-btn" onclick="addWeek()">ADD WEEK</button>
-  </div>
-</div></div>
 
 <!-- ======= REVIEW ======= -->
 <div class="tab" id="tab-review"><div class="container">
@@ -572,9 +517,9 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
     </div>
   </div>
 
-  <div style="background:#161616;border:1px solid rgba(255,85,85,0.2);border-radius:12px;padding:18px;margin-bottom:1.5rem">
-    <div style="font-size:11px;color:#FF5555;letter-spacing:1.5px;margin-bottom:14px;font-family:'Courier New',monospace;font-weight:700">📅 MONTH CALENDAR — DAILY P&L</div>
-    <div id="analytics-calendar" style="display:grid;grid-template-columns:repeat(7,1fr);gap:8px"></div>
+  <div style="background:#161616;border:1px solid rgba(255,85,85,0.2);border-radius:12px;padding:24px;margin-bottom:2rem">
+    <div style="font-size:13px;color:#FF5555;letter-spacing:1.5px;margin-bottom:20px;font-family:'Courier New',monospace;font-weight:700">📅 MONTH CALENDAR — DAILY P&L</div>
+    <div id="analytics-calendar" style="display:grid;grid-template-columns:repeat(7,1fr);gap:12px"></div>
   </div>
 
   <div style="background:#161616;border:1px solid rgba(0,255,136,0.2);border-radius:12px;padding:18px;margin-bottom:1.5rem">
@@ -589,6 +534,48 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
       <div style="margin-bottom:12px"><span style="color:#00FF88;font-weight:700">Challenge:</span> <span id="analytics-challenge-count">0</span> weeks saved</div>
       <div style="margin-bottom:12px"><span style="color:#00FF88;font-weight:700">Fitness:</span> <span id="analytics-fitness-count">0</span> weeks saved</div>
       <div><span style="color:#00FF88;font-weight:700">Review:</span> <span id="analytics-review-count">0</span> weeks saved</div>
+    </div>
+  </div>
+
+  <!-- DAY DETAIL MODAL -->
+  <div id="day-detail-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:200;overflow-y:auto">
+    <div style="background:#0a0a0a;border:1px solid rgba(0,255,136,0.2);border-radius:12px;max-width:700px;margin:40px auto;padding:28px;max-height:90vh;overflow-y:auto">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <div style="font-size:18px;font-weight:700;color:#00FF88;font-family:'Courier New',monospace" id="modal-day-header">Monday, May 5</div>
+        <button onclick="closeDayDetail()" style="background:transparent;border:none;color:#00FF88;font-size:24px;cursor:pointer">×</button>
+      </div>
+
+      <!-- Trading Result -->
+      <div style="background:#161616;border:1px solid rgba(0,255,136,0.2);border-radius:8px;padding:16px;margin-bottom:16px">
+        <div style="font-size:11px;color:#00FF88;letter-spacing:1px;margin-bottom:12px;font-weight:700;font-family:'Courier New',monospace">TRADING RESULT</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:12px;margin-bottom:12px">
+          <div><span style="color:rgba(0,255,136,0.7)">P&L:</span> <span style="font-weight:700;font-size:16px" id="day-pnl">—</span></div>
+          <div><span style="color:rgba(0,255,136,0.7)">RESULT:</span> <span style="font-weight:700" id="day-result">—</span></div>
+          <div><span style="color:rgba(0,255,136,0.7)">GRADE:</span> <span style="font-weight:700" id="day-grade">—</span></div>
+          <div><span style="color:rgba(0,255,136,0.7)">R:R:</span> <span style="font-weight:700" id="day-rr">—</span></div>
+        </div>
+      </div>
+
+      <!-- Challenge Tasks -->
+      <div style="background:#161616;border:1px solid rgba(255,215,0,0.2);border-radius:8px;padding:16px;margin-bottom:16px">
+        <div style="font-size:11px;color:#FFD700;letter-spacing:1px;margin-bottom:12px;font-weight:700;font-family:'Courier New',monospace">21-DAY CHALLENGE TASKS</div>
+        <div id="day-tasks-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px"></div>
+      </div>
+
+      <!-- Fitness Data -->
+      <div style="background:#161616;border:1px solid rgba(91,184,255,0.2);border-radius:8px;padding:16px;margin-bottom:16px">
+        <div style="font-size:11px;color:#5BB8FF;letter-spacing:1px;margin-bottom:12px;font-weight:700;font-family:'Courier New',monospace">FITNESS DATA</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px">
+          <div><span style="color:rgba(91,184,255,0.7)">STEPS:</span> <span style="font-weight:700" id="day-steps">—</span></div>
+          <div><span style="color:rgba(91,184,255,0.7)">WEIGHT:</span> <span style="font-weight:700" id="day-weight">—</span></div>
+        </div>
+      </div>
+
+      <!-- Daily Notes -->
+      <div style="background:#161616;border:1px solid rgba(255,85,85,0.2);border-radius:8px;padding:16px">
+        <div style="font-size:11px;color:#FF5555;letter-spacing:1px;margin-bottom:10px;font-weight:700;font-family:'Courier New',monospace">DAILY NOTES</div>
+        <div id="day-notes" style="font-size:12px;color:rgba(255,255,255,0.7);line-height:1.8;font-style:italic">—</div>
+      </div>
     </div>
   </div>
 </div></div>
@@ -684,6 +671,20 @@ const storedFitness=JSON.parse(localStorage.getItem('nqx-fitness')||'{}');
 const storedReview=JSON.parse(localStorage.getItem('nqx-review')||'{}');
 let analytics=load('nqx-analytics',{weeks:[]});
 
+// RESTORE May 4-8 week if analytics is empty (was lost during reset)
+if(!analytics.weeks || analytics.weeks.length===0){
+  analytics.weeks=[{
+    weekKey:'2026-05-04',
+    weekStartBal:49309.22,
+    balance:49363.90,
+    trading:{pnl:54.68,days:[{result:'loss',pnl:-208.92},{result:'loss',pnl:-0.80},{result:'win',pnl:313.18},{result:'win',pnl:145.68},{result:'loss',pnl:-194.46}]},
+    challenge:{streak:0,points:0,days:{}},
+    fitness:{days:{}},
+    review:{}
+  }];
+  localStorage.setItem('nqx-analytics',JSON.stringify(analytics));
+}
+
 const hasOldPnL=storedTrading.days && storedTrading.days.some(d=>d.pnl!==0 && d.result!=='upcoming');
 const wrongWeek=storedTrading.weekKey && storedTrading.weekKey!==_thisWeek;
 
@@ -745,8 +746,6 @@ function showTab(name,btn){
   btn.classList.add('active');
   if(name==='trading')renderTrading();
   if(name==='challenge')renderChallenge();
-  if(name==='fitness')renderFitness();
-  if(name==='monthly')renderMonthly();
   if(name==='review')renderReview();
   if(name==='analytics')renderAnalytics();
 }
@@ -1126,38 +1125,70 @@ function renderAnalytics(){
     });
   }
 
-  // Calendar
+  // Calendar - proper month grid
   const cal=document.getElementById('analytics-calendar');cal.innerHTML='';
   const monthNames=['January','February','March','April','May','June','July','August','September','October','November','December'];
   const now=new Date();
   document.getElementById('analytics-month-title').textContent=monthNames[now.getMonth()]+' '+now.getFullYear();
 
+  const p=x=>String(x).padStart(2,'0');
+  const daysInMonth=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
+  const firstDay=new Date(now.getFullYear(),now.getMonth(),1).getDay();
+
+  // Day headers
   const dayNames=['SUN','MON','TUE','WED','THU','FRI','SAT'];
-  dayNames.forEach(d=>{cal.innerHTML+=`<div style="text-align:center;font-size:10px;color:#00FF88;font-weight:700;padding:8px">${d}</div>`});
-  const now=new Date(),daysInMonth=new Date(now.getFullYear(),now.getMonth()+1,0).getDate(),firstDay=new Date(now.getFullYear(),now.getMonth(),1).getDay();
-  for(let i=0;i<firstDay;i++)cal.innerHTML+='<div></div>';
+  dayNames.forEach(d=>{
+    cal.innerHTML+=`<div style="text-align:center;font-size:12px;color:#00FF88;font-weight:700;padding:10px;border-bottom:1px solid rgba(0,255,136,0.1)">${d}</div>`;
+  });
+
+  // Empty cells for days before month starts
+  for(let i=0;i<firstDay;i++){
+    cal.innerHTML+=`<div style="background:transparent;border:none"></div>`;
+  }
+
+  // Day cells
   for(let i=1;i<=daysInMonth;i++){
-    const p=x=>String(x).padStart(2,'0');
     const ds=now.getFullYear()+'-'+p(now.getMonth()+1)+'-'+p(i);
+    const d=new Date(ds);
+    const dow=d.getDay();
     const isToday=ds===getToday();
-    let pnl='—',cls='rgba(255,255,255,0.1)';
+    const isWeekend=dow===0||dow===6;
+
+    let pnl='—',cls='rgba(255,255,255,0.05)';
+
     // Find P&L for this date
-    if(analytics&&analytics.weeks){
+    if(!isWeekend&&analytics&&analytics.weeks){
+      const diff=d.getDate()-dow+(dow===0?-6:1);
+      const weekMonday=new Date(d.getFullYear(),d.getMonth(),diff);
+      const weekKeyForDate=weekMonday.getFullYear()+'-'+p(weekMonday.getMonth()+1)+'-'+p(weekMonday.getDate());
+
       for(let w of analytics.weeks){
-        const dayIdx=[1,2,3,4,5].indexOf(new Date(ds).getDay()-1);
-        if(dayIdx>=0&&w.trading?.days[dayIdx]){
-          const d=w.trading.days[dayIdx];
-          if(d.pnl!==0||d.result!=='upcoming'){
-            pnl=fmt(d.pnl);
-            cls=d.pnl>0?'rgba(0,255,136,0.15)':'rgba(255,85,85,0.15)';
-            break;
+        if(w.weekKey===weekKeyForDate){
+          const dayIdx=dow-1;
+          if(dayIdx>=0&&dayIdx<5&&w.trading?.days[dayIdx]){
+            const dd=w.trading.days[dayIdx];
+            if(dd.pnl!==0||dd.result!=='upcoming'){
+              pnl=fmt(dd.pnl);
+              cls=dd.pnl>=0?'rgba(0,255,136,0.12)':'rgba(255,85,85,0.12)';
+            }
           }
+          break;
         }
       }
     }
-    cal.innerHTML+=`<div style="background:${cls};border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:8px;text-align:center;font-size:10px;${isToday?'border:2px solid #00FF88':''}">
-      <div style="color:rgba(255,255,255,0.7);margin-bottom:4px">${i}</div>
-      <div style="color:${pnl==='—'?'rgba(255,255,255,0.3)':pnl.includes('-')?'#FF5555':'#00FF88'};font-weight:700;font-size:9px">${pnl}</div>
+
+    const cellStyle=`background:${cls};border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:12px;text-align:center;min-height:90px;display:flex;flex-direction:column;justify-content:center;align-items:center${isToday?';border:2px solid #00FF88;box-shadow:0 0 10px rgba(0,255,136,0.3)':''}${!isWeekend?';cursor:pointer;transition:all 0.2s':''}`;
+
+    const clickHandler=!isWeekend?`onclick="openDayDetail('${ds}')" onmouseover="this.style.background='#161616'" onmouseout="this.style.background='${cls}'"` : '';
+
+    cal.innerHTML+=`<div style="${cellStyle}" ${clickHandler}>
+      <div style="font-size:14px;font-weight:700;color:${isWeekend?'rgba(255,255,255,0.3)':'rgba(255,255,255,0.8)'}">
+        ${i}
+      </div>
+      <div style="font-size:12px;font-weight:700;color:${pnl==='—'?'rgba(255,255,255,0.2)':pnl.includes('-')?'#FF5555':'#00FF88'};margin-top:4px">
+        ${pnl}
+      </div>
+      ${!isWeekend?`<div style="font-size:8px;color:rgba(0,255,136,0.4);margin-top:4px">view</div>`:''}
     </div>`;
   }
 
@@ -1168,24 +1199,94 @@ function renderAnalytics(){
   document.getElementById('analytics-review-count').textContent=analytics?.weeks?.filter(w=>w.review?.well).length||0;
 }
 
+function openDayDetail(dateStr){
+  try{
+    const d=new Date(dateStr+'T00:00:00');
+    const dow=d.getDay();
+
+    // Only allow Mon-Fri
+    if(dow===0||dow===6)return;
+
+    // Find which archived week this date belongs to
+    const p=x=>String(x).padStart(2,'0');
+    const diff=d.getDate()-dow+(dow===0?-6:1);
+    const weekMonday=new Date(d.getFullYear(),d.getMonth(),diff);
+    const weekKeyForDate=weekMonday.getFullYear()+'-'+p(weekMonday.getMonth()+1)+'-'+p(weekMonday.getDate());
+
+    // Get day index (0-4 for Mon-Fri)
+    const dayIdx=dow-1;
+
+    // Find the archived week
+    const archivedWeek=analytics?.weeks?.find(w=>w.weekKey===weekKeyForDate);
+    const dayName=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][dow];
+    const monthName=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()];
+
+    document.getElementById('modal-day-header').textContent=dayName+', '+monthName+' '+d.getDate();
+
+    // Trading data
+    if(archivedWeek&&archivedWeek.trading?.days[dayIdx]){
+      const td=archivedWeek.trading.days[dayIdx];
+      document.getElementById('day-pnl').textContent=fmt(td.pnl);
+      document.getElementById('day-pnl').className=td.pnl>=0?'c-green':'c-red';
+      document.getElementById('day-result').textContent=td.result.toUpperCase();
+      document.getElementById('day-result').className=td.result==='win'?'c-green':td.result==='loss'?'c-red':'c-blue';
+      document.getElementById('day-grade').textContent=td.grade||'—';
+      document.getElementById('day-rr').textContent=td.rr?td.rr+'R':'—';
+    } else {
+      document.getElementById('day-pnl').textContent='—';
+      document.getElementById('day-result').textContent='—';
+      document.getElementById('day-grade').textContent='—';
+      document.getElementById('day-rr').textContent='—';
+    }
+
+    // Challenge tasks for this day
+    const tasksGrid=document.getElementById('day-tasks-grid');
+    tasksGrid.innerHTML='';
+    const dayData=challenge?.days?.[dateStr]||{};
+    const taskLabels={steps:'10K Steps',gym:'Gym/Mobility',macros:'Tracked Macros',trading:'Trading Rules',lockout:'Locked Out'};
+    TASK_KEYS.forEach(k=>{
+      const done=dayData[k];
+      const div=document.createElement('div');
+      div.style.cssText=`background:${done?'rgba(0,255,136,0.12)':'rgba(255,85,85,0.12)'};border:1px solid ${done?'rgba(0,255,136,0.3)':'rgba(255,85,85,0.3)'};border-radius:6px;padding:10px;text-align:center`;
+      div.innerHTML=`<div style="font-weight:700;color:${done?'#00FF88':'#FF5555'};font-size:11px">${done?'✓':'✗'}</div><div style="color:${done?'#00FF88':'#FF5555'};font-size:10px;margin-top:4px">${taskLabels[k]}</div>`;
+      tasksGrid.appendChild(div);
+    });
+
+    // Fitness data for this day
+    const fitData=fitness?.days?.[dateStr]||{};
+    document.getElementById('day-steps').textContent=fitData.steps?fitData.steps.toLocaleString():'—';
+    document.getElementById('day-weight').textContent=fitData.weight?fitData.weight+'lbs':'—';
+
+    // Daily notes (from fitness journal)
+    document.getElementById('day-notes').textContent=fitData.journal||'—';
+
+    // Show modal
+    document.getElementById('day-detail-modal').style.display='block';
+  }catch(e){
+    console.error('Error opening day detail:',e);
+  }
+}
+
+function closeDayDetail(){
+  document.getElementById('day-detail-modal').style.display='none';
+}
+
 // ============ FIREBASE REAL-TIME SYNC ============
 function getActiveTabName(){
   const b=document.querySelector('.nav-btn.active');
   if(!b)return'trading';
   const t=b.textContent.trim();
   if(t==='21-DAY')return'challenge';
-  if(t==='FITNESS')return'fitness';
-  if(t==='MONTHLY')return'monthly';
   if(t==='REVIEW')return'review';
+  if(t==='ANALYTICS')return'analytics';
   return'trading';
 }
 function reRenderActive(){
   const t=getActiveTabName();
   if(t==='trading')renderTrading();
   else if(t==='challenge')renderChallenge();
-  else if(t==='fitness')renderFitness();
-  else if(t==='monthly')renderMonthly();
   else if(t==='review')renderReview();
+  else if(t==='analytics')renderAnalytics();
 }
 function setSyncStatus(status){
   const el=document.getElementById('sync-status');if(!el)return;
