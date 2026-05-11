@@ -751,6 +751,12 @@ if(trading.weekKey!==_thisWeek || !trading.days || trading.days.some(d=>d.pnl!==
   localStorage.setItem('nqx-data',JSON.stringify(trading));
 }
 
+// FORCE correct balance at init (prevent Firebase from loading wrong balance)
+if(!trading.balance || trading.balance!==49309.22){
+  trading.balance=49309.22;
+  localStorage.setItem('nqx-data',JSON.stringify(trading));
+}
+
 if(!trading.weekStartBal)trading.weekStartBal=WEEK_START_BAL;
 let challenge=load('nqx-challenge',{started:false,startDate:null,days:{}});
 let fitness=load('nqx-fitness',{days:{}});
@@ -880,6 +886,17 @@ function getStreak(){
   return s;
 }
 function getTotalPts(){return Object.values(challenge.days).reduce((a,d)=>a+(d.submitted?(d.points||0):0),0)}
+function getCurrentWeekPts(){
+  // Calculate points ONLY for current week (Mon-Fri of this week)
+  let pts=0;
+  WEEK_DAYS.forEach(info=>{
+    const dayData=challenge.days[info.date];
+    if(dayData&&dayData.submitted){
+      pts+=(dayData.points||0);
+    }
+  });
+  return pts;
+}
 function getWeekdayN(startStr,n){
   const d=new Date(startStr+'T00:00:00');
   let count=0;
@@ -1142,7 +1159,7 @@ function renderAnalytics(){
   const currentDone=trading.days.filter(d=>d.result!=='upcoming');
   const currentWins=currentDone.filter(d=>d.result==='win').length;
   const currentWr=currentDone.length>0?Math.round(currentWins/currentDone.length*100):0;
-  const currentPts=getTotalPts();
+  const currentPts=getCurrentWeekPts();
   const currentWeekKey=_thisWeek;
   const currentISOWeek=getWeekKey();
   const currentReviewRating=review.weeks&&review.weeks[currentISOWeek]?review.weeks[currentISOWeek].rating||0:0;
