@@ -664,29 +664,32 @@ function store(k,v){
 const BLANK_DAYS=()=>[{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0}];
 const _thisWeek=getMonWeekKey();
 
+// HARDCODED INITIAL DATA (May 4-8 week)
+const INITIAL_ANALYTICS_DATA={weeks:[{
+  weekKey:'2026-05-04',
+  weekStartBal:49309.22,
+  balance:49363.90,
+  trading:{pnl:54.68,days:[{result:'loss',pnl:-208.92},{result:'loss',pnl:-0.80},{result:'win',pnl:313.18},{result:'win',pnl:145.68},{result:'loss',pnl:-194.46}]},
+  challenge:{streak:0,points:0,days:{}},
+  fitness:{days:{}},
+  review:{}
+}]};
+
 // ARCHIVE OLD WEEK BEFORE CLEARING
 const storedTrading=JSON.parse(localStorage.getItem('nqx-data')||'{}');
 const storedChallenge=JSON.parse(localStorage.getItem('nqx-challenge')||'{}');
 const storedFitness=JSON.parse(localStorage.getItem('nqx-fitness')||'{}');
 const storedReview=JSON.parse(localStorage.getItem('nqx-review')||'{}');
-let analytics=load('nqx-analytics',{weeks:[]});
 
-// RESTORE May 4-8 week if analytics is empty (was lost during reset)
+// Load analytics - use hardcoded data if localStorage is empty
+let analytics=load('nqx-analytics',{weeks:[]});
 if(!analytics.weeks || analytics.weeks.length===0){
-  console.log('⚠️ Analytics empty - restoring May 4-8 data');
-  analytics.weeks=[{
-    weekKey:'2026-05-04',
-    weekStartBal:49309.22,
-    balance:49363.90,
-    trading:{pnl:54.68,days:[{result:'loss',pnl:-208.92},{result:'loss',pnl:-0.80},{result:'win',pnl:313.18},{result:'win',pnl:145.68},{result:'loss',pnl:-194.46}]},
-    challenge:{streak:0,points:0,days:{}},
-    fitness:{days:{}},
-    review:{}
-  }];
+  console.log('⚠️ Analytics empty - using hardcoded May 4-8 data');
+  analytics=JSON.parse(JSON.stringify(INITIAL_ANALYTICS_DATA));
   localStorage.setItem('nqx-analytics',JSON.stringify(analytics));
-  console.log('✅ Data restored. Analytics weeks:', analytics.weeks.length);
+  console.log('✅ Data initialized. Analytics weeks:', analytics.weeks.length);
 } else {
-  console.log('✅ Analytics already loaded:', analytics.weeks.length, 'weeks');
+  console.log('✅ Analytics loaded from localStorage:', analytics.weeks.length, 'weeks');
 }
 
 const hasOldPnL=storedTrading.days && storedTrading.days.some(d=>d.pnl!==0 && d.result!=='upcoming');
