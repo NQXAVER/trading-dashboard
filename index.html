@@ -646,9 +646,17 @@ const BLANK_DAYS=()=>[{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{resul
 let trading=load('nqx-data',{weekKey:'',balance:49504.00,days:BLANK_DAYS()});
 // Auto-reset days on new week, carry balance forward
 const _thisWeek=getMonWeekKey();
+// Force week reset if needed
 if(trading.weekKey!==_thisWeek){
-  trading={weekKey:_thisWeek,weekStartBal:trading.balance,balance:trading.balance,days:BLANK_DAYS()};
-  localStore('nqx-data',trading);
+  const newBalance=trading.balance||49504.00;
+  const blankDays=[{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0}];
+  trading={weekKey:_thisWeek,weekStartBal:newBalance,balance:newBalance,days:blankDays};
+  localStorage.setItem('nqx-data',JSON.stringify(trading));
+}
+// Ensure days array is initialized and reset if corrupted
+if(!trading.days||!Array.isArray(trading.days)||trading.days.length!==5||!trading.days.every(d=>typeof d==='object')){
+  trading.days=[{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0}];
+  localStorage.setItem('nqx-data',JSON.stringify(trading));
 }
 if(!trading.weekStartBal)trading.weekStartBal=WEEK_START_BAL;
 let challenge=load('nqx-challenge',{started:false,startDate:null,days:{}});
