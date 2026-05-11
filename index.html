@@ -673,6 +673,7 @@ let analytics=load('nqx-analytics',{weeks:[]});
 
 // RESTORE May 4-8 week if analytics is empty (was lost during reset)
 if(!analytics.weeks || analytics.weeks.length===0){
+  console.log('⚠️ Analytics empty - restoring May 4-8 data');
   analytics.weeks=[{
     weekKey:'2026-05-04',
     weekStartBal:49309.22,
@@ -683,6 +684,9 @@ if(!analytics.weeks || analytics.weeks.length===0){
     review:{}
   }];
   localStorage.setItem('nqx-analytics',JSON.stringify(analytics));
+  console.log('✅ Data restored. Analytics weeks:', analytics.weeks.length);
+} else {
+  console.log('✅ Analytics already loaded:', analytics.weeks.length, 'weeks');
 }
 
 const hasOldPnL=storedTrading.days && storedTrading.days.some(d=>d.pnl!==0 && d.result!=='upcoming');
@@ -1104,11 +1108,14 @@ function archiveWeek(){
 }
 
 function renderAnalytics(){
+  console.log('📊 renderAnalytics called. analytics:', analytics, 'weeks:', analytics?.weeks?.length);
   // Past weeks
   const pw=document.getElementById('analytics-weeks');pw.innerHTML='';
   if(!analytics||!analytics.weeks||analytics.weeks.length===0){
+    console.log('❌ No weeks found in analytics');
     pw.innerHTML='<div style="color:rgba(255,255,255,0.4);padding:20px;text-align:center">No archived weeks yet. Complete a week to see history.</div>';
   } else {
+    console.log('✅ Found', analytics.weeks.length, 'weeks:', analytics.weeks);
     analytics.weeks.forEach(w=>{
       const tp=fmt(w.trading?.pnl||0);
       const wr=w.trading?.days?Math.round(w.trading.days.filter(d=>d.result==='win').length/w.trading.days.filter(d=>d.result!=='upcoming').length*100):0;
