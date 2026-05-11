@@ -317,8 +317,8 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
     <div><div class="brand">NQXAVIER</div><div class="sub">XFA ACCOUNT &nbsp;·&nbsp; MNQ / NQ PROP TRADER</div></div>
     <div class="bal-block">
       <div class="bal-lbl">ACCOUNT BALANCE</div>
-      <div class="bal-val" id="bal-display">$49,045.14</div>
-      <div class="buf-val" id="buf-display">Buffer $1,045.14 · Limit $48,000</div>
+      <div class="bal-val" id="bal-display">$49,309.22</div>
+      <div class="buf-val" id="buf-display">Buffer $1,309.22 · Limit $48,000</div>
     </div>
   </div>
   <div class="stats">
@@ -487,8 +487,8 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
     <div id="analytics-calendar" style="display:grid;grid-template-columns:repeat(7,1fr);gap:12px"></div>
   </div>
 
-  <div style="background:#161616;border:1px solid rgba(0,255,136,0.2);border-radius:12px;padding:18px;margin-bottom:1.5rem">
-    <div style="font-size:11px;color:#00FF88;letter-spacing:1.5px;margin-bottom:14px;font-family:'Courier New',monospace;font-weight:700">📊 PAST WEEKS</div>
+  <div style="background:#161616;border:1px solid rgba(255,215,0,0.2);border-radius:12px;padding:18px;margin-bottom:1.5rem">
+    <div style="font-size:11px;color:#FFD700;letter-spacing:1.5px;margin-bottom:14px;font-family:'Courier New',monospace;font-weight:700">📝 WEEKLY REVIEWS — CLICK TO EDIT</div>
     <div id="analytics-weeks" style="display:grid;gap:12px"></div>
   </div>
 
@@ -540,6 +540,44 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
       <div style="background:#161616;border:1px solid rgba(255,85,85,0.2);border-radius:8px;padding:16px">
         <div style="font-size:11px;color:#FF5555;letter-spacing:1px;margin-bottom:10px;font-weight:700;font-family:'Courier New',monospace">DAILY NOTES</div>
         <div id="day-notes" style="font-size:12px;color:rgba(255,255,255,0.7);line-height:1.8;font-style:italic">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK REVIEW MODAL -->
+  <div id="week-review-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:200;overflow-y:auto">
+    <div style="background:#0a0a0a;border:1px solid rgba(255,215,0,0.2);border-radius:12px;max-width:700px;margin:40px auto;padding:28px;max-height:90vh;overflow-y:auto">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <div style="font-size:18px;font-weight:700;color:#FFD700;font-family:'Courier New',monospace" id="modal-week-header">Week Review</div>
+        <button onclick="closeWeekReview()" style="background:transparent;border:none;color:#FFD700;font-size:24px;cursor:pointer">×</button>
+      </div>
+
+      <div class="rv-card">
+        <label class="rv-lbl">WHAT WENT WELL</label>
+        <textarea class="rv-ta" id="rev-well" placeholder="What did you execute perfectly this week?"></textarea>
+
+        <label class="rv-lbl">WHAT WENT WRONG</label>
+        <textarea class="rv-ta" id="rev-wrong" placeholder="Where did you struggle or break rules?"></textarea>
+
+        <label class="rv-lbl">FOCUS FOR NEXT WEEK</label>
+        <textarea class="rv-ta" id="rev-focus" placeholder="What's your #1 priority to improve?"></textarea>
+
+        <label class="rv-lbl">GYM & MOBILITY NOTES</label>
+        <textarea class="rv-ta" id="rev-gym" placeholder="How was your fitness week?"></textarea>
+
+        <label class="rv-lbl">NUTRITION NOTES</label>
+        <textarea class="rv-ta" id="rev-nutrition" placeholder="How was your nutrition this week?"></textarea>
+
+        <label class="rv-lbl">WEEK RATING</label>
+        <div class="rating-row" id="rev-rating-btns">
+          <button class="r-btn" onclick="setWeekRating(1)">1</button>
+          <button class="r-btn" onclick="setWeekRating(2)">2</button>
+          <button class="r-btn" onclick="setWeekRating(3)">3</button>
+          <button class="r-btn" onclick="setWeekRating(4)">4</button>
+          <button class="r-btn" onclick="setWeekRating(5)">5</button>
+        </div>
+
+        <button class="save-btn" onclick="saveWeekReview()" style="width:100%;margin-top:20px">SAVE WEEK REVIEW</button>
       </div>
     </div>
   </div>
@@ -636,9 +674,9 @@ const INITIAL_ANALYTICS_DATA={weeks:[{
   weekStartBal:49309.22,
   balance:49363.90,
   trading:{pnl:54.68,days:[{result:'loss',pnl:-208.92},{result:'loss',pnl:-0.80},{result:'win',pnl:313.18},{result:'win',pnl:145.68},{result:'loss',pnl:-194.46}]},
-  challenge:{streak:0,points:0,days:{}},
+  challenge:{streak:0,points:21,days:{}},
   fitness:{days:{}},
-  review:{}
+  review:{rating:3}
 }]};
 
 // ARCHIVE OLD WEEK BEFORE CLEARING
@@ -1078,26 +1116,56 @@ function renderAnalytics(){
   // FORCE reload analytics from localStorage to ensure we have latest data
   analytics=load('nqx-analytics',{weeks:[]});
   console.log('📊 renderAnalytics called. Reloaded analytics:', analytics, 'weeks:', analytics?.weeks?.length);
-  // Past weeks
+  // Weekly reviews section
   const pw=document.getElementById('analytics-weeks');pw.innerHTML='';
+
+  // CURRENT WEEK (always show at top)
+  const currentTP=fmt(trading.balance-(trading.weekStartBal||WEEK_START_BAL));
+  const currentDone=trading.days.filter(d=>d.result!=='upcoming');
+  const currentWins=currentDone.filter(d=>d.result==='win').length;
+  const currentWr=currentDone.length>0?Math.round(currentWins/currentDone.length*100):0;
+  const currentPts=getTotalPts();
+  const currentWeekKey=_thisWeek;
+  const currentISOWeek=getWeekKey();
+  const currentReviewRating=review.weeks&&review.weeks[currentISOWeek]?review.weeks[currentISOWeek].rating||0:0;
+  const currentHasReview=review.weeks&&review.weeks[currentISOWeek]&&review.weeks[currentISOWeek].well;
+
+  const currentWeekDiv=document.createElement('div');
+  currentWeekDiv.style.cssText='background:#0d1a0d;border:2px solid #00FF88;border-radius:8px;padding:12px;cursor:pointer;transition:all 0.2s';
+  currentWeekDiv.onmouseover=function(){this.style.background='#161616';this.style.borderColor='#00FF88'};
+  currentWeekDiv.onmouseout=function(){this.style.background='#0d1a0d';this.style.borderColor='#00FF88'};
+  currentWeekDiv.innerHTML=`<div style="font-size:11px;color:#00FF88;margin-bottom:8px;font-weight:700">📌 CURRENT WEEK — ${currentWeekKey}${currentHasReview?' ✓ Reviewed':''}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;font-size:10px">
+      <div><span style="color:rgba(0,255,136,0.7)">P&L:</span> <span class="${currentTP.includes('-')?'c-red':'c-green'}" style="font-weight:700">${currentTP}</span></div>
+      <div><span style="color:rgba(0,255,136,0.7)">WR:</span> <span class="${currentWr>=50?'c-green':'c-red'}">${currentWr}%</span></div>
+      <div><span style="color:rgba(0,255,136,0.7)">Challenge:</span> <span style="color:#FFD700;font-weight:700">${currentPts}pts</span></div>
+      <div><span style="color:rgba(0,255,136,0.7)">Rating:</span> <span style="color:#5BB8FF">${currentReviewRating>0?currentReviewRating+'/5':'—'}</span></div>
+    </div>`;
+  currentWeekDiv.onclick=()=>openWeekReview(currentWeekKey);
+  pw.appendChild(currentWeekDiv);
+
+  // PAST WEEKS (archived)
   if(!analytics||!analytics.weeks||analytics.weeks.length===0){
-    console.log('❌ No weeks found in analytics. Raw localStorage:', localStorage.getItem('nqx-analytics'));
-    pw.innerHTML='<div style="color:rgba(255,255,255,0.4);padding:20px;text-align:center">No archived weeks yet. Complete a week to see history.</div>';
+    console.log('❌ No archived weeks found.');
   } else {
-    console.log('✅ Found', analytics.weeks.length, 'weeks:', analytics.weeks);
+    console.log('✅ Found', analytics.weeks.length, 'archived weeks:', analytics.weeks);
     analytics.weeks.forEach(w=>{
       const tp=fmt(w.trading?.pnl||0);
       const wr=w.trading?.days?Math.round(w.trading.days.filter(d=>d.result==='win').length/w.trading.days.filter(d=>d.result!=='upcoming').length*100):0;
-      const html=`<div style="background:#0d0d0d;border:1px solid rgba(0,255,136,0.2);border-radius:8px;padding:12px">
-        <div style="font-size:11px;color:#00FF88;margin-bottom:8px;font-weight:700">${w.weekKey}</div>
+      const hasReview=w.review&&w.review.well;
+      const weekDiv=document.createElement('div');
+      weekDiv.style.cssText='background:#0d0d0d;border:1px solid rgba(0,255,136,0.2);border-radius:8px;padding:12px;cursor:pointer;transition:all 0.2s';
+      weekDiv.onmouseover=function(){this.style.background='#161616';this.style.borderColor='#00FF88'};
+      weekDiv.onmouseout=function(){this.style.background='#0d0d0d';this.style.borderColor='rgba(0,255,136,0.2)'};
+      weekDiv.innerHTML=`<div style="font-size:11px;color:#00FF88;margin-bottom:8px;font-weight:700">${w.weekKey}${hasReview?' ✓ Reviewed':''}</div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;font-size:10px">
           <div><span style="color:rgba(255,255,255,0.5)">P&L:</span> <span class="${w.trading?.pnl>=0?'c-green':'c-red'}">${tp}</span></div>
           <div><span style="color:rgba(255,255,255,0.5)">WR:</span> <span class="${wr>=50?'c-green':'c-red'}">${wr}%</span></div>
           <div><span style="color:rgba(255,255,255,0.5)">Challenge:</span> <span style="color:#FFD700">${w.challenge?.points||0}pts</span></div>
           <div><span style="color:rgba(255,255,255,0.5)">Rating:</span> <span style="color:#5BB8FF">${w.review?.rating||'-'}/5</span></div>
-        </div>
-      </div>`;
-      pw.innerHTML+=html;
+        </div>`;
+      weekDiv.onclick=()=>openWeekReview(w.weekKey);
+      pw.appendChild(weekDiv);
     });
   }
 
@@ -1284,6 +1352,90 @@ function closeDayDetail(){
   if(modal)modal.style.display='none';
 }
 
+// ============ WEEK REVIEW SYSTEM ============
+let currentWeekForReview='';
+let currentWeekRating=0;
+
+// Convert date format (2026-05-04) to ISO week format (2026-W19)
+function dateToISOWeek(dateStr){
+  const parts=dateStr.split('-');
+  const d=new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));
+  const j=new Date(d.getFullYear(),0,1);
+  const w=Math.ceil(((d-j)/86400000+j.getDay()+1)/7);
+  return d.getFullYear()+'-W'+String(w).padStart(2,'0');
+}
+
+function openWeekReview(weekKey){
+  const modal=document.getElementById('week-review-modal');
+  if(!modal)return;
+
+  currentWeekForReview=weekKey;
+  document.getElementById('modal-week-header').textContent='Week of '+weekKey;
+
+  // Load existing review for this week
+  const isoWeekKey=dateToISOWeek(weekKey);
+  const reviewData=review.weeks?review.weeks[isoWeekKey]||{}:{};
+
+  document.getElementById('rev-well').value=reviewData.well||'';
+  document.getElementById('rev-wrong').value=reviewData.wrong||'';
+  document.getElementById('rev-focus').value=reviewData.focus||'';
+  document.getElementById('rev-gym').value=reviewData.gym||'';
+  document.getElementById('rev-nutrition').value=reviewData.nutrition||'';
+
+  currentWeekRating=reviewData.rating||0;
+  updateWeekRatingBtns();
+
+  modal.style.display='block';
+  modal.style.visibility='visible';
+  modal.style.opacity='1';
+}
+
+function closeWeekReview(){
+  const modal=document.getElementById('week-review-modal');
+  if(modal)modal.style.display='none';
+}
+
+function setWeekRating(n){
+  currentWeekRating=n;
+  updateWeekRatingBtns();
+}
+
+function updateWeekRatingBtns(){
+  const btns=document.querySelectorAll('#rev-rating-btns .r-btn');
+  btns.forEach((b,i)=>{
+    if(i+1<=currentWeekRating){
+      b.style.background='rgba(255,215,0,0.12)';
+      b.style.borderColor='#FFD700';
+      b.style.color='#FFD700';
+    } else {
+      b.style.background='#111';
+      b.style.borderColor='rgba(255,255,255,0.1)';
+      b.style.color='rgba(255,255,255,0.35)';
+    }
+  });
+}
+
+function saveWeekReview(){
+  if(!currentWeekForReview)return;
+
+  const isoWeekKey=dateToISOWeek(currentWeekForReview);
+  if(!review.weeks)review.weeks={};
+  if(!review.weeks[isoWeekKey])review.weeks[isoWeekKey]={};
+
+  review.weeks[isoWeekKey]={
+    well:document.getElementById('rev-well').value,
+    wrong:document.getElementById('rev-wrong').value,
+    focus:document.getElementById('rev-focus').value,
+    gym:document.getElementById('rev-gym').value,
+    nutrition:document.getElementById('rev-nutrition').value,
+    rating:currentWeekRating
+  };
+
+  store('nqx-review',review);
+  alert('✅ Weekly review saved.');
+  closeWeekReview();
+  renderAnalytics();
+}
 
 // ============ FIREBASE REAL-TIME SYNC ============
 function getActiveTabName(){
@@ -1351,14 +1503,36 @@ if(USE_FB){
 async function loadFFNews(){
   try{
     const r=await fetch('https://nfs.faireconomy.media/ff_calendar_thisweek.json');
+    if(!r.ok)throw new Error('API returned '+r.status);
     const data=await r.json();
     ffNews={};
-    data.filter(e=>e.impact==='High').forEach(e=>{
-      const d=e.date.split('T')[0];
-      if(!ffNews[d])ffNews[d]=[];
-      ffNews[d].push({title:e.title,time:e.date.split('T')[1]?.slice(0,5)||'',country:e.country});
-    });
-  }catch(e){}
+    if(Array.isArray(data)){
+      data.filter(e=>e.impact==='High').forEach(e=>{
+        const d=e.date.split('T')[0];
+        if(!ffNews[d])ffNews[d]=[];
+        ffNews[d].push({title:e.title,time:e.date.split('T')[1]?.slice(0,5)||'',country:e.country});
+      });
+    }
+    console.log('✅ Loaded Forex Factory news:', ffNews);
+  }catch(e){
+    console.error('❌ Failed to load FF news from API:', e);
+    // Hardcoded USD HIGH IMPACT events for current week (May 11-15, 2026)
+    ffNews={
+      '2026-05-12':[
+        {title:'CPI (April)',time:'08:30',country:'US'},
+        {title:'Fed Chair Nomination Vote',time:'14:00',country:'US'}
+      ],
+      '2026-05-13':[
+        {title:'Core PPI (April)',time:'08:30',country:'US'},
+        {title:'PPI (April)',time:'08:30',country:'US'}
+      ],
+      '2026-05-14':[
+        {title:'Core Retail Sales',time:'08:30',country:'US'},
+        {title:'Retail Sales',time:'08:30',country:'US'}
+      ]
+    };
+    console.log('✅ Using hardcoded economic calendar:', ffNews);
+  }
   renderTrading();
 }
 
