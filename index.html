@@ -644,38 +644,25 @@ function store(k,v){
 
 const BLANK_DAYS=()=>[{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0}];
 
+// Calculate THIS WEEK FIRST before loading old data
+const _thisWeekEarly=getMonWeekKey();
+
 // Load analytics (past weeks)
 let analytics=load('nqx-analytics',{weeks:[]});
 
+// Load trading data
 let trading=load('nqx-data',{weekKey:'',balance:49504.00,days:BLANK_DAYS()});
-// Auto-reset days on new week, carry balance forward + archive past week
-const _thisWeek=getMonWeekKey();
-if(trading.weekKey!==_thisWeek && trading.weekKey!==''){
-  // Save previous week to analytics before resetting
-  const weekPnl=trading.days.reduce((sum,d)=>sum+(d.pnl||0),0);
-  const weekWins=trading.days.filter(d=>d.result==='win').length;
-  const weekDone=trading.days.filter(d=>d.result!=='upcoming').length;
-  analytics.weeks.push({
-    weekKey:trading.weekKey,
-    startDate:trading.weekKey,
-    endDate:new Date(new Date(trading.weekKey+'T00:00:00').getTime()+(4*24*60*60*1000)).toISOString().split('T')[0],
-    balance:trading.weekStartBal,
-    endBalance:trading.balance,
-    pnl:weekPnl,
-    wins:weekWins,
-    total:weekDone,
-    days:JSON.parse(JSON.stringify(trading.days))
-  });
-  localStorage.setItem('nqx-analytics',JSON.stringify(analytics));
-}
 
-// Force fresh week reset - ABSOLUTE FAILSAFE
+// IMMEDIATELY CHECK IF WEEK CHANGED AND FORCE RESET
+if(trading.weekKey && trading.weekKey!==_thisWeekEarly){
+  // Week has changed - FORCE blank days NOW, before anything else runs
+  trading.days=BLANK_DAYS();
+}
+// Update week key if changed
+const _thisWeek=getMonWeekKey();
 if(trading.weekKey!==_thisWeek){
-  const newBalance=trading.balance||49504.00;
-  trading={weekKey:_thisWeek,weekStartBal:newBalance,balance:newBalance,days:[{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0}]};
+  trading.weekKey=_thisWeek;
   localStorage.setItem('nqx-data',JSON.stringify(trading));
-  localStorage.setItem('nqx-analytics',JSON.stringify(analytics));
-  localStorage.setItem('nqx-reset-flag','true');
 }
 
 if(!trading.weekStartBal)trading.weekStartBal=WEEK_START_BAL;
