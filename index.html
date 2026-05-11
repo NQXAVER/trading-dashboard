@@ -644,9 +644,31 @@ function store(k,v){
 
 const BLANK_DAYS=()=>[{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0}];
 const _thisWeek=getMonWeekKey();
+
+// AUTO-DETECT and PURGE corrupted/old data (AGGRESSIVE VERSION)
+const storedTrading=JSON.parse(localStorage.getItem('nqx-data')||'{}');
+const hasOldPnL=storedTrading.days && storedTrading.days.some(d=>d.pnl!==0 && d.result!=='upcoming');
+const wrongWeek=storedTrading.weekKey && storedTrading.weekKey!==_thisWeek;
+
+// If any old data detected, NUKE it
+if(hasOldPnL || wrongWeek){
+  localStorage.removeItem('nqx-data');
+  localStorage.removeItem('nqx-analytics');
+}
+
 let analytics=load('nqx-analytics',{weeks:[]});
 let trading=load('nqx-data',{weekKey:'',balance:49504.00,days:BLANK_DAYS()});
-if(trading.weekKey!==_thisWeek){trading={weekKey:_thisWeek,weekStartBal:trading.balance||49504.00,balance:trading.balance||49504.00,days:BLANK_DAYS()};localStorage.setItem('nqx-data',JSON.stringify(trading));}
+
+// FORCE fresh week data - DO NOT ALLOW OLD WEEK DATA TO PERSIST
+if(trading.weekKey!==_thisWeek || !trading.days || trading.days.some(d=>d.pnl!==0 && d.result!=='upcoming')){
+  trading={
+    weekKey:_thisWeek,
+    weekStartBal:49504.00,
+    balance:49504.00,
+    days:BLANK_DAYS()
+  };
+  localStorage.setItem('nqx-data',JSON.stringify(trading));
+}
 
 if(!trading.weekStartBal)trading.weekStartBal=WEEK_START_BAL;
 let challenge=load('nqx-challenge',{started:false,startDate:null,days:{}});
@@ -1047,7 +1069,26 @@ if(USE_FB){
   db.ref('nqxavier').on('value', snap=>{
     const data=snap.val()||{};
     let updated=false;
-    if(data['nqx-data']){trading=data['nqx-data'];localStore('nqx-data',trading);updated=true;}
+
+    // INTELLIGENT SYNC: Only merge if cloud data is for THIS WEEK
+    if(data['nqx-data']){
+      const fbData=data['nqx-data'];
+      // Only sync if Firebase data is for the current week, otherwise ignore it
+      if(fbData.weekKey===_thisWeek){
+        trading=fbData;
+        localStore('nqx-data',trading);
+        updated=true;
+      }
+      // If Firebase has old week data, force fresh data instead
+      else if(fbData.weekKey && fbData.weekKey!==_thisWeek){
+        const freshData={weekKey:_thisWeek,weekStartBal:49504.00,balance:49504.00,days:BLANK_DAYS()};
+        trading=freshData;
+        localStore('nqx-data',trading);
+        if(USE_FB)db.ref('nqxavier/nqx-data').set(freshData); // Push fresh data to Firebase
+        updated=true;
+      }
+    }
+
     if(data['nqx-challenge']){challenge=data['nqx-challenge'];localStore('nqx-challenge',challenge);updated=true;}
     if(data['nqx-fitness']){fitness=data['nqx-fitness'];localStore('nqx-fitness',fitness);updated=true;}
     if(data['nqx-monthly']){monthly=data['nqx-monthly'];localStore('nqx-monthly',monthly);updated=true;}
