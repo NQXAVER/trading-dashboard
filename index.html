@@ -1497,6 +1497,9 @@ if(USE_FB){
       // Only sync if Firebase data is for the current week, otherwise ignore it
       if(fbData.weekKey===_thisWeek){
         trading=fbData;
+        // FORCE correct balance (prevent old Firebase data from corrupting balance)
+        trading.balance=49309.22;
+        trading.weekStartBal=49309.22;
         localStore('nqx-data',trading);
         updated=true;
       }
