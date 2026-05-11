@@ -492,11 +492,6 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
     <div id="analytics-weeks" style="display:grid;gap:12px"></div>
   </div>
 
-  <div style="background:#161616;border:1px solid rgba(255,215,0,0.2);border-radius:12px;padding:18px;margin-bottom:1.5rem">
-    <div style="font-size:11px;color:#FFD700;letter-spacing:1.5px;margin-bottom:14px;font-family:'Courier New',monospace;font-weight:700">📝 WEEKLY REVIEWS</div>
-    <div id="analytics-reviews-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px"></div>
-  </div>
-
   <div style="background:#161616;border:1px solid rgba(91,184,255,0.2);border-radius:12px;padding:18px">
     <div style="font-size:11px;color:#5BB8FF;letter-spacing:1.5px;margin-bottom:14px;font-family:'Courier New',monospace;font-weight:700">💾 ARCHIVED DATA</div>
     <div style="font-size:12px;color:rgba(255,255,255,0.7);line-height:1.8">
@@ -549,57 +544,6 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
     </div>
   </div>
 
-  <!-- WEEKLY REVIEW MODAL -->
-  <div id="week-review-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:200;overflow-y:auto">
-    <div style="background:#0a0a0a;border:1px solid rgba(255,215,0,0.2);border-radius:12px;max-width:750px;margin:40px auto;padding:28px;max-height:90vh;overflow-y:auto">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-        <div style="font-size:18px;font-weight:700;color:#FFD700;font-family:'Courier New',monospace" id="modal-week-header">Week of May 4-8, 2026</div>
-        <button onclick="closeWeekReview()" style="background:transparent;border:none;color:#FFD700;font-size:24px;cursor:pointer">×</button>
-      </div>
-
-      <!-- Trading Review -->
-      <div style="background:#161616;border:1px solid rgba(0,255,136,0.2);border-radius:8px;padding:16px;margin-bottom:16px">
-        <div style="font-size:11px;color:#00FF88;letter-spacing:1px;margin-bottom:12px;font-weight:700;font-family:'Courier New',monospace">TRADING</div>
-        <div style="margin-bottom:12px">
-          <span style="color:rgba(255,255,255,0.5);font-size:11px">WHAT WENT WELL</span>
-          <textarea class="rv-ta" id="rev-well" placeholder="Enter what went well..." style="width:100%;margin-top:6px;min-height:60px"></textarea>
-        </div>
-        <div style="margin-bottom:12px">
-          <span style="color:rgba(255,255,255,0.5);font-size:11px">WHAT WENT WRONG</span>
-          <textarea class="rv-ta" id="rev-wrong" placeholder="Enter what went wrong..." style="width:100%;margin-top:6px;min-height:60px"></textarea>
-        </div>
-        <div>
-          <span style="color:rgba(255,255,255,0.5);font-size:11px">FOCUS FOR NEXT WEEK</span>
-          <textarea class="rv-ta" id="rev-focus" placeholder="What's the focus..." style="width:100%;margin-top:6px;min-height:60px"></textarea>
-        </div>
-      </div>
-
-      <!-- Life & Physique -->
-      <div style="background:#161616;border:1px solid rgba(255,215,0,0.2);border-radius:8px;padding:16px;margin-bottom:16px">
-        <div style="font-size:11px;color:#FFD700;letter-spacing:1px;margin-bottom:12px;font-weight:700;font-family:'Courier New',monospace">LIFE & PHYSIQUE</div>
-        <div style="margin-bottom:12px">
-          <span style="color:rgba(255,255,255,0.5);font-size:11px">GYM / MOVEMENT</span>
-          <textarea class="rv-ta" id="rev-gym" placeholder="Enter gym notes..." style="width:100%;margin-top:6px;min-height:50px"></textarea>
-        </div>
-        <div style="margin-bottom:12px">
-          <span style="color:rgba(255,255,255,0.5);font-size:11px">NUTRITION</span>
-          <textarea class="rv-ta" id="rev-nutrition" placeholder="Enter nutrition notes..." style="width:100%;margin-top:6px;min-height:50px"></textarea>
-        </div>
-        <div>
-          <span style="color:rgba(255,255,255,0.5);font-size:11px">WEEK RATING</span>
-          <div id="rev-rating-btns" style="display:flex;gap:8px;margin-top:8px">
-            <button class="r-btn" onclick="setWeekRating(1)" style="flex:1;padding:10px;border:1px solid rgba(255,255,255,0.1);background:#111;color:rgba(255,255,255,0.35);cursor:pointer;border-radius:6px;font-weight:700">1</button>
-            <button class="r-btn" onclick="setWeekRating(2)" style="flex:1;padding:10px;border:1px solid rgba(255,255,255,0.1);background:#111;color:rgba(255,255,255,0.35);cursor:pointer;border-radius:6px;font-weight:700">2</button>
-            <button class="r-btn" onclick="setWeekRating(3)" style="flex:1;padding:10px;border:1px solid rgba(255,255,255,0.1);background:#111;color:rgba(255,255,255,0.35);cursor:pointer;border-radius:6px;font-weight:700">3</button>
-            <button class="r-btn" onclick="setWeekRating(4)" style="flex:1;padding:10px;border:1px solid rgba(255,255,255,0.1);background:#111;color:rgba(255,255,255,0.35);cursor:pointer;border-radius:6px;font-weight:700">4</button>
-            <button class="r-btn" onclick="setWeekRating(5)" style="flex:1;padding:10px;border:1px solid rgba(255,255,255,0.1);background:#111;color:rgba(255,255,255,0.35);cursor:pointer;border-radius:6px;font-weight:700">5</button>
-          </div>
-        </div>
-      </div>
-
-      <button class="save-btn" style="width:100%;padding:14px" onclick="saveWeekReview()">SAVE REVIEW</button>
-    </div>
-  </div>
 </div></div>
 
 <!-- Firebase SDK -->
@@ -1157,24 +1101,6 @@ function renderAnalytics(){
     });
   }
 
-  // Render weekly reviews grid
-  const reviewsGrid=document.getElementById('analytics-reviews-grid');
-  if(reviewsGrid){
-    reviewsGrid.innerHTML='';
-    if(analytics&&analytics.weeks&&analytics.weeks.length>0){
-      analytics.weeks.forEach(w=>{
-        const reviewCard=document.createElement('div');
-        reviewCard.style.cssText='background:#0d0d0d;border:1px solid rgba(255,215,0,0.3);border-radius:8px;padding:12px;text-align:center;cursor:pointer;transition:all 0.2s';
-        reviewCard.onmouseover=function(){this.style.background='#1a1a00';this.style.borderColor='rgba(255,215,0,0.6)'};
-        reviewCard.onmouseout=function(){this.style.background='#0d0d0d';this.style.borderColor='rgba(255,215,0,0.3)'};
-        const hasReview=w.review&&w.review.well;
-        reviewCard.innerHTML=`<div style="font-size:11px;color:#FFD700;font-weight:700;margin-bottom:6px">${w.weekKey}</div><div style="font-size:9px;color:${hasReview?'#FFD700':'rgba(255,215,0,0.5)'}">${hasReview?'✓ Reviewed':'No review'}</div>`;
-        reviewCard.onclick=()=>openWeekReview(w.weekKey);
-        reviewsGrid.appendChild(reviewCard);
-      });
-    }
-  }
-
   // Calendar - proper month grid
   const cal=document.getElementById('analytics-calendar');cal.innerHTML='';
   const monthNames=['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -1358,79 +1284,6 @@ function closeDayDetail(){
   if(modal)modal.style.display='none';
 }
 
-let currentWeekForReview='';
-let currentWeekRating=0;
-
-function openWeekReview(weekKey){
-  const modal=document.getElementById('week-review-modal');
-  if(!modal)return;
-
-  currentWeekForReview=weekKey;
-  document.getElementById('modal-week-header').textContent='Week of '+weekKey;
-
-  // Load existing review for this week
-  const archivedWeek=analytics&&analytics.weeks?analytics.weeks.find(w=>w.weekKey===weekKey):null;
-  const reviewData=archivedWeek?.review||{};
-
-  document.getElementById('rev-well').value=reviewData.well||'';
-  document.getElementById('rev-wrong').value=reviewData.wrong||'';
-  document.getElementById('rev-focus').value=reviewData.focus||'';
-  document.getElementById('rev-gym').value=reviewData.gym||'';
-  document.getElementById('rev-nutrition').value=reviewData.nutrition||'';
-
-  currentWeekRating=reviewData.rating||0;
-  updateWeekRatingBtns();
-
-  modal.style.display='block';
-  modal.style.visibility='visible';
-  modal.style.opacity='1';
-}
-
-function closeWeekReview(){
-  const modal=document.getElementById('week-review-modal');
-  if(modal)modal.style.display='none';
-}
-
-function setWeekRating(n){
-  currentWeekRating=n;
-  updateWeekRatingBtns();
-}
-
-function updateWeekRatingBtns(){
-  const btns=document.querySelectorAll('#rev-rating-btns .r-btn');
-  btns.forEach((b,i)=>{
-    if(i+1<=currentWeekRating){
-      b.style.background='rgba(255,215,0,0.12)';
-      b.style.borderColor='#FFD700';
-      b.style.color='#FFD700';
-    } else {
-      b.style.background='#111';
-      b.style.borderColor='rgba(255,255,255,0.1)';
-      b.style.color='rgba(255,255,255,0.35)';
-    }
-  });
-}
-
-function saveWeekReview(){
-  if(!currentWeekForReview)return;
-
-  // Find and update the week in analytics
-  const archivedWeek=analytics.weeks.find(w=>w.weekKey===currentWeekForReview);
-  if(archivedWeek){
-    archivedWeek.review={
-      well:document.getElementById('rev-well').value,
-      wrong:document.getElementById('rev-wrong').value,
-      focus:document.getElementById('rev-focus').value,
-      gym:document.getElementById('rev-gym').value,
-      nutrition:document.getElementById('rev-nutrition').value,
-      rating:currentWeekRating
-    };
-    localStorage.setItem('nqx-analytics',JSON.stringify(analytics));
-    alert('✅ Weekly review saved.');
-    closeWeekReview();
-    renderAnalytics();
-  }
-}
 
 // ============ FIREBASE REAL-TIME SYNC ============
 function getActiveTabName(){
