@@ -1108,11 +1108,13 @@ function archiveWeek(){
 }
 
 function renderAnalytics(){
-  console.log('📊 renderAnalytics called. analytics:', analytics, 'weeks:', analytics?.weeks?.length);
+  // FORCE reload analytics from localStorage to ensure we have latest data
+  analytics=load('nqx-analytics',{weeks:[]});
+  console.log('📊 renderAnalytics called. Reloaded analytics:', analytics, 'weeks:', analytics?.weeks?.length);
   // Past weeks
   const pw=document.getElementById('analytics-weeks');pw.innerHTML='';
   if(!analytics||!analytics.weeks||analytics.weeks.length===0){
-    console.log('❌ No weeks found in analytics');
+    console.log('❌ No weeks found in analytics. Raw localStorage:', localStorage.getItem('nqx-analytics'));
     pw.innerHTML='<div style="color:rgba(255,255,255,0.4);padding:20px;text-align:center">No archived weeks yet. Complete a week to see history.</div>';
   } else {
     console.log('✅ Found', analytics.weeks.length, 'weeks:', analytics.weeks);
@@ -1156,7 +1158,9 @@ function renderAnalytics(){
   // Day cells
   for(let i=1;i<=daysInMonth;i++){
     const ds=now.getFullYear()+'-'+p(now.getMonth()+1)+'-'+p(i);
-    const d=new Date(ds);
+    // Parse date as local time, not UTC
+    const parts=ds.split('-');
+    const d=new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));
     const dow=d.getDay();
     const isToday=ds===getToday();
     const isWeekend=dow===0||dow===6;
@@ -1225,8 +1229,11 @@ function openDayDetail(dateStr){
     return;
   }
 
-  const d=new Date(dateStr);
+  // Parse date as local time, not UTC
+  const parts=dateStr.split('-');
+  const d=new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));
   const dow=d.getDay();
+  console.log('openDayDetail called for', dateStr, 'parsed as', d.toString(), 'dow=', dow);
 
   if(dow===0||dow===6){
     console.log('Weekend, skipping');
