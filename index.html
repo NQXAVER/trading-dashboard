@@ -643,27 +643,10 @@ function store(k,v){
 }
 
 const BLANK_DAYS=()=>[{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0}];
-
-// Calculate THIS WEEK FIRST before loading old data
-const _thisWeekEarly=getMonWeekKey();
-
-// Load analytics (past weeks)
-let analytics=load('nqx-analytics',{weeks:[]});
-
-// Load trading data
-let trading=load('nqx-data',{weekKey:'',balance:49504.00,days:BLANK_DAYS()});
-
-// IMMEDIATELY CHECK IF WEEK CHANGED AND FORCE RESET
-if(trading.weekKey && trading.weekKey!==_thisWeekEarly){
-  // Week has changed - FORCE blank days NOW, before anything else runs
-  trading.days=BLANK_DAYS();
-}
-// Update week key if changed
 const _thisWeek=getMonWeekKey();
-if(trading.weekKey!==_thisWeek){
-  trading.weekKey=_thisWeek;
-  localStorage.setItem('nqx-data',JSON.stringify(trading));
-}
+let analytics=load('nqx-analytics',{weeks:[]});
+let trading=load('nqx-data',{weekKey:'',balance:49504.00,days:BLANK_DAYS()});
+if(trading.weekKey!==_thisWeek){trading={weekKey:_thisWeek,weekStartBal:trading.balance||49504.00,balance:trading.balance||49504.00,days:BLANK_DAYS()};localStorage.setItem('nqx-data',JSON.stringify(trading));}
 
 if(!trading.weekStartBal)trading.weekStartBal=WEEK_START_BAL;
 let challenge=load('nqx-challenge',{started:false,startDate:null,days:{}});
