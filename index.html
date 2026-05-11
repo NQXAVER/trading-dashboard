@@ -308,6 +308,7 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
   <button class="nav-btn" onclick="showTab('fitness',this)">FITNESS</button>
   <button class="nav-btn" onclick="showTab('monthly',this)">MONTHLY</button>
   <button class="nav-btn" onclick="showTab('review',this)">REVIEW</button>
+  <button class="nav-btn" onclick="showTab('analytics',this)">ANALYTICS</button>
   <div style="display:flex;align-items:center;padding:0 10px;flex-shrink:0">
     <span id="sync-status" style="font-family:'Courier New',monospace;font-size:8px;letter-spacing:.5px;color:rgba(255,255,255,0.3)">○ LOCAL</span>
   </div>
@@ -561,6 +562,33 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
   <button class="save-btn" style="width:100%;padding:14px;margin-bottom:2rem" onclick="saveReview()">SAVE WEEKLY REVIEW</button>
 </div></div>
 
+<!-- ======= ANALYTICS ======= -->
+<div class="tab" id="tab-analytics"><div class="container">
+  <div class="hdr">
+    <div><div class="brand" style="font-size:20px">ANALYTICS</div><div class="sub">HISTORICAL PERFORMANCE · ALL WEEKS ARCHIVED</div></div>
+  </div>
+
+  <div style="background:#161616;border:1px solid rgba(0,255,136,0.2);border-radius:12px;padding:18px;margin-bottom:1.5rem">
+    <div style="font-size:11px;color:#00FF88;letter-spacing:1.5px;margin-bottom:14px;font-family:'Courier New',monospace;font-weight:700">📊 PAST WEEKS</div>
+    <div id="analytics-weeks" style="display:grid;gap:12px"></div>
+  </div>
+
+  <div style="background:#161616;border:1px solid rgba(255,85,85,0.2);border-radius:12px;padding:18px;margin-bottom:1.5rem">
+    <div style="font-size:11px;color:#FF5555;letter-spacing:1.5px;margin-bottom:14px;font-family:'Courier New',monospace;font-weight:700">📅 MONTH CALENDAR</div>
+    <div id="analytics-calendar" style="display:grid;grid-template-columns:repeat(7,1fr);gap:8px"></div>
+  </div>
+
+  <div style="background:#161616;border:1px solid rgba(91,184,255,0.2);border-radius:12px;padding:18px">
+    <div style="font-size:11px;color:#5BB8FF;letter-spacing:1.5px;margin-bottom:14px;font-family:'Courier New',monospace;font-weight:700">💾 ARCHIVED DATA</div>
+    <div style="font-size:12px;color:rgba(255,255,255,0.7);line-height:1.8">
+      <div style="margin-bottom:12px"><span style="color:#00FF88;font-weight:700">Trading:</span> <span id="analytics-trading-count">0</span> weeks saved</div>
+      <div style="margin-bottom:12px"><span style="color:#00FF88;font-weight:700">Challenge:</span> <span id="analytics-challenge-count">0</span> weeks saved</div>
+      <div style="margin-bottom:12px"><span style="color:#00FF88;font-weight:700">Fitness:</span> <span id="analytics-fitness-count">0</span> weeks saved</div>
+      <div><span style="color:#00FF88;font-weight:700">Review:</span> <span id="analytics-review-count">0</span> weeks saved</div>
+    </div>
+  </div>
+</div></div>
+
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -657,14 +685,14 @@ if(hasOldPnL || wrongWeek){
 }
 
 let analytics=load('nqx-analytics',{weeks:[]});
-let trading=load('nqx-data',{weekKey:'',balance:49504.00,days:BLANK_DAYS()});
+let trading=load('nqx-data',{weekKey:'',balance:49309.22,days:BLANK_DAYS()});
 
 // FORCE fresh week data - DO NOT ALLOW OLD WEEK DATA TO PERSIST
 if(trading.weekKey!==_thisWeek || !trading.days || trading.days.some(d=>d.pnl!==0 && d.result!=='upcoming')){
   trading={
     weekKey:_thisWeek,
-    weekStartBal:49504.00,
-    balance:49504.00,
+    weekStartBal:49309.22,
+    balance:49309.22,
     days:BLANK_DAYS()
   };
   localStorage.setItem('nqx-data',JSON.stringify(trading));
@@ -697,6 +725,7 @@ function showTab(name,btn){
   if(name==='fitness')renderFitness();
   if(name==='monthly')renderMonthly();
   if(name==='review')renderReview();
+  if(name==='analytics')renderAnalytics();
 }
 
 // ============ ECONOMIC CALENDAR ============
@@ -1039,6 +1068,79 @@ function saveReview(){
   review.weeks[wk].rating=currentRating;store('nqx-review',review);alert('✅ Weekly review saved.');renderReview();
 }
 
+// ============ ANALYTICS ============
+function archiveWeek(){
+  if(!analytics)analytics={weeks:[]};
+  analytics.weeks.push({
+    weekKey:_thisWeek,
+    trading:{pnl:trading.balance-(trading.weekStartBal||WEEK_START_BAL),days:trading.days.slice()},
+    challenge:{streak:getStreak(),points:getTotalPts(),days:Object.assign({},challenge.days)},
+    fitness:{days:Object.assign({},fitness.days)},
+    review:review.weeks[getWeekKey()]||{}
+  });
+  store('nqx-analytics',analytics);
+}
+
+function renderAnalytics(){
+  // Past weeks
+  const pw=document.getElementById('analytics-weeks');pw.innerHTML='';
+  if(!analytics||!analytics.weeks||analytics.weeks.length===0){
+    pw.innerHTML='<div style="color:rgba(255,255,255,0.4);padding:20px;text-align:center">No archived weeks yet. Complete a week to see history.</div>';
+  } else {
+    analytics.weeks.forEach(w=>{
+      const tp=fmt(w.trading?.pnl||0);
+      const wr=w.trading?.days?Math.round(w.trading.days.filter(d=>d.result==='win').length/w.trading.days.filter(d=>d.result!=='upcoming').length*100):0;
+      const html=`<div style="background:#0d0d0d;border:1px solid rgba(0,255,136,0.2);border-radius:8px;padding:12px">
+        <div style="font-size:11px;color:#00FF88;margin-bottom:8px;font-weight:700">${w.weekKey}</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;font-size:10px">
+          <div><span style="color:rgba(255,255,255,0.5)">P&L:</span> <span class="${w.trading?.pnl>=0?'c-green':'c-red'}">${tp}</span></div>
+          <div><span style="color:rgba(255,255,255,0.5)">WR:</span> <span class="${wr>=50?'c-green':'c-red'}">${wr}%</span></div>
+          <div><span style="color:rgba(255,255,255,0.5)">Challenge:</span> <span style="color:#FFD700">${w.challenge?.points||0}pts</span></div>
+          <div><span style="color:rgba(255,255,255,0.5)">Rating:</span> <span style="color:#5BB8FF">${w.review?.rating||'-'}/5</span></div>
+        </div>
+      </div>`;
+      pw.innerHTML+=html;
+    });
+  }
+
+  // Calendar
+  const cal=document.getElementById('analytics-calendar');cal.innerHTML='';
+  const dayNames=['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  dayNames.forEach(d=>{cal.innerHTML+=`<div style="text-align:center;font-size:10px;color:#00FF88;font-weight:700;padding:8px">${d}</div>`});
+  const now=new Date(),daysInMonth=new Date(now.getFullYear(),now.getMonth()+1,0).getDate(),firstDay=new Date(now.getFullYear(),now.getMonth(),1).getDay();
+  for(let i=0;i<firstDay;i++)cal.innerHTML+='<div></div>';
+  for(let i=1;i<=daysInMonth;i++){
+    const p=x=>String(x).padStart(2,'0');
+    const ds=now.getFullYear()+'-'+p(now.getMonth()+1)+'-'+p(i);
+    const isToday=ds===getToday();
+    let pnl='—',cls='rgba(255,255,255,0.1)';
+    // Find P&L for this date
+    if(analytics&&analytics.weeks){
+      for(let w of analytics.weeks){
+        const dayIdx=[1,2,3,4,5].indexOf(new Date(ds).getDay()-1);
+        if(dayIdx>=0&&w.trading?.days[dayIdx]){
+          const d=w.trading.days[dayIdx];
+          if(d.pnl!==0||d.result!=='upcoming'){
+            pnl=fmt(d.pnl);
+            cls=d.pnl>0?'rgba(0,255,136,0.15)':'rgba(255,85,85,0.15)';
+            break;
+          }
+        }
+      }
+    }
+    cal.innerHTML+=`<div style="background:${cls};border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:8px;text-align:center;font-size:10px;${isToday?'border:2px solid #00FF88':''}">
+      <div style="color:rgba(255,255,255,0.7);margin-bottom:4px">${i}</div>
+      <div style="color:${pnl==='—'?'rgba(255,255,255,0.3)':pnl.includes('-')?'#FF5555':'#00FF88'};font-weight:700;font-size:9px">${pnl}</div>
+    </div>`;
+  }
+
+  // Counts
+  document.getElementById('analytics-trading-count').textContent=analytics?.weeks?.length||0;
+  document.getElementById('analytics-challenge-count').textContent=analytics?.weeks?.filter(w=>w.challenge?.points>0).length||0;
+  document.getElementById('analytics-fitness-count').textContent=analytics?.weeks?.filter(w=>Object.keys(w.fitness?.days||{}).length>0).length||0;
+  document.getElementById('analytics-review-count').textContent=analytics?.weeks?.filter(w=>w.review?.well).length||0;
+}
+
 // ============ FIREBASE REAL-TIME SYNC ============
 function getActiveTabName(){
   const b=document.querySelector('.nav-btn.active');
@@ -1081,7 +1183,7 @@ if(USE_FB){
       }
       // If Firebase has old week data, force fresh data instead
       else if(fbData.weekKey && fbData.weekKey!==_thisWeek){
-        const freshData={weekKey:_thisWeek,weekStartBal:49504.00,balance:49504.00,days:BLANK_DAYS()};
+        const freshData={weekKey:_thisWeek,weekStartBal:49309.22,balance:49309.22,days:BLANK_DAYS()};
         trading=freshData;
         localStore('nqx-data',trading);
         if(USE_FB)db.ref('nqxavier/nqx-data').set(freshData); // Push fresh data to Firebase
