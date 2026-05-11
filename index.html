@@ -566,16 +566,20 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
 <div class="tab" id="tab-analytics"><div class="container">
   <div class="hdr">
     <div><div class="brand" style="font-size:20px">ANALYTICS</div><div class="sub">HISTORICAL PERFORMANCE · ALL WEEKS ARCHIVED</div></div>
+    <div style="text-align:right">
+      <div style="font-size:11px;color:rgba(0,255,136,0.7)">CURRENT MONTH</div>
+      <div style="font-size:20px;font-weight:700" id="analytics-month-title">MAY 2026</div>
+    </div>
+  </div>
+
+  <div style="background:#161616;border:1px solid rgba(255,85,85,0.2);border-radius:12px;padding:18px;margin-bottom:1.5rem">
+    <div style="font-size:11px;color:#FF5555;letter-spacing:1.5px;margin-bottom:14px;font-family:'Courier New',monospace;font-weight:700">📅 MONTH CALENDAR — DAILY P&L</div>
+    <div id="analytics-calendar" style="display:grid;grid-template-columns:repeat(7,1fr);gap:8px"></div>
   </div>
 
   <div style="background:#161616;border:1px solid rgba(0,255,136,0.2);border-radius:12px;padding:18px;margin-bottom:1.5rem">
     <div style="font-size:11px;color:#00FF88;letter-spacing:1.5px;margin-bottom:14px;font-family:'Courier New',monospace;font-weight:700">📊 PAST WEEKS</div>
     <div id="analytics-weeks" style="display:grid;gap:12px"></div>
-  </div>
-
-  <div style="background:#161616;border:1px solid rgba(255,85,85,0.2);border-radius:12px;padding:18px;margin-bottom:1.5rem">
-    <div style="font-size:11px;color:#FF5555;letter-spacing:1.5px;margin-bottom:14px;font-family:'Courier New',monospace;font-weight:700">📅 MONTH CALENDAR</div>
-    <div id="analytics-calendar" style="display:grid;grid-template-columns:repeat(7,1fr);gap:8px"></div>
   </div>
 
   <div style="background:#161616;border:1px solid rgba(91,184,255,0.2);border-radius:12px;padding:18px">
@@ -673,18 +677,37 @@ function store(k,v){
 const BLANK_DAYS=()=>[{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0},{result:'upcoming',pnl:0}];
 const _thisWeek=getMonWeekKey();
 
-// AUTO-DETECT and PURGE corrupted/old data (AGGRESSIVE VERSION)
+// ARCHIVE OLD WEEK BEFORE CLEARING
 const storedTrading=JSON.parse(localStorage.getItem('nqx-data')||'{}');
+const storedChallenge=JSON.parse(localStorage.getItem('nqx-challenge')||'{}');
+const storedFitness=JSON.parse(localStorage.getItem('nqx-fitness')||'{}');
+const storedReview=JSON.parse(localStorage.getItem('nqx-review')||'{}');
+let analytics=load('nqx-analytics',{weeks:[]});
+
 const hasOldPnL=storedTrading.days && storedTrading.days.some(d=>d.pnl!==0 && d.result!=='upcoming');
 const wrongWeek=storedTrading.weekKey && storedTrading.weekKey!==_thisWeek;
 
-// If any old data detected, NUKE it
-if(hasOldPnL || wrongWeek){
-  localStorage.removeItem('nqx-data');
-  localStorage.removeItem('nqx-analytics');
+// ARCHIVE the old week if it exists and is different from current week
+if((hasOldPnL || wrongWeek) && storedTrading.weekKey && storedTrading.weekKey!==_thisWeek){
+  // Save to analytics before clearing
+  if(!analytics.weeks)analytics.weeks=[];
+  analytics.weeks.push({
+    weekKey:storedTrading.weekKey,
+    weekStartBal:storedTrading.weekStartBal,
+    balance:storedTrading.balance,
+    trading:{pnl:storedTrading.balance-(storedTrading.weekStartBal||49309.22),days:storedTrading.days},
+    challenge:{streak:0,points:0,days:storedChallenge.days||{}},
+    fitness:{days:storedFitness.days||{}},
+    review:storedReview.weeks?storedReview.weeks[storedTrading.weekKey]||{}:{}
+  });
+  localStorage.setItem('nqx-analytics',JSON.stringify(analytics));
 }
 
-let analytics=load('nqx-analytics',{weeks:[]});
+// Now clear old data
+if(hasOldPnL || wrongWeek){
+  localStorage.removeItem('nqx-data');
+}
+
 let trading=load('nqx-data',{weekKey:'',balance:49309.22,days:BLANK_DAYS()});
 
 // FORCE fresh week data - DO NOT ALLOW OLD WEEK DATA TO PERSIST
@@ -1105,6 +1128,10 @@ function renderAnalytics(){
 
   // Calendar
   const cal=document.getElementById('analytics-calendar');cal.innerHTML='';
+  const monthNames=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const now=new Date();
+  document.getElementById('analytics-month-title').textContent=monthNames[now.getMonth()]+' '+now.getFullYear();
+
   const dayNames=['SUN','MON','TUE','WED','THU','FRI','SAT'];
   dayNames.forEach(d=>{cal.innerHTML+=`<div style="text-align:center;font-size:10px;color:#00FF88;font-weight:700;padding:8px">${d}</div>`});
   const now=new Date(),daysInMonth=new Date(now.getFullYear(),now.getMonth()+1,0).getDate(),firstDay=new Date(now.getFullYear(),now.getMonth(),1).getDay();
