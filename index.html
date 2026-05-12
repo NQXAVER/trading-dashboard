@@ -790,6 +790,28 @@ if(!trading.weekStartBal)trading.weekStartBal=WEEK_START_BAL;
 function checkAndResetWeekOnSaturday(){
   const now=new Date();
   const dow=now.getDay(); // 0=Sun, 6=Sat
+
+  // AUTO-FIX: If current week has old data written in it, move to analytics
+  const hasOldDataInCurrent=trading.days && trading.days.some(d=>(d.pnl!==0 && d.pnl!==undefined) || (d.result!=='upcoming' && d.result!==''));
+  if(hasOldDataInCurrent && trading.weekKey){
+      console.log('🔧 AUTO-FIX: Current week has old data, moving to analytics...');
+      let analytics=load('nqx-analytics',{weeks:[]});
+      let weekPnL=trading.days.reduce((sum,d)=>sum+(d.pnl||0),0);
+      analytics.weeks=analytics.weeks.filter(w=>w.weekKey!==trading.weekKey);
+      analytics.weeks.push({weekKey:trading.weekKey,trading:{pnl:weekPnL,days:trading.days.slice()},challenge:{points:0,days:{}},fitness:{days:{}},review:{}});
+      if(analytics.weeks.length>2)analytics.weeks=analytics.weeks.slice(-2);
+      const currentDate=new Date(trading.weekKey+'T00:00:00Z');
+      const nextMonday=new Date(currentDate);
+      nextMonday.setDate(nextMonday.getDate()+7);
+      const nextWeekKey=nextMonday.getUTCFullYear()+'-'+String(nextMonday.getUTCMonth()+1).padStart(2,'0')+'-'+String(nextMonday.getUTCDate()).padStart(2,'0');
+      trading.weekKey=nextWeekKey;
+      trading.days=BLANK_DAYS();
+      localStorage.setItem('nqx-analytics',JSON.stringify(analytics));
+      localStorage.setItem('nqx-data',JSON.stringify(trading));
+      console.log('✅ AUTO-FIX complete: Moved '+trading.weekKey+' data to analytics, new week is '+nextWeekKey);
+      console.log('🔄 Page will reload to apply changes...');
+      setTimeout(()=>location.reload(),1000);
+  }
   const hour=now.getHours();
 
   // If Saturday and past 12 AM
