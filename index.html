@@ -919,6 +919,8 @@ function renderTrading(){
     const pnlHtml=d.result!=='upcoming'?`<div class="day-pnl ${d.pnl>0?'c-green':d.pnl<0?'c-red':'c-blue'}">${fmt(d.pnl)}</div>`:`<div class="day-pnl pnl-blank">—</div>`;
     let bc='b-up',bt='UPCOMING';
     if(d.result==='win'){bc='b-win';bt='WIN'}else if(d.result==='loss'){bc='b-loss';bt='LOSS'}else if(d.result==='be'){bc='b-be';bt='BREAKEVEN'}
+    // For today, hide the upcoming badge since user should be entering data for today
+    if(isToday && d.result==='upcoming'){bt=''}
     const gradeHtml=d.grade?`<div class="grade-badge ${gradeClass(d.grade)}">${d.grade}${d.rr?' · '+d.rr+'R':''}</div>`:'';
     const newsHtml=(ffNews[info.date]||[]).length>0?`<div class="ff-news-wrap">${(ffNews[info.date]).map(n=>`<div class="ff-event"><span class="ff-event-flag">🔴</span><span class="ff-event-name">${n.title}</span><span class="ff-event-time">${n.time}</span></div>`).join('')}</div>`:'';
     cal.innerHTML+=`<div class="${cls}"><div class="today-pill">TODAY</div><div class="day-nm">${info.nm}</div><div class="day-dt">${info.dt}</div>${pnlHtml}<div class="badge ${bc}">${bt}</div>${gradeHtml}${newsHtml}</div>`;
@@ -1289,8 +1291,8 @@ function renderAnalytics(){
   } else {
     console.log('✅ Found', analytics.weeks.length, 'archived weeks');
     // Only render the LAST (most recent) archived week
-    if(analytics.weeks.length>1){
-      const w=analytics.weeks[analytics.weeks.length-2]; // Get the previous week (second to last)
+    if(analytics.weeks.length>0){
+      const w=analytics.weeks[analytics.weeks.length-1]; // Get the LAST (most recent) archived week
       const tp=fmt(w.trading?.pnl||0);
       const wr=w.trading?.days?Math.round(w.trading.days.filter(d=>d.result==='win').length/w.trading.days.filter(d=>d.result!=='upcoming').length*100):0;
       const hasReview=w.review&&w.review.well;
