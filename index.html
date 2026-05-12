@@ -748,6 +748,46 @@ if(!trading.balance || trading.balance!==49309.22){
 }
 
 if(!trading.weekStartBal)trading.weekStartBal=WEEK_START_BAL;
+
+// AUTO-RESET ON SATURDAY AT 12 AM
+function checkAndResetWeekOnSaturday(){
+  const now=new Date();
+  const dow=now.getDay(); // 0=Sun, 6=Sat
+  const hour=now.getHours();
+
+  // If Saturday and past 12 AM
+  if(dow===6 && hour>=0){
+    const lastResetDate=localStorage.getItem('nqx-last-auto-reset');
+    const today=getToday();
+
+    // Only reset once per Saturday
+    if(lastResetDate!==today){
+      console.log('🔄 Saturday auto-reset triggered!');
+
+      // Archive current week to analytics
+      archiveWeek();
+
+      // Reset trading for new week
+      const nextMonday=new Date(now.getFullYear(),now.getMonth(),now.getDate()+(8-dow));
+      const nextMonWeek=nextMonday.getFullYear()+'-'+String(nextMonday.getMonth()+1).padStart(2,'0')+'-'+String(nextMonday.getDate()).padStart(2,'0');
+
+      trading={
+        weekKey:nextMonWeek,
+        weekStartBal:trading.balance,
+        balance:trading.balance,
+        days:BLANK_DAYS()
+      };
+      localStorage.setItem('nqx-data',JSON.stringify(trading));
+      localStorage.setItem('nqx-last-auto-reset',today);
+
+      console.log('✅ Week reset. New week:', nextMonWeek);
+    }
+  }
+}
+
+// Run check on load
+checkAndResetWeekOnSaturday();
+
 let challenge=load('nqx-challenge',{started:false,startDate:null,days:{}});
 let fitness=load('nqx-fitness',{days:{}});
 let monthly=load('nqx-monthly',{weeks:[{label:'Week 1 (Apr 28 – May 2)',pnl:254.86,wr:100,rr:1.65,pts:12,trades:2}]});
@@ -776,24 +816,27 @@ function showTab(name,btn){
 
 // ============ ECONOMIC CALENDAR ============
 let econCalendarData = {
-  '2026-05-09': [],
-  '2026-05-10': [],
-  '2026-05-11': [
-    {time: '08:30 AM ET', title: 'CPI (April)', impact: 'HIGH', key: 'CPI'}
+  '2026-05-11': [],
+  '2026-05-12': [
+    {time: '08:30 AM ET', title: 'CPI (April)', impact: 'HIGH', key: 'CPI'},
+    {time: '02:00 PM ET', title: 'Fed Chair Nomination Vote', impact: 'HIGH', key: 'FED'}
   ],
-  '2026-05-12': [],
   '2026-05-13': [
-    {time: '02:00 PM ET', title: 'Fed Powell Speaks', impact: 'HIGH', key: 'FED'}
+    {time: '08:30 AM ET', title: 'Core PPI (April)', impact: 'HIGH', key: 'CPPI'},
+    {time: '08:32 AM ET', title: 'PPI (April)', impact: 'HIGH', key: 'PPI'}
   ],
-  '2026-05-14': [],
+  '2026-05-14': [
+    {time: '08:30 AM ET', title: 'Core Retail Sales', impact: 'HIGH', key: 'CRS'},
+    {time: '08:32 AM ET', title: 'Retail Sales', impact: 'HIGH', key: 'RS'}
+  ],
   '2026-05-15': []
 };
 
 function renderEconomicCalendar(){
   const cal = document.getElementById('econ-cal');
   if(!cal) return;
-  const days = ['2026-05-09', '2026-05-10', '2026-05-11', '2026-05-12', '2026-05-13'];
-  const dayNames = ['FRI', 'MON', 'TUE', 'WED', 'THU'];
+  const days = ['2026-05-11', '2026-05-12', '2026-05-13', '2026-05-14', '2026-05-15'];
+  const dayNames = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
   let html = '<div class="econ-cal-ttl">RED FOLDER — UPCOMING WEEK</div><div class="econ-cal-grid">';
 
   days.forEach((dateStr, idx) => {
@@ -1127,14 +1170,34 @@ function saveReview(){
 // ============ ANALYTICS ============
 function archiveWeek(){
   if(!analytics)analytics={weeks:[]};
+
+  // Only keep current + previous week (max 2 entries)
+  const currentWeekKey=_thisWeek;
+
+  // Remove if current week already exists (prevent duplicates)
+  analytics.weeks=analytics.weeks.filter(w=>w.weekKey!==currentWeekKey);
+
+  // Keep only the most recent entry before current week
+  if(analytics.weeks.length>1){
+    analytics.weeks=analytics.weeks.slice(-1);
+  }
+
+  // Add the current week
   analytics.weeks.push({
-    weekKey:_thisWeek,
+    weekKey:currentWeekKey,
     trading:{pnl:trading.balance-(trading.weekStartBal||WEEK_START_BAL),days:trading.days.slice()},
     challenge:{streak:getStreak(),points:getTotalPts(),days:Object.assign({},challenge.days)},
     fitness:{days:Object.assign({},fitness.days)},
     review:review.weeks[getWeekKey()]||{}
   });
+
+  // Keep max 2 weeks (current + 1 previous)
+  if(analytics.weeks.length>2){
+    analytics.weeks=analytics.weeks.slice(-2);
+  }
+
   store('nqx-analytics',analytics);
+  console.log('📊 archiveWeek complete. Now have',analytics.weeks.length,'weeks');
 }
 
 function renderAnalytics(){
@@ -1169,12 +1232,14 @@ function renderAnalytics(){
   currentWeekDiv.onclick=()=>openWeekReview(currentWeekKey);
   pw.appendChild(currentWeekDiv);
 
-  // PAST WEEKS (archived)
+  // PAST WEEKS (archived) - ONLY show the most recent previous week
   if(!analytics||!analytics.weeks||analytics.weeks.length===0){
     console.log('❌ No archived weeks found.');
   } else {
-    console.log('✅ Found', analytics.weeks.length, 'archived weeks:', analytics.weeks);
-    analytics.weeks.forEach(w=>{
+    console.log('✅ Found', analytics.weeks.length, 'archived weeks');
+    // Only render the LAST (most recent) archived week
+    if(analytics.weeks.length>1){
+      const w=analytics.weeks[analytics.weeks.length-2]; // Get the previous week (second to last)
       const tp=fmt(w.trading?.pnl||0);
       const wr=w.trading?.days?Math.round(w.trading.days.filter(d=>d.result==='win').length/w.trading.days.filter(d=>d.result!=='upcoming').length*100):0;
       const hasReview=w.review&&w.review.well;
@@ -1191,7 +1256,7 @@ function renderAnalytics(){
         </div>`;
       weekDiv.onclick=()=>openWeekReview(w.weekKey);
       pw.appendChild(weekDiv);
-    });
+    }
   }
 
   // Calendar - proper month grid
