@@ -728,6 +728,11 @@ if(hasOldPnL || wrongWeek){
   localStorage.removeItem('nqx-data');
 }
 
+// Load challenge FIRST so we can calculate points during week archiving
+let challenge=load('nqx-challenge',{started:false,startDate:null,days:{}});
+let fitness=load('nqx-fitness',{days:{}});
+let review=load('nqx-review',{weeks:{}});
+
 let trading=load('nqx-data',{weekKey:'',balance:49309.22,days:BLANK_DAYS()});
 
 // FORCE fresh week data - DO NOT ALLOW OLD WEEK DATA TO PERSIST
@@ -735,8 +740,6 @@ if(trading.weekKey!==_thisWeek || !trading.days || trading.days.some(d=>d.pnl!==
   // Archive old week BEFORE discarding it (only if there was valid old data)
   if(trading.weekKey && trading.weekKey!==_thisWeek && trading.weekKey!==''){
     console.log('📊 Week transitioned from',trading.weekKey,'to',_thisWeek,'— archiving old week data');
-    // Note: challenge and fitness points will be calculated from stored data when renderAnalytics is called
-    // We'll calculate them here at archive time for accuracy
     let oldChallengePts=0;
     if(challenge && challenge.days){
       oldChallengePts=getPtsForWeekKey(trading.weekKey);
@@ -744,9 +747,16 @@ if(trading.weekKey!==_thisWeek || !trading.days || trading.days.some(d=>d.pnl!==
     let analytics=load('nqx-analytics',{weeks:[]});
     analytics.weeks=analytics.weeks.filter(w=>w.weekKey!==trading.weekKey);
     const archivedWeekIsoKey=getWeekKeyForDate(trading.weekKey);
+
+    // Calculate actual P&L for the archived week from the trading days
+    let weekPnL=0;
+    if(trading.days && trading.days.length>0){
+      weekPnL=trading.days.reduce((sum,d)=>sum+(d.pnl||0),0);
+    }
+
     analytics.weeks.push({
       weekKey:trading.weekKey,
-      trading:{pnl:trading.balance-(trading.weekStartBal||49309.22),days:trading.days.slice()},
+      trading:{pnl:weekPnL,days:trading.days.slice()},
       challenge:{streak:0,points:oldChallengePts,days:challenge?Object.assign({},challenge.days):{}},
       fitness:{days:fitness?Object.assign({},fitness.days):{}},
       review:review.weeks&&review.weeks[archivedWeekIsoKey]?review.weeks[archivedWeekIsoKey]:{}
@@ -755,7 +765,7 @@ if(trading.weekKey!==_thisWeek || !trading.days || trading.days.some(d=>d.pnl!==
       analytics.weeks=analytics.weeks.slice(-2);
     }
     localStorage.setItem('nqx-analytics',JSON.stringify(analytics));
-    console.log('✅ Old week archived.',trading.weekKey,'with',oldChallengePts,'challenge points. Now have',analytics.weeks.length,'weeks in analytics');
+    console.log('✅ Old week archived.',trading.weekKey,'with P&L:',weekPnL,'and',oldChallengePts,'challenge points. Now have',analytics.weeks.length,'weeks in analytics');
   }
 
   trading={
@@ -765,6 +775,7 @@ if(trading.weekKey!==_thisWeek || !trading.days || trading.days.some(d=>d.pnl!==
     days:BLANK_DAYS()
   };
   localStorage.setItem('nqx-data',JSON.stringify(trading));
+  console.log('✅ Started new week:',_thisWeek);
 }
 
 // FORCE correct balance at init (prevent Firebase from loading wrong balance)
@@ -814,10 +825,8 @@ function checkAndResetWeekOnSaturday(){
 // Run check on load
 checkAndResetWeekOnSaturday();
 
-let challenge=load('nqx-challenge',{started:false,startDate:null,days:{}});
-let fitness=load('nqx-fitness',{days:{}});
+// Load monthly data
 let monthly=load('nqx-monthly',{weeks:[{label:'Week 1 (Apr 28 – May 2)',pnl:254.86,wr:100,rr:1.65,pts:12,trades:2}]});
-let review=load('nqx-review',{weeks:{'2026-W19':{well:'Executed all 5 days straight — pure discipline. Generated +$54.68 on the week despite 3 losses, proving you can stay profitable with imperfect execution. Wednesday was an A-grade setup: identified the daily bullish bias (NQ ATH sync with ES pre-market), waited for the 15min retrace into FVG, got 1min SMT confirmation (bears failed to take the low, reversed), and held the long all day for +$314. You nailed conviction when it mattered. You also showed restraint on Mon/Tue by not forcing setups that weren\'t clean. Already proved you can execute when you trust the structure.',wrong:'Friday: You knew the daily bullish bias pre-market, but after the TikTok distraction you let the 15min bearish FVG scare you out of the long. You backed off because of lower timeframe noise even though the higher timeframe bias was intact. Price marked through that 15min FVG and continued higher — the HTF was right, you just didn\'t trust it when tested. Then frustrated, you chased a short without waiting for midpoint rejection and lost. The root issue: You let 5min/15min structure override your higher timeframe read. This is your pattern. You can identify the bias. You just don\'t have conviction to execute when the lower timeframes pull back.',focus:'Lower timeframe pullbacks (15min FVG, 5min SMT rejection) = confirmation of HTF bias, not negation. When daily is bullish and you see 15min bearish structure, that\'s your entry zone, not your exit signal. But don\'t just buy blind on bias alone — wait for LTF entry confirmation like you did Wednesday (failed bearish attempt, midpoint rejection, 1min SMT reversal). HTF bias gives you the direction. LTF structure gives you permission to execute. Trust both. Stop letting lower timeframe noise stop you from taking the trades you should be taking.',gym:'',nutrition:'',rating:3}}});
 
 let fitState={gym:false,macros:false,stepsHit:false};
 let selectedFitDate=getToday();
