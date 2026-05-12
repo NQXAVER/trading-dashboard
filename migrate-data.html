@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Trading Journal Data Migration</title>
+<style>
+body { background: #0a0a0a; color: #e8e8e8; font-family: monospace; padding: 20px; }
+.box { background: #161616; border: 1px solid rgba(0,255,136,0.3); padding: 15px; margin: 15px 0; border-radius: 8px; }
+button { background: #00FF88; color: #000; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; margin: 5px; }
+button:hover { background: #00cc6a; }
+.status { padding: 10px; margin: 10px 0; border-radius: 4px; }
+.success { background: rgba(0,255,136,0.2); color: #00FF88; }
+.error { background: rgba(255,85,85,0.2); color: #FF5555; }
+pre { background: #0a0a0a; padding: 10px; border-radius: 4px; overflow-x: auto; font-size: 11px; }
+</style>
+</head>
+<body>
+
+<h1>Trading Journal Data Migration</h1>
+
+<div class="box">
+  <h2>Current Data Status</h2>
+  <div id="status"></div>
+</div>
+
+<div class="box">
+  <h2>Current Week Data</h2>
+  <pre id="currentWeekData"></pre>
+</div>
+
+<div class="box">
+  <h2>Previous Week Data (in analytics)</h2>
+  <pre id="prevWeekData"></pre>
+</div>
+
+<div class="box">
+  <h2>Migration Actions</h2>
+  <button onclick="migrateData()">🔄 Migrate: Move Current Week → Previous Week</button>
+  <button onclick="clearCurrentWeek()">🧹 Clear Current Week Only</button>
+  <button onclick="location.reload()">🔄 Refresh Page</button>
+  <div id="migrationStatus"></div>
+</div>
+
+<script>
+function getWeekKeyForDate(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00Z');
+  const year = d.getUTCFullYear();
+  const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const date = String(d.getUTCDate()).padStart(2, '0');
+  return year + '-' + month + '-' + date;
+}
+
+function getPreviousWeekKey(weekKey) {
+  const d = new Date(weekKey + 'T00:00:00Z');
+  d.setDate(d.getDate() - 7);
+  const year = d.getUTCFullYear();
+  const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const date = String(d.getUTCDate()).padStart(2, '0');
+  return year + '-' + month + '-' + date;
+}
+
+function displayStatus() {
+  const trading = JSON.parse(localStorage.getItem('nqx-data') || '{}');
+  const analytics = JSON.parse(localStorage.getItem('nqx-analytics') || '{"weeks":[]}');
+  const review = JSON.parse(localStorage.getItem('nqx-review') || '{"weeks":{}}');
+
+  const status = `
+    <div class="status success">
+      <strong>Current Week Key:</strong> ${trading.weekKey || 'Not set'}<br>
+      <strong>Current Week Days:</strong> ${trading.days ? trading.days.length : 0} days<br>
+      <strong>Current Week Data:</strong> ${trading.days && trading.days.some(d => d.pnl !== 0 || d.result !== 'upcoming') ? '✅ HAS DATA' : '⚠️ Empty or defaults'}<br>
+      <strong>Archived Weeks in Analytics:</strong> ${analytics.weeks.length}<br>
+      <strong>Weekly Reviews:</strong> ${Object.keys(review.weeks).length}
+    </div>
+  `;
+  document.getElementById('status').innerHTML = status;
+
+  // Show current week data
+  if (trading.days && trading.days.length > 0) {
+    document.getElementById('currentWeekData').textContent = JSON.stringify(trading.days, null, 2);
+  } else {
+    document.getElementById('currentWeekData').textContent = 'No day data';
+  }
+
+  // Show previous week data
+  if (analytics.weeks && analytics.weeks.length > 0) {
+    const latest = analytics.weeks[analytics.weeks.length - 1];
+    document.getElementById('prevWeekData').textContent = JSON.stringify(latest, null, 2);
+  } else {
+    document.getElementById('prevWeekData').textContent = 'No archived weeks yet';
+  }
+}
+
+function migrateData() {
+  const trading = JSON.parse(localStorage.getItem('nqx-data') || '{}');
+  const analytics = JSON.parse(localStorage.getItem('nqx-analytics') || '{"weeks":[]}');
+  const review = JSON.parse(localStorage.getItem('nqx-review') || '{"weeks":{}}');
+  const challenge = JSON.parse(localStorage.getItem('nqx-challenge') || '{"days":{}}');
+  const fitness = JSON.parse(localStorage.getItem('nqx-fitness') || '{"days":{}}');
+
+  if (!trading.weekKey) {
+    document.getElementById('migrationStatus').innerHTML = '<div class="status error">❌ No current week key found</div>';
+    return;
+  }
+
+  const currentWeekKey = trading.weekKey;
+  const prevWeekKey = getPreviousWeekKey(currentWeekKey);
+
+  // Archive current week to analytics with all its data
+  analytics.weeks = analytics.weeks.filter(w => w.weekKey !== currentWeekKey);
+
+  let weekPnL = 0;
+  if (trading.days && trading.days.length > 0) {
+    weekPnL = trading.days.reduce((sum, d) => sum + (d.pnl || 0), 0);
+  }
+
+  // Get points for the current week from challenge days
+  let oldChallengePts = 0;
+  if (challenge.days && challenge.days[currentWeekKey]) {
+    // Count the points from the challenge days
+    const weekChallengeDays = Object.entries(challenge.days)
+      .filter(([date]) => {
+        const d = new Date(date + 'T00:00:00Z');
+        const cwd = new Date(currentWeekKey + 'T00:00:00Z');
+        const nextWeek = new Date(cwd);
+        nextWeek.setDate(nextWeek.getDate() + 7);
+        return d >= cwd && d < nextWeek;
+      });
+    oldChallengePts = weekChallengeDays.reduce((sum, [, day]) => sum + (day.points || 0), 0);
+  }
+
+  // Get review data for this week
+  const reviewKey = getWeekKeyForDate(currentWeekKey);
+  const weekReview = review.weeks && review.weeks[reviewKey] ? review.weeks[reviewKey] : {};
+
+  // Push the current week as archived
+  analytics.weeks.push({
+    weekKey: currentWeekKey,
+    trading: { pnl: weekPnL, days: trading.days ? trading.days.slice() : [] },
+    challenge: { streak: 0, points: oldChallengePts, days: challenge.days ? Object.assign({}, challenge.days) : {} },
+    fitness: { days: fitness.days ? Object.assign({}, fitness.days) : {} },
+    review: weekReview
+  });
+
+  // Keep only last 2 weeks in analytics
+  if (analytics.weeks.length > 2) {
+    analytics.weeks = analytics.weeks.slice(-2);
+  }
+
+  // Create blank days for new week
+  const BLANK_DAYS = () => {
+    const days = [];
+    for (let i = 0; i < 5; i++) {
+      days.push({ date: '', pnl: 0, result: 'upcoming', grade: '', rr: '', notes: '', setup: '', tags: [] });
+    }
+    return days;
+  };
+
+  // Reset trading for new week
+  const newWeekKey = getPreviousWeekKey(currentWeekKey).split('-');
+  const nextMonday = new Date(currentWeekKey + 'T00:00:00Z');
+  nextMonday.setDate(nextMonday.getDate() + 7);
+  const nextWeek = nextMonday.getUTCFullYear() + '-' +
+    String(nextMonday.getUTCMonth() + 1).padStart(2, '0') + '-' +
+    String(nextMonday.getUTCDate()).padStart(2, '0');
+
+  trading.weekKey = nextWeek;
+  trading.days = BLANK_DAYS();
+
+  // Save all updated data
+  localStorage.setItem('nqx-analytics', JSON.stringify(analytics));
+  localStorage.setItem('nqx-data', JSON.stringify(trading));
+
+  const msg = `
+    <div class="status success">
+      ✅ <strong>Migration Complete!</strong><br>
+      Moved week ${currentWeekKey} → Analytics (archived)<br>
+      New current week: ${nextWeek}<br>
+      <br>
+      P&L: ${weekPnL}<br>
+      Challenge Points: ${oldChallengePts}<br>
+      <br>
+      <em>Refresh the page to see changes in the dashboard</em>
+    </div>
+  `;
+  document.getElementById('migrationStatus').innerHTML = msg;
+
+  setTimeout(displayStatus, 500);
+}
+
+function clearCurrentWeek() {
+  if (confirm('⚠️ Clear all data from current week? This cannot be undone.')) {
+    const trading = JSON.parse(localStorage.getItem('nqx-data') || '{}');
+
+    const BLANK_DAYS = () => {
+      const days = [];
+      for (let i = 0; i < 5; i++) {
+        days.push({ date: '', pnl: 0, result: 'upcoming', grade: '', rr: '', notes: '', setup: '', tags: [] });
+      }
+      return days;
+    };
+
+    trading.days = BLANK_DAYS();
+    localStorage.setItem('nqx-data', JSON.stringify(trading));
+
+    document.getElementById('migrationStatus').innerHTML = '<div class="status success">✅ Current week cleared</div>';
+    setTimeout(displayStatus, 500);
+  }
+}
+
+displayStatus();
+</script>
+
+</body>
+</html>
