@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Debug localStorage</title>
+<style>
+body { background: #0a0a0a; color: #00FF88; font-family: monospace; padding: 20px; }
+pre { background: #161616; padding: 15px; border-radius: 8px; overflow-x: auto; border: 1px solid #00FF88; }
+button { background: #00FF88; color: #000; padding: 10px 15px; border: none; cursor: pointer; margin: 5px; }
+</style>
+</head>
+<body>
+<h1>localStorage Debug</h1>
+
+<h2>nqx-data (Current Week)</h2>
+<pre id="nqxData"></pre>
+
+<h2>nqx-analytics (Archived Weeks)</h2>
+<pre id="nqxAnalytics"></pre>
+
+<h2>nqx-review (Weekly Reviews)</h2>
+<pre id="nqxReview"></pre>
+
+<h2>Actions</h2>
+<button onclick="fixData()">🔧 Auto-Fix: Move Data to Previous Week</button>
+<button onclick="clearAll()">🗑️ CLEAR ALL DATA (dangerous!)</button>
+
+<h2>Result</h2>
+<pre id="result"></pre>
+
+<script>
+function showData() {
+  document.getElementById('nqxData').textContent = JSON.stringify(JSON.parse(localStorage.getItem('nqx-data') || '{}'), null, 2);
+  document.getElementById('nqxAnalytics').textContent = JSON.stringify(JSON.parse(localStorage.getItem('nqx-analytics') || '{}'), null, 2);
+  document.getElementById('nqxReview').textContent = JSON.stringify(JSON.parse(localStorage.getItem('nqx-review') || '{}'), null, 2);
+}
+
+function fixData() {
+  const trading = JSON.parse(localStorage.getItem('nqx-data') || '{}');
+  const analytics = JSON.parse(localStorage.getItem('nqx-analytics') || '{"weeks":[]}');
+  const review = JSON.parse(localStorage.getItem('nqx-review') || '{"weeks":{}}');
+
+  // If current week has old data, move it to analytics
+  const hasDataInCurrent = trading.days && trading.days.some(d => d.pnl !== 0 || d.result !== 'upcoming');
+
+  if (hasDataInCurrent) {
+    // Create new blank days
+    const newDays = [];
+    for (let i = 0; i < 5; i++) {
+      newDays.push({ date: '', pnl: 0, result: 'upcoming', grade: '', rr: '', notes: '', setup: '', tags: [] });
+    }
+
+    // Archive current week
+    let weekPnL = trading.days.reduce((sum, d) => sum + (d.pnl || 0), 0);
+    analytics.weeks.push({
+      weekKey: trading.weekKey,
+      trading: { pnl: weekPnL, days: trading.days.slice() },
+      challenge: { points: 0, days: {} },
+      fitness: { days: {} },
+      review: {}
+    });
+
+    // Keep only last 2
+    if (analytics.weeks.length > 2) {
+      analytics.weeks = analytics.weeks.slice(-2);
+    }
+
+    // Get next week Monday
+    const currentDate = new Date(trading.weekKey + 'T00:00:00Z');
+    const nextMonday = new Date(currentDate);
+    nextMonday.setDate(nextMonday.getDate() + 7);
+    const nextWeekKey = nextMonday.getUTCFullYear() + '-' +
+      String(nextMonday.getUTCMonth() + 1).padStart(2, '0') + '-' +
+      String(nextMonday.getUTCDate()).padStart(2, '0');
+
+    // Update trading
+    trading.weekKey = nextWeekKey;
+    trading.days = newDays;
+
+    // Save
+    localStorage.setItem('nqx-data', JSON.stringify(trading));
+    localStorage.setItem('nqx-analytics', JSON.stringify(analytics));
+
+    document.getElementById('result').textContent = '✅ Fixed!\n\nMoved ' + trading.weekKey + ' data to analytics\nNew current week: ' + nextWeekKey + '\n\nRefresh your dashboard now.';
+  } else {
+    document.getElementById('result').textContent = '⚠️ Current week has no data to move';
+  }
+
+  setTimeout(showData, 500);
+}
+
+function clearAll() {
+  if (confirm('⚠️⚠️⚠️ DELETE ALL DATA? This cannot be undone!')) {
+    localStorage.clear();
+    document.getElementById('result').textContent = '🗑️ All data cleared';
+    setTimeout(showData, 500);
+  }
+}
+
+showData();
+</script>
+</body>
+</html>
