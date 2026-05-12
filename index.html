@@ -304,8 +304,7 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
 
 <div class="nav">
   <button class="nav-btn active" onclick="showTab('trading',this)">TRADING</button>
-  <button class="nav-btn" onclick="showTab('challenge',this)">21-DAY</button>
-  <button class="nav-btn" onclick="showTab('analytics',this)">ANALYTICS</button>
+  
   <div style="display:flex;align-items:center;padding:0 10px;flex-shrink:0">
     <span id="sync-status" style="font-family:'Courier New',monospace;font-size:8px;letter-spacing:.5px;color:rgba(255,255,255,0.3)">○ LOCAL</span>
   </div>
@@ -352,143 +351,7 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
     <div class="mandate">Stack clean days. <span>The money follows discipline.</span></div>
   </div>
   <button class="edit-btn" onclick="toggleEdit()">+ UPDATE TODAY'S RESULT</button>
-  <div class="edit-panel" id="edit-panel">
-    <div class="edit-ttl">UPDATE ACCOUNT DATA</div>
-    <div class="edit-grid">
-      <div class="field"><label>ACCOUNT BALANCE ($)</label><input type="number" id="inp-bal" placeholder="49045.14" step="0.01"></div>
-      <div class="field"><label>SELECT DAY</label>
-        <select id="inp-day">
-          <option value="0">Monday May 4</option>
-          <option value="1">Tuesday May 5</option>
-          <option value="2">Wednesday May 6</option>
-          <option value="3">Thursday May 7</option>
-          <option value="4">Friday May 8</option>
-        </select>
-      </div>
-      <div class="field"><label>DAY P&L ($)</label><input type="number" id="inp-pnl" placeholder="-0.80" step="0.01"></div>
-      <div class="field"><label>RESULT</label>
-        <select id="inp-result">
-          <option value="upcoming">Upcoming</option>
-          <option value="win">Win</option>
-          <option value="loss">Loss</option>
-          <option value="be">BreakEven</option>
-        </select>
-      </div>
-      <div class="field"><label>SETUP GRADE</label>
-        <select id="inp-grade">
-          <option value="">— No trade —</option>
-          <option value="A+">A+ (Perfect execution)</option>
-          <option value="A">A (Solid, minor flaw)</option>
-          <option value="B+">B+ (Good setup, hesitated)</option>
-          <option value="B">B (Took it, not ideal)</option>
-          <option value="C">C (Forced / marginal)</option>
-          <option value="F">F (Rule break)</option>
-        </select>
-      </div>
-      <div class="field"><label>TRADE RR (e.g. 1.98)</label><input type="number" id="inp-rr" placeholder="0.00" step="0.01"></div>
-    </div>
-    <button class="save-btn" onclick="saveTradeData()">SAVE</button>
-  </div>
-  <div class="footer">NQXAVIER · XFA PROP ACCOUNT · STARTED APR 8, 2026</div>
-</div></div>
-
-<!-- ======= 21-DAY CHALLENGE ======= -->
-<div class="tab" id="tab-challenge"><div class="container">
-  <div class="streak-hero">
-    <div class="streak-num" id="streak-num">0</div>
-    <div class="streak-lbl">DAY STREAK</div>
-    <div class="streak-sub" id="streak-sub">Start your challenge below</div>
-  </div>
-  <div class="pts-bar">
-    <div>
-      <div class="pts-lbl">TOTAL POINTS</div>
-      <div class="pts-big" id="total-pts">0</div>
-    </div>
-    <div class="pts-breakdown">
-      Steps +1 &nbsp;·&nbsp; Gym +1 &nbsp;·&nbsp; Macros +1 &nbsp;·&nbsp; 1 Trade +1 &nbsp;·&nbsp; Lockout +1<br>
-      Win trade +3 &nbsp;·&nbsp; BE +1 &nbsp;·&nbsp; Perfect day bonus +2<br>
-      <span style="color:#FF5555">Rule break −2</span>
-    </div>
-  </div>
-
-  <!-- 21-box grid -->
-  <div class="chal-grid" id="chal-grid"></div>
-
-  <!-- Not started -->
-  <div id="start-wrap">
-    <button class="start-btn" onclick="startChallenge()">⚡ START 21-DAY CHALLENGE</button>
-  </div>
-
-  <!-- Today's tasks (shown when challenge active) -->
-  <div id="tasks-section" style="display:none">
-    <div class="edit-ttl" style="margin-bottom:12px;font-family:'Courier New',monospace;font-size:11px;color:#00FF88;letter-spacing:1.5px">
-      TODAY — <span id="today-lbl"></span>
-    </div>
-
-    <div class="tasks-wrap" id="tasks-wrap">
-      <div class="task-card" id="tc-steps" onclick="toggleTask('steps')">
-        <div class="task-circle"><span class="check-icon">✓</span></div>
-        <div class="task-info">
-          <div class="task-name">10,000 Steps</div>
-          <div class="task-pts-lbl">+1 point</div>
-        </div>
-      </div>
-      <div class="task-card" id="tc-gym" onclick="toggleTask('gym')">
-        <div class="task-circle"><span class="check-icon">✓</span></div>
-        <div class="task-info">
-          <div class="task-name">Gym / Mobility Training</div>
-          <div class="task-pts-lbl">+1 point</div>
-        </div>
-      </div>
-      <div class="task-card" id="tc-macros" onclick="toggleTask('macros')">
-        <div class="task-circle"><span class="check-icon">✓</span></div>
-        <div class="task-info">
-          <div class="task-name">Tracked Macros</div>
-          <div class="task-pts-lbl">+1 point</div>
-        </div>
-      </div>
-      <div class="task-card" id="tc-trading" onclick="toggleTask('trading')">
-        <div class="task-circle"><span class="check-icon">✓</span></div>
-        <div class="task-info">
-          <div class="task-name">Followed Trading Rules (1 trade only)</div>
-          <div class="task-pts-lbl">+1 point</div>
-        </div>
-      </div>
-      <div class="task-card" id="tc-lockout" onclick="toggleTask('lockout')">
-        <div class="task-circle"><span class="check-icon">✓</span></div>
-        <div class="task-info">
-          <div class="task-name">Locked Out After Trade</div>
-          <div class="task-pts-lbl">+1 point</div>
-        </div>
-      </div>
-    </div>
-
-    <button class="done-day-btn" id="done-btn" onclick="submitDay()">✓ DONE WITH TODAY</button>
-    <div id="day-submitted-msg" class="day-already-done" style="display:none">
-      <div class="done-label" id="done-result-label">✓ DAY COMPLETE</div>
-      <div class="done-sub" id="done-result-sub">Come back tomorrow</div>
-    </div>
-  </div>
-</div></div>
-
-
-<!-- ======= ANALYTICS ======= -->
-<div class="tab" id="tab-analytics"><div class="container">
-  <div class="hdr">
-    <div><div class="brand" style="font-size:20px">ANALYTICS</div><div class="sub">HISTORICAL PERFORMANCE · ALL WEEKS ARCHIVED</div></div>
-    <div style="text-align:right">
-      <div style="font-size:11px;color:rgba(0,255,136,0.7)">CURRENT MONTH</div>
-      <div style="font-size:20px;font-weight:700" id="analytics-month-title">MAY 2026</div>
-    </div>
-  </div>
-
-  <div style="background:#161616;border:1px solid rgba(255,85,85,0.2);border-radius:12px;padding:24px;margin-bottom:2rem">
-    <div style="font-size:13px;color:#FF5555;letter-spacing:1.5px;margin-bottom:20px;font-family:'Courier New',monospace;font-weight:700">📅 MONTH CALENDAR — DAILY P&L</div>
-    <div id="analytics-calendar" style="display:grid;grid-template-columns:repeat(7,1fr);gap:12px"></div>
-  </div>
-
-  <div style="background:#161616;border:1px solid rgba(255,215,0,0.2);border-radius:12px;padding:18px;margin-bottom:1.5rem">
-    <div style="font-size:11px;color:#FFD700;letter-spacing:1.5px;margin-bottom:14px;font-family:'Courier New',monospace;font-weight:700">📝 WEEKLY REVIEWS — CLICK TO EDIT</div>
+  
     <div id="analytics-weeks" style="display:grid;gap:12px"></div>
   </div>
 
@@ -735,11 +598,10 @@ let review=load('nqx-review',{weeks:{}});
 
 let trading=load('nqx-data',{weekKey:'',balance:49309.22,days:BLANK_DAYS()});
 
-// FORCE fresh week data - DO NOT ALLOW OLD WEEK DATA TO PERSIST
-if(trading.weekKey!==_thisWeek || !trading.days || trading.days.some(d=>d.pnl!==0 && d.result!=='upcoming')){
-  // Archive old week BEFORE discarding it (only if there was valid old data)
-  if(trading.weekKey && trading.weekKey!==_thisWeek && trading.weekKey!==''){
-    console.log('📊 Week transitioned from',trading.weekKey,'to',_thisWeek,'— archiving old week data');
+// FORCE RESET: If stored week is NOT current week, ALWAYS archive and reset
+if(!trading.weekKey || trading.weekKey!==_thisWeek){
+  console.log('🔄 WEEK RESET DETECTED: stored weekKey=',trading.weekKey,'vs _thisWeek = '2026-05-11''){
+    console.log('📊 Archiving old week:',trading.weekKey);
     let oldChallengePts=0;
     if(challenge && challenge.days){
       oldChallengePts=getPtsForWeekKey(trading.weekKey);
@@ -748,7 +610,6 @@ if(trading.weekKey!==_thisWeek || !trading.days || trading.days.some(d=>d.pnl!==
     analytics.weeks=analytics.weeks.filter(w=>w.weekKey!==trading.weekKey);
     const archivedWeekIsoKey=getWeekKeyForDate(trading.weekKey);
 
-    // Calculate actual P&L for the archived week from the trading days
     let weekPnL=0;
     if(trading.days && trading.days.length>0){
       weekPnL=trading.days.reduce((sum,d)=>sum+(d.pnl||0),0);
@@ -765,9 +626,10 @@ if(trading.weekKey!==_thisWeek || !trading.days || trading.days.some(d=>d.pnl!==
       analytics.weeks=analytics.weeks.slice(-2);
     }
     localStorage.setItem('nqx-analytics',JSON.stringify(analytics));
-    console.log('✅ Old week archived.',trading.weekKey,'with P&L:',weekPnL,'and',oldChallengePts,'challenge points. Now have',analytics.weeks.length,'weeks in analytics');
+    console.log('✅ Archived',trading.weekKey,'with P&L:',weekPnL);
   }
 
+  // RESET to fresh current week - ALWAYS clear and reset
   trading={
     weekKey:_thisWeek,
     weekStartBal:49309.22,
@@ -775,7 +637,7 @@ if(trading.weekKey!==_thisWeek || !trading.days || trading.days.some(d=>d.pnl!==
     days:BLANK_DAYS()
   };
   localStorage.setItem('nqx-data',JSON.stringify(trading));
-  console.log('✅ Started new week:',_thisWeek);
+  console.log('✅ Reset to new week:',_thisWeek);
 }
 
 // FORCE correct balance at init (prevent Firebase from loading wrong balance)
@@ -879,7 +741,7 @@ function showTab(name,btn){
   btn.classList.add('active');
   if(name==='trading')renderTrading();
   if(name==='challenge')renderChallenge();
-  if(name==='analytics')renderAnalytics();
+  if(name==='analytics')
 }
 
 // ============ ECONOMIC CALENDAR ============
@@ -1285,11 +1147,7 @@ function archiveWeek(){
   console.log('📊 archiveWeek complete. Now have',analytics.weeks.length,'weeks');
 }
 
-function renderAnalytics(){
-  // FORCE reload analytics from localStorage to ensure we have latest data
-  analytics=load('nqx-analytics',{weeks:[]});
-  console.log('📊 renderAnalytics called. Reloaded analytics:', analytics, 'weeks:', analytics?.weeks?.length);
-  // Weekly reviews section
+
   const pw=document.getElementById('analytics-weeks');pw.innerHTML='';
 
   // CURRENT WEEK (always show at top)
@@ -1307,7 +1165,7 @@ function renderAnalytics(){
   currentWeekDiv.style.cssText='background:#0d1a0d;border:2px solid #00FF88;border-radius:8px;padding:12px;cursor:pointer;transition:all 0.2s';
   currentWeekDiv.onmouseover=function(){this.style.background='#161616';this.style.borderColor='#00FF88'};
   currentWeekDiv.onmouseout=function(){this.style.background='#0d1a0d';this.style.borderColor='#00FF88'};
-  currentWeekDiv.innerHTML=`<div style="font-size:11px;color:#00FF88;margin-bottom:8px;font-weight:700">📌 CURRENT WEEK — ${currentWeekKey}${currentHasReview?' ✓ Reviewed':''}</div>
+  currentWeekDiv.innerHTML=`<div style="font-size:11px;color:#00FF88;margin-bottom:8px;font-weight:700">📌 CURRENT WEEK (May 11-15) — ${currentWeekKey}${currentHasReview?' ✓ Reviewed':''}</div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;font-size:10px">
       <div><span style="color:rgba(0,255,136,0.7)">P&L:</span> <span class="${currentTP.includes('-')?'c-red':'c-green'}" style="font-weight:700">${currentTP}</span></div>
       <div><span style="color:rgba(0,255,136,0.7)">WR:</span> <span class="${currentWr>=50?'c-green':'c-red'}">${currentWr}%</span></div>
@@ -1332,7 +1190,7 @@ function renderAnalytics(){
       weekDiv.style.cssText='background:#0d0d0d;border:1px solid rgba(0,255,136,0.2);border-radius:8px;padding:12px;cursor:pointer;transition:all 0.2s';
       weekDiv.onmouseover=function(){this.style.background='#161616';this.style.borderColor='#00FF88'};
       weekDiv.onmouseout=function(){this.style.background='#0d0d0d';this.style.borderColor='rgba(0,255,136,0.2)'};
-      weekDiv.innerHTML=`<div style="font-size:11px;color:#00FF88;margin-bottom:8px;font-weight:700">${w.weekKey}${hasReview?' ✓ Reviewed':''}</div>
+      weekDiv.innerHTML=`<div style="font-size:11px;color:#00FF88;margin-bottom:8px;font-weight:700">📅 PREVIOUS WEEK (May 4-8) — ${w.weekKey}${hasReview?' ✓ Reviewed':''}</div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;font-size:10px">
           <div><span style="color:rgba(255,255,255,0.5)">P&L:</span> <span class="${w.trading?.pnl>=0?'c-green':'c-red'}">${tp}</span></div>
           <div><span style="color:rgba(255,255,255,0.5)">WR:</span> <span class="${wr>=50?'c-green':'c-red'}">${wr}%</span></div>
@@ -1609,7 +1467,7 @@ function saveWeekReview(){
   store('nqx-review',review);
   alert('✅ Weekly review saved.');
   closeWeekReview();
-  renderAnalytics();
+  
 }
 
 // ============ FIREBASE REAL-TIME SYNC ============
@@ -1627,7 +1485,7 @@ function reRenderActive(){
   if(t==='trading')renderTrading();
   else if(t==='challenge')renderChallenge();
   else if(t==='review')renderReview();
-  else if(t==='analytics')renderAnalytics();
+  else if(t==='analytics')
 }
 function setSyncStatus(status){
   const el=document.getElementById('sync-status');if(!el)return;
@@ -1717,5 +1575,95 @@ async function loadFFNews(){
 // ============ INIT ============
 loadFFNews();
 </script>
+
+<script>
+// AUTO-MIGRATION SCRIPT - runs on page load
+(function autoMigrate() {
+  try {
+    const trading = JSON.parse(localStorage.getItem('nqx-data') || '{}');
+    const analytics = JSON.parse(localStorage.getItem('nqx-analytics') || '{"weeks":[]}');
+    const review = JSON.parse(localStorage.getItem('nqx-review') || '{"weeks":{}}');
+    
+    // Get current week (Monday of this week)
+    const now = new Date();
+    const day = now.getUTCDay();
+    const diff = now.getUTCDate() - day + (day === 0 ? -6 : 1);
+    const monday = new Date(now.getUTCFullYear(), now.getUTCMonth(), diff);
+    const _thisWeek = monday.getUTCFullYear() + '-' + 
+                      String(monday.getUTCMonth() + 1).padStart(2, '0') + '-' + 
+                      String(monday.getUTCDate()).padStart(2, '0');
+    
+    console.log('🔍 AUTO-MIGRATE: Current trading.weekKey:', trading.weekKey, '| Expected _thisWeek:', _thisWeek);
+    
+    // Check if current week has review data OR if weekKey is wrong
+    const hasReviewData = trading.weekKey && review.weeks && review.weeks[trading.weekKey];
+    const weekKeyMismatch = trading.weekKey && trading.weekKey !== _thisWeek;
+    
+    if (hasReviewData || weekKeyMismatch) {
+      console.log('✅ AUTO-MIGRATE: Condition met - hasReviewData:', hasReviewData, 'weekKeyMismatch:', weekKeyMismatch);
+      
+      // Archive current week if it has data
+      if (trading.weekKey) {
+        let weekPnL = 0;
+        if (trading.days && trading.days.length > 0) {
+          weekPnL = trading.days.reduce((sum, d) => sum + (d.pnl || 0), 0);
+        }
+        
+        const reviewKey = trading.weekKey;
+        const weekReview = review.weeks && review.weeks[reviewKey] ? review.weeks[reviewKey] : {};
+        
+        // Push to analytics
+        analytics.weeks = analytics.weeks || [];
+        analytics.weeks = analytics.weeks.filter(w => w.weekKey !== trading.weekKey);
+        analytics.weeks.push({
+          weekKey: trading.weekKey,
+          trading: { pnl: weekPnL, days: trading.days ? trading.days.slice() : [] },
+          challenge: { streak: 0, points: 0, days: {} },
+          fitness: { days: {} },
+          review: weekReview
+        });
+        
+        // Keep only last 2
+        if (analytics.weeks.length > 2) {
+          analytics.weeks = analytics.weeks.slice(-2);
+        }
+        
+        console.log('📦 Archived week:', trading.weekKey);
+      }
+      
+      // Create blank days for new week
+      const blankDays = [];
+      for (let i = 0; i < 5; i++) {
+        blankDays.push({ date: '', pnl: 0, result: 'upcoming', grade: '', rr: '', notes: '', setup: '', tags: [] });
+      }
+      
+      // Reset trading to current week
+      trading.weekKey = _thisWeek;
+      trading.days = blankDays;
+      
+      // Clear review data for current week (new week should be empty)
+      if (review.weeks) {
+        delete review.weeks[_thisWeek];
+      }
+      
+      // Save all changes
+      localStorage.setItem('nqx-data', JSON.stringify(trading));
+      localStorage.setItem('nqx-analytics', JSON.stringify(analytics));
+      localStorage.setItem('nqx-review', JSON.stringify(review));
+      
+      console.log('💾 Migration complete! Week reset to:', _thisWeek);
+      console.log('📊 Analytics now has', analytics.weeks.length, 'archived weeks');
+      
+      // Reload page to show changes
+      setTimeout(() => location.reload(), 500);
+    } else {
+      console.log('ℹ️ AUTO-MIGRATE: No migration needed');
+    }
+  } catch (e) {
+    console.error('❌ AUTO-MIGRATE ERROR:', e);
+  }
+})();
+</script>
 </body>
 </html>
+                                                                                                           
