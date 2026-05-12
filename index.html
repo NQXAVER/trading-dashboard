@@ -332,9 +332,9 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
     <div class="buf-track"><div class="buf-fill" id="buf-bar" style="width:0%"></div></div>
   </div>
   <div class="cal" id="cal"></div>
-  <div style="background:rgba(255,85,85,0.08);border:2px solid #FF5555;border-radius:12px;padding:16px;margin-bottom:1.25rem;text-align:center">
-    <div style="font-size:16px;font-weight:700;color:#FF5555;letter-spacing:1px;font-family:'Courier New',monospace">🔒 YOU GET PAID TO BE DISCIPLINED</div>
-    <div style="font-size:12px;color:rgba(255,255,255,0.65);margin-top:6px;line-height:1.6">Stay disciplined. Bad conditions = no entry. Missing one trade hurts less than forcing one. Discipline > Greed.</div>
+  <div style="background:rgba(91,184,255,0.08);border:2px solid #4D9FFF;border-radius:12px;padding:16px;margin-bottom:1.25rem;text-align:center">
+    <div style="font-size:16px;font-weight:700;color:#4D9FFF;letter-spacing:1px;font-family:'Courier New',monospace">🔒 YOU GET PAID TO BE DISCIPLINED</div>
+    <div style="font-size:12px;color:#4D9FFF;margin-top:6px;line-height:1.6">No trade day is a win. Discipline > Greed.</div>
   </div>
   <div class="rules-box">
     <div class="rules-ttl">NON-NEGOTIABLE RULES</div>
@@ -732,6 +732,32 @@ let trading=load('nqx-data',{weekKey:'',balance:49309.22,days:BLANK_DAYS()});
 
 // FORCE fresh week data - DO NOT ALLOW OLD WEEK DATA TO PERSIST
 if(trading.weekKey!==_thisWeek || !trading.days || trading.days.some(d=>d.pnl!==0 && d.result!=='upcoming')){
+  // Archive old week BEFORE discarding it (only if there was valid old data)
+  if(trading.weekKey && trading.weekKey!==_thisWeek && trading.weekKey!==''){
+    console.log('📊 Week transitioned from',trading.weekKey,'to',_thisWeek,'— archiving old week data');
+    // Note: challenge and fitness points will be calculated from stored data when renderAnalytics is called
+    // We'll calculate them here at archive time for accuracy
+    let oldChallengePts=0;
+    if(challenge && challenge.days){
+      oldChallengePts=getPtsForWeekKey(trading.weekKey);
+    }
+    let analytics=load('nqx-analytics',{weeks:[]});
+    analytics.weeks=analytics.weeks.filter(w=>w.weekKey!==trading.weekKey);
+    const archivedWeekIsoKey=getWeekKeyForDate(trading.weekKey);
+    analytics.weeks.push({
+      weekKey:trading.weekKey,
+      trading:{pnl:trading.balance-(trading.weekStartBal||49309.22),days:trading.days.slice()},
+      challenge:{streak:0,points:oldChallengePts,days:challenge?Object.assign({},challenge.days):{}},
+      fitness:{days:fitness?Object.assign({},fitness.days):{}},
+      review:review.weeks&&review.weeks[archivedWeekIsoKey]?review.weeks[archivedWeekIsoKey]:{}
+    });
+    if(analytics.weeks.length>2){
+      analytics.weeks=analytics.weeks.slice(-2);
+    }
+    localStorage.setItem('nqx-analytics',JSON.stringify(analytics));
+    console.log('✅ Old week archived.',trading.weekKey,'with',oldChallengePts,'challenge points. Now have',analytics.weeks.length,'weeks in analytics');
+  }
+
   trading={
     weekKey:_thisWeek,
     weekStartBal:49309.22,
@@ -802,6 +828,7 @@ let ffNews={};
 function getToday(){const n=new Date(),p=x=>String(x).padStart(2,'0');return n.getFullYear()+'-'+p(n.getMonth()+1)+'-'+p(n.getDate())}
 function fmt(n){const a=Math.abs(n).toFixed(2);return(n<0?'-$':'+$')+Number(a).toLocaleString('en-US',{minimumFractionDigits:2})}
 function getWeekKey(){const d=new Date(),j=new Date(d.getFullYear(),0,1),w=Math.ceil(((d-j)/86400000+j.getDay()+1)/7);return d.getFullYear()+'-W'+w}
+function getWeekKeyForDate(dateStr){const d=new Date(dateStr+'T00:00:00'),j=new Date(d.getFullYear(),0,1),w=Math.ceil(((d-j)/86400000+j.getDay()+1)/7);return d.getFullYear()+'-W'+w}
 
 // ============ TAB SWITCH ============
 function showTab(name,btn){
@@ -928,6 +955,21 @@ function getCurrentWeekPts(){
       pts+=(dayData.points||0);
     }
   });
+  return pts;
+}
+function getPtsForWeekKey(weekKeyMonday){
+  // Calculate challenge points for a specific week given its Monday date (YYYY-MM-DD)
+  let pts=0;
+  const d=new Date(weekKeyMonday+'T00:00:00');
+  const p=x=>String(x).padStart(2,'0');
+  for(let i=0;i<5;i++){
+    const dayKey=d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());
+    const dayData=challenge.days[dayKey];
+    if(dayData&&dayData.submitted){
+      pts+=(dayData.points||0);
+    }
+    d.setDate(d.getDate()+1);
+  }
   return pts;
 }
 function getWeekdayN(startStr,n){
