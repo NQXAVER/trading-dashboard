@@ -755,6 +755,13 @@ if(trading.days && trading.days.length > 0 && trading.days[0].result==='upcoming
   localStorage.setItem('nqx-data', JSON.stringify(trading));
 }
 
+// SET TUESDAY (MAY 12) TO LOSS
+if(trading.days && trading.days.length > 1 && trading.days[1].result==='upcoming'){
+  trading.days[1] = {result: 'loss', pnl: -244.64};
+  trading.balance = 49064.58;
+  localStorage.setItem('nqx-data', JSON.stringify(trading));
+}
+
 // AUTO-RESET ON SATURDAY AT 12 AM
 function checkAndResetWeekOnSaturday(){
   const now=new Date();
