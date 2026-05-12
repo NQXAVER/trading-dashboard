@@ -749,6 +749,12 @@ if(!trading.balance || trading.balance!==49309.22){
 
 if(!trading.weekStartBal)trading.weekStartBal=WEEK_START_BAL;
 
+// SET MONDAY (MAY 11) TO BREAKEVEN
+if(trading.days && trading.days.length > 0 && trading.days[0].result==='upcoming'){
+  trading.days[0] = {result: 'be', pnl: 0};
+  localStorage.setItem('nqx-data', JSON.stringify(trading));
+}
+
 // AUTO-RESET ON SATURDAY AT 12 AM
 function checkAndResetWeekOnSaturday(){
   const now=new Date();
