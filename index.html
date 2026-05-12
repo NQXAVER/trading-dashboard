@@ -602,7 +602,7 @@ const FB_CONFIG = {
   messagingSenderId: "893478056163",
   appId:             "1:893478056163:web:0735603527dcc4e40b95d6"
 };
-const USE_FB = FB_CONFIG.databaseURL !== "";
+const USE_FB = false; // Disabled Firebase sync to prevent cloud data overwriting local changes
 let db = null;
 if(USE_FB){
   firebase.initializeApp(FB_CONFIG);
