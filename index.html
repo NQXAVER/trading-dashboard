@@ -1395,6 +1395,9 @@ function renderAnalytics(){
 
 let currentDayDateStr='';
 function openDayDetail(dateStr){
+  // Reload fitness data from localStorage to ensure we have latest
+  fitness=load('nqx-fitness',{days:{}});
+
   const modal=document.getElementById('day-detail-modal');
   if(!modal){
     console.error('Modal not found');
