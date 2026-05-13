@@ -537,9 +537,19 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
       </div>
 
       <!-- Daily Notes -->
-      <div style="background:#161616;border:1px solid rgba(255,85,85,0.2);border-radius:8px;padding:16px">
+      <div style="background:#161616;border:1px solid rgba(255,85,85,0.2);border-radius:8px;padding:16px;margin-bottom:16px">
         <div style="font-size:11px;color:#FF5555;letter-spacing:1px;margin-bottom:10px;font-weight:700;font-family:'Courier New',monospace">DAILY NOTES</div>
-        <div id="day-notes" style="font-size:12px;color:rgba(255,255,255,0.7);line-height:1.8;font-style:italic">—</div>
+        <textarea id="day-notes-edit" style="width:100%;background:#0d0d0d;border:1px solid rgba(255,85,85,0.2);border-radius:6px;color:rgba(255,255,255,0.85);font-family:'Inter',sans-serif;font-size:12px;padding:10px;outline:none;resize:vertical;min-height:80px;line-height:1.6" placeholder="Add your daily notes..."></textarea>
+      </div>
+
+      <!-- Fitness Data -->
+      <div style="background:#161616;border:1px solid rgba(91,184,255,0.2);border-radius:8px;padding:16px">
+        <div style="font-size:11px;color:#5BB8FF;letter-spacing:1px;margin-bottom:12px;font-weight:700;font-family:'Courier New',monospace">EDIT FITNESS DATA</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div><label style="display:block;font-size:10px;color:rgba(91,184,255,0.7);margin-bottom:5px">STEPS</label><input type="number" id="day-steps-edit" style="width:100%;background:#0d0d0d;border:1px solid rgba(91,184,255,0.2);border-radius:6px;color:#5BB8FF;font-family:'Inter',sans-serif;font-size:12px;padding:8px;outline:none" placeholder="0"></div>
+          <div><label style="display:block;font-size:10px;color:rgba(91,184,255,0.7);margin-bottom:5px">WEIGHT (lbs)</label><input type="number" id="day-weight-edit" style="width:100%;background:#0d0d0d;border:1px solid rgba(91,184,255,0.2);border-radius:6px;color:#5BB8FF;font-family:'Inter',sans-serif;font-size:12px;padding:8px;outline:none" placeholder="0" step="0.1"></div>
+        </div>
+        <button onclick="saveDayData()" style="width:100%;background:#5BB8FF;color:#080808;border:none;font-family:'Courier New',monospace;font-size:11px;font-weight:700;letter-spacing:1px;padding:10px;border-radius:6px;cursor:pointer;margin-top:12px;transition:background 0.2s">SAVE DAY</button>
       </div>
     </div>
   </div>
@@ -757,8 +767,19 @@ if(trading.days && trading.days.length > 0 && trading.days[0].result==='upcoming
 
 // SET TUESDAY (MAY 12) TO LOSS
 if(trading.days && trading.days.length > 1 && trading.days[1].result==='upcoming'){
-  trading.days[1] = {result: 'loss', pnl: -244.64};
+  trading.days[1] = {result: 'loss', pnl: -244.64, grade: 'C'};
   trading.balance = 49064.58;
+  localStorage.setItem('nqx-data', JSON.stringify(trading));
+}
+
+// AUTO-GRADE CURRENT WEEK TRADES
+if(trading.days){
+  // Monday (May 11) - Breakeven: grade as B (solid management to break even)
+  if(trading.days[0] && trading.days[0].result==='be' && !trading.days[0].grade){
+    trading.days[0].grade = 'B';
+  }
+  // Tuesday (May 12) - Loss: already graded as C above
+  // Save if any grades were added
   localStorage.setItem('nqx-data', JSON.stringify(trading));
 }
 
@@ -1305,23 +1326,35 @@ function renderAnalytics(){
 
     let pnl='—',cls='rgba(255,255,255,0.05)';
 
-    // Find P&L for this date
-    if(!isWeekend&&analytics&&analytics.weeks){
-      const diff=d.getDate()-dow+(dow===0?-6:1);
-      const weekMonday=new Date(d.getFullYear(),d.getMonth(),diff);
-      const weekKeyForDate=weekMonday.getFullYear()+'-'+p(weekMonday.getMonth()+1)+'-'+p(weekMonday.getDate());
+    // Find P&L for this date - check CURRENT WEEK first, then archives
+    if(!isWeekend){
+      // Check if date is in current week
+      const currentWeekDayIdx=WEEK_DAYS.findIndex(wd=>wd.date===ds);
+      if(currentWeekDayIdx>=0 && trading.days && trading.days[currentWeekDayIdx]){
+        const dd=trading.days[currentWeekDayIdx];
+        if(dd.pnl!==0||dd.result!=='upcoming'){
+          pnl=fmt(dd.pnl);
+          cls=dd.pnl>=0?'rgba(0,255,136,0.12)':'rgba(255,85,85,0.12)';
+        }
+      }
+      // Otherwise check archived weeks
+      else if(analytics&&analytics.weeks){
+        const diff=d.getDate()-dow+(dow===0?-6:1);
+        const weekMonday=new Date(d.getFullYear(),d.getMonth(),diff);
+        const weekKeyForDate=weekMonday.getFullYear()+'-'+p(weekMonday.getMonth()+1)+'-'+p(weekMonday.getDate());
 
-      for(let w of analytics.weeks){
-        if(w.weekKey===weekKeyForDate){
-          const dayIdx=dow-1;
-          if(dayIdx>=0&&dayIdx<5&&w.trading?.days[dayIdx]){
-            const dd=w.trading.days[dayIdx];
-            if(dd.pnl!==0||dd.result!=='upcoming'){
-              pnl=fmt(dd.pnl);
-              cls=dd.pnl>=0?'rgba(0,255,136,0.12)':'rgba(255,85,85,0.12)';
+        for(let w of analytics.weeks){
+          if(w.weekKey===weekKeyForDate){
+            const dayIdx=dow-1;
+            if(dayIdx>=0&&dayIdx<5&&w.trading?.days[dayIdx]){
+              const dd=w.trading.days[dayIdx];
+              if(dd.pnl!==0||dd.result!=='upcoming'){
+                pnl=fmt(dd.pnl);
+                cls=dd.pnl>=0?'rgba(0,255,136,0.12)':'rgba(255,85,85,0.12)';
+              }
             }
+            break;
           }
-          break;
         }
       }
     }
@@ -1360,12 +1393,15 @@ function renderAnalytics(){
   document.getElementById('analytics-review-count').textContent=analytics?.weeks?.filter(w=>w.review?.well).length||0;
 }
 
+let currentDayDateStr='';
 function openDayDetail(dateStr){
   const modal=document.getElementById('day-detail-modal');
   if(!modal){
     console.error('Modal not found');
     return;
   }
+
+  currentDayDateStr=dateStr;
 
   // Parse date as local time, not UTC
   const parts=dateStr.split('-');
@@ -1386,22 +1422,36 @@ function openDayDetail(dateStr){
   const headerEl=document.getElementById('modal-day-header');
   if(headerEl)headerEl.textContent=dayNames[dow]+', '+monthNames[d.getMonth()]+' '+d.getDate();
 
-  // Find week
-  const diff=d.getDate()-dow+(dow===0?-6:1);
-  const weekMonday=new Date(d.getFullYear(),d.getMonth(),diff);
-  const weekKeyForDate=weekMonday.getFullYear()+'-'+p(weekMonday.getMonth()+1)+'-'+p(weekMonday.getDate());
-  const dayIdx=dow-1;
-  const archivedWeek=analytics&&analytics.weeks?analytics.weeks.find(w=>w.weekKey===weekKeyForDate):null;
+  // Check if date is in current week first
+  const currentWeekDayIdx=WEEK_DAYS.findIndex(wd=>wd.date===dateStr);
+  let tradeData=null, fitData=null, notes='';
+
+  if(currentWeekDayIdx>=0 && trading.days && trading.days[currentWeekDayIdx]){
+    tradeData=trading.days[currentWeekDayIdx];
+    fitData=(fitness&&fitness.days)?fitness.days[dateStr]||{}:{};
+    notes=(fitData.journal||'');
+  } else {
+    // Check archived weeks
+    const diff=d.getDate()-dow+(dow===0?-6:1);
+    const weekMonday=new Date(d.getFullYear(),d.getMonth(),diff);
+    const weekKeyForDate=weekMonday.getFullYear()+'-'+p(weekMonday.getMonth()+1)+'-'+p(weekMonday.getDate());
+    const dayIdx=dow-1;
+    const archivedWeek=analytics&&analytics.weeks?analytics.weeks.find(w=>w.weekKey===weekKeyForDate):null;
+    if(archivedWeek&&archivedWeek.trading&&archivedWeek.trading.days[dayIdx]){
+      tradeData=archivedWeek.trading.days[dayIdx];
+    }
+    fitData=(fitness&&fitness.days)?fitness.days[dateStr]||{}:{};
+    notes=(fitData.journal||'');
+  }
 
   // Trading data
   let pnl='—',result='—',grade='—',rr='—',pnlColor='rgba(255,255,255,0.3)';
-  if(archivedWeek&&archivedWeek.trading&&archivedWeek.trading.days[dayIdx]){
-    const td=archivedWeek.trading.days[dayIdx];
-    pnl=fmt(td.pnl);
-    result=td.result?td.result.toUpperCase():'—';
-    grade=td.grade||'—';
-    rr=td.rr?(td.rr+'R'):'—';
-    pnlColor=td.pnl>=0?'#00FF88':'#FF5555';
+  if(tradeData){
+    pnl=fmt(tradeData.pnl);
+    result=tradeData.result?tradeData.result.toUpperCase():'—';
+    grade=tradeData.grade||'—';
+    rr=tradeData.rr?(tradeData.rr+'R'):'—';
+    pnlColor=tradeData.pnl>=0?'#00FF88':'#FF5555';
   }
 
   const pnlEl=document.getElementById('day-pnl');
@@ -1435,19 +1485,45 @@ function openDayDetail(dateStr){
     });
   }
 
-  // Fitness data
-  const fitData=fitness&&fitness.days?fitness.days[dateStr]:{};
-  const stepsEl=document.getElementById('day-steps');
-  if(stepsEl)stepsEl.textContent=fitData.steps?(fitData.steps.toLocaleString()):'—';
-  const weightEl=document.getElementById('day-weight');
-  if(weightEl)weightEl.textContent=fitData.weight?(fitData.weight+'lbs'):'—';
-  const notesEl=document.getElementById('day-notes');
-  if(notesEl)notesEl.textContent=fitData.journal||'—';
+  // Populate fitness data fields for editing
+  const stepsEditEl=document.getElementById('day-steps-edit');
+  const weightEditEl=document.getElementById('day-weight-edit');
+  const notesEditEl=document.getElementById('day-notes-edit');
+
+  if(stepsEditEl)stepsEditEl.value=fitData.steps||'';
+  if(weightEditEl)weightEditEl.value=fitData.weight||'';
+  if(notesEditEl)notesEditEl.value=notes||'';
 
   // Show modal - ensure visibility
   modal.style.display='block';
   modal.style.visibility='visible';
   modal.style.opacity='1';
+}
+
+function saveDayData(){
+  if(!currentDayDateStr)return;
+
+  // Load or create fitness data for this date
+  if(!fitness.days)fitness.days={};
+  if(!fitness.days[currentDayDateStr])fitness.days[currentDayDateStr]={};
+
+  const steps=parseInt(document.getElementById('day-steps-edit').value)||0;
+  const weight=parseFloat(document.getElementById('day-weight-edit').value)||0;
+  const notes=document.getElementById('day-notes-edit').value||'';
+
+  fitness.days[currentDayDateStr]={
+    steps,
+    weight,
+    gym:fitness.days[currentDayDateStr].gym||false,
+    macros:fitness.days[currentDayDateStr].macros||false,
+    stepsHit:fitness.days[currentDayDateStr].stepsHit||false,
+    journal:notes
+  };
+
+  store('nqx-fitness',fitness);
+  console.log('✅ Day data saved for',currentDayDateStr);
+  closeDayDetail();
+  renderAnalytics();
 }
 
 function closeDayDetail(){
