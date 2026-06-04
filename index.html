@@ -47,6 +47,7 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
 .day.done-loss{border-color:rgba(255,85,85,0.5);background:#160f0f}
 .day.done-win{border-color:rgba(0,255,136,0.5);background:#0c160f}
 .day.done-be{border-color:rgba(91,184,255,0.4);background:#0c1119}
+.day.done-nt{border-color:rgba(255,215,0,0.35);background:#171406}
 .day.today-hl{border:2px solid #00FF88;background:#0b1a10}
 .today-pill{display:none;position:absolute;top:8px;right:8px;font-size:9px;font-weight:700;background:#00FF88;color:#080808;padding:2px 8px;border-radius:3px;letter-spacing:.5px;font-family:'Courier New',monospace}
 .day.today-hl .today-pill{display:block}
@@ -60,6 +61,7 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
 .b-win{background:rgba(0,255,136,0.15);color:#00FF88}
 .b-loss{background:rgba(255,85,85,0.15);color:#FF5555}
 .b-be{background:rgba(91,184,255,0.15);color:#5BB8FF}
+.b-nt{background:rgba(255,215,0,0.13);color:#FFD700}
 .b-up{background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.45)}
 .day-note{font-size:12px;color:rgba(255,255,255,0.6);line-height:1.6}
 
@@ -314,11 +316,11 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
 <!-- ======= TRADING ======= -->
 <div class="tab active" id="tab-trading"><div class="container">
   <div class="hdr">
-    <div><div class="brand">NQXAVIER</div><div class="sub">XFA ACCOUNT &nbsp;·&nbsp; MNQ / NQ PROP TRADER</div></div>
+    <div><div class="brand">NQXAVIER</div><div class="sub">EVAL ACCOUNT &nbsp;·&nbsp; MNQ / NQ PROP TRADER</div></div>
     <div class="bal-block">
       <div class="bal-lbl">ACCOUNT BALANCE</div>
-      <div class="bal-val" id="bal-display">$49,309.22</div>
-      <div class="buf-val" id="buf-display">Buffer $1,309.22 · Limit $48,000</div>
+      <div class="bal-val" id="bal-display">$50,000.00</div>
+      <div class="buf-val" id="buf-display">Buffer $2,000.00 · Limit $48,000</div>
     </div>
   </div>
   <div class="stats">
@@ -339,7 +341,7 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
   <div class="rules-box">
     <div class="rules-ttl">NON-NEGOTIABLE RULES</div>
     <div class="rules-grid">
-      <div class="rule-row"><div class="dot"></div><div class="rule-txt">1 trade per day on XFA — no exceptions</div></div>
+      <div class="rule-row"><div class="dot"></div><div class="rule-txt">1 trade per day on Eval — no exceptions</div></div>
       <div class="rule-row"><div class="dot"></div><div class="rule-txt">NO TRADES after 11:00 AM ET — hard cutoff</div></div>
       <div class="rule-row"><div class="dot"></div><div class="rule-txt">Full candle closure before entry — no mid-candle</div></div>
       <div class="rule-row"><div class="dot"></div><div class="rule-txt">Check ES SMT before every single entry</div></div>
@@ -358,11 +360,11 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
       <div class="field"><label>ACCOUNT BALANCE ($)</label><input type="number" id="inp-bal" placeholder="49045.14" step="0.01"></div>
       <div class="field"><label>SELECT DAY</label>
         <select id="inp-day">
-          <option value="0">Monday May 4</option>
-          <option value="1">Tuesday May 5</option>
-          <option value="2">Wednesday May 6</option>
-          <option value="3">Thursday May 7</option>
-          <option value="4">Friday May 8</option>
+          <option value="0">Monday</option>
+          <option value="1">Tuesday</option>
+          <option value="2">Wednesday</option>
+          <option value="3">Thursday</option>
+          <option value="4">Friday</option>
         </select>
       </div>
       <div class="field"><label>DAY P&L ($)</label><input type="number" id="inp-pnl" placeholder="-0.80" step="0.01"></div>
@@ -372,6 +374,7 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
           <option value="win">Win</option>
           <option value="loss">Loss</option>
           <option value="be">BreakEven</option>
+          <option value="nt">No Trade</option>
         </select>
       </div>
       <div class="field"><label>SETUP GRADE</label>
@@ -389,7 +392,7 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
     </div>
     <button class="save-btn" onclick="saveTradeData()">SAVE</button>
   </div>
-  <div class="footer">NQXAVIER · XFA PROP ACCOUNT · STARTED APR 8, 2026</div>
+  <div class="footer">NQXAVIER · TOPSTEP EVAL · STARTED JUN 2026</div>
 </div></div>
 
 <!-- ======= 21-DAY CHALLENGE ======= -->
@@ -621,7 +624,7 @@ if(USE_FB){
 // ============================================================
 
 // ============ CONSTANTS ============
-const LIMIT=48000,START_BAL=50000,WEEK_START_BAL=49254.86;
+const LIMIT=48000,START_BAL=50000,WEEK_START_BAL=50000;
 const TASK_KEYS=['steps','gym','macros','trading','lockout'];
 function buildWeekDays(){
   const now=new Date(),dow=now.getDay();
@@ -738,50 +741,36 @@ if(hasOldPnL || wrongWeek){
   localStorage.removeItem('nqx-data');
 }
 
-let trading=load('nqx-data',{weekKey:'',balance:49309.22,days:BLANK_DAYS()});
+let trading=load('nqx-data',{weekKey:'',balance:50000,days:BLANK_DAYS()});
 
-// FORCE fresh week data - DO NOT ALLOW OLD WEEK DATA TO PERSIST
-if(trading.weekKey!==_thisWeek || !trading.days || trading.days.some(d=>d.pnl!==0 && d.result!=='upcoming')){
+// ============ EVAL RESET MIGRATION ============
+// One-time wipe of legacy XFA data when this dashboard is repurposed for the new TopStep Eval.
+// Detects any prior XFA balance/data and rewrites cleanly to $50,000 starting state.
+const _evalMigrated = localStorage.getItem('nqx-eval-migrated-v1');
+if(!_evalMigrated){
   trading={
     weekKey:_thisWeek,
-    weekStartBal:49309.22,
-    balance:49309.22,
+    weekStartBal:50000,
+    balance:50000,
+    days:BLANK_DAYS()
+  };
+  localStorage.setItem('nqx-data',JSON.stringify(trading));
+  localStorage.setItem('nqx-eval-migrated-v1','1');
+  console.log('🔄 Eval migration: dashboard reset to $50,000 starting balance.');
+}
+
+// FORCE fresh week data - DO NOT ALLOW OLD WEEK DATA TO PERSIST
+if(trading.weekKey!==_thisWeek || !trading.days){
+  trading={
+    weekKey:_thisWeek,
+    weekStartBal:trading.balance||50000,
+    balance:trading.balance||50000,
     days:BLANK_DAYS()
   };
   localStorage.setItem('nqx-data',JSON.stringify(trading));
 }
 
-// FORCE correct balance at init (prevent Firebase from loading wrong balance)
-if(!trading.balance || trading.balance!==49309.22){
-  trading.balance=49309.22;
-  localStorage.setItem('nqx-data',JSON.stringify(trading));
-}
-
 if(!trading.weekStartBal)trading.weekStartBal=WEEK_START_BAL;
-
-// SET MONDAY (MAY 11) TO BREAKEVEN
-if(trading.days && trading.days.length > 0 && trading.days[0].result==='upcoming'){
-  trading.days[0] = {result: 'be', pnl: 0};
-  localStorage.setItem('nqx-data', JSON.stringify(trading));
-}
-
-// SET TUESDAY (MAY 12) TO LOSS
-if(trading.days && trading.days.length > 1 && trading.days[1].result==='upcoming'){
-  trading.days[1] = {result: 'loss', pnl: -244.64, grade: 'C'};
-  trading.balance = 49064.58;
-  localStorage.setItem('nqx-data', JSON.stringify(trading));
-}
-
-// AUTO-GRADE CURRENT WEEK TRADES
-if(trading.days){
-  // Monday (May 11) - Breakeven: grade as B (solid management to break even)
-  if(trading.days[0] && trading.days[0].result==='be' && !trading.days[0].grade){
-    trading.days[0].grade = 'B';
-  }
-  // Tuesday (May 12) - Loss: already graded as C above
-  // Save if any grades were added
-  localStorage.setItem('nqx-data', JSON.stringify(trading));
-}
 
 // AUTO-RESET ON SATURDAY AT 12 AM
 function checkAndResetWeekOnSaturday(){
@@ -895,6 +884,14 @@ function renderEconomicCalendar(){
 
 // ============ TRADING ============
 function renderTrading(){
+  // Populate day dropdown labels with current week's actual dates
+  const dayDD=document.getElementById('inp-day');
+  if(dayDD){
+    const dayNames=['Monday','Tuesday','Wednesday','Thursday','Friday'];
+    Array.from(dayDD.options).forEach((opt,i)=>{
+      if(WEEK_DAYS[i])opt.textContent=dayNames[i]+' '+WEEK_DAYS[i].dt;
+    });
+  }
   const bal=trading.balance,buf=bal-LIMIT,ddUsed=START_BAL-bal,ddTotal=START_BAL-LIMIT;
   const pct=Math.min(100,(ddUsed/ddTotal*100)).toFixed(1),weekPnl=bal-(trading.weekStartBal||WEEK_START_BAL);
   document.getElementById('bal-display').textContent='$'+bal.toLocaleString('en-US',{minimumFractionDigits:2});
@@ -912,11 +909,11 @@ function renderTrading(){
   trading.days.forEach((d,i)=>{
     const info=WEEK_DAYS[i],isToday=info.date===todayStr;
     let cls='day';
-    if(d.result==='win')cls+=' done-win';else if(d.result==='loss')cls+=' done-loss';else if(d.result==='be')cls+=' done-be';
+    if(d.result==='win')cls+=' done-win';else if(d.result==='loss')cls+=' done-loss';else if(d.result==='be')cls+=' done-be';else if(d.result==='nt')cls+=' done-nt';
     if(isToday)cls+=' today-hl';
-    const pnlHtml=d.result!=='upcoming'?`<div class="day-pnl ${d.pnl>0?'c-green':d.pnl<0?'c-red':'c-blue'}">${fmt(d.pnl)}</div>`:`<div class="day-pnl pnl-blank">—</div>`;
+    const pnlHtml=d.result==='nt'?`<div class="day-pnl c-gold">$0.00</div>`:(d.result!=='upcoming'?`<div class="day-pnl ${d.pnl>0?'c-green':d.pnl<0?'c-red':'c-blue'}">${fmt(d.pnl)}</div>`:`<div class="day-pnl pnl-blank">—</div>`);
     let bc='b-up',bt='UPCOMING';
-    if(d.result==='win'){bc='b-win';bt='WIN'}else if(d.result==='loss'){bc='b-loss';bt='LOSS'}else if(d.result==='be'){bc='b-be';bt='BREAKEVEN'}
+    if(d.result==='win'){bc='b-win';bt='WIN'}else if(d.result==='loss'){bc='b-loss';bt='LOSS'}else if(d.result==='be'){bc='b-be';bt='BREAKEVEN'}else if(d.result==='nt'){bc='b-nt';bt='NO TRADE'}
     const gradeHtml=d.grade?`<div class="grade-badge ${gradeClass(d.grade)}">${d.grade}${d.rr?' · '+d.rr+'R':''}</div>`:'';
     const newsHtml=(ffNews[info.date]||[]).length>0?`<div class="ff-news-wrap">${(ffNews[info.date]).map(n=>`<div class="ff-event"><span class="ff-event-flag">🔴</span><span class="ff-event-name">${n.title}</span><span class="ff-event-time">${n.time}</span></div>`).join('')}</div>`:'';
     cal.innerHTML+=`<div class="${cls}"><div class="today-pill">TODAY</div><div class="day-nm">${info.nm}</div><div class="day-dt">${info.dt}</div>${pnlHtml}<div class="badge ${bc}">${bt}</div>${gradeHtml}${newsHtml}</div>`;
@@ -927,7 +924,9 @@ function saveTradeData(){
   const bal=parseFloat(document.getElementById('inp-bal').value),day=parseInt(document.getElementById('inp-day').value),pnl=parseFloat(document.getElementById('inp-pnl').value),result=document.getElementById('inp-result').value,grade=document.getElementById('inp-grade').value,rr=parseFloat(document.getElementById('inp-rr').value);
   if(!isNaN(bal))trading.balance=bal;
   if(!isNaN(day)){
-    if(!isNaN(pnl))trading.days[day].pnl=pnl;
+    // No Trade days always carry $0 PNL
+    if(result==='nt'){trading.days[day].pnl=0;}
+    else if(!isNaN(pnl))trading.days[day].pnl=pnl;
     trading.days[day].result=result;
     trading.days[day].grade=grade;
     if(!isNaN(rr))trading.days[day].rr=rr;
@@ -1324,7 +1323,7 @@ function renderAnalytics(){
     const isToday=ds===getToday();
     const isWeekend=dow===0||dow===6;
 
-    let pnl='—',cls='rgba(255,255,255,0.05)';
+    let pnl='—',cls='rgba(255,255,255,0.05)',isNT=false;
 
     // Find P&L for this date - check CURRENT WEEK first, then archives
     if(!isWeekend){
@@ -1332,7 +1331,8 @@ function renderAnalytics(){
       const currentWeekDayIdx=WEEK_DAYS.findIndex(wd=>wd.date===ds);
       if(currentWeekDayIdx>=0 && trading.days && trading.days[currentWeekDayIdx]){
         const dd=trading.days[currentWeekDayIdx];
-        if(dd.pnl!==0||dd.result!=='upcoming'){
+        if(dd.result==='nt'){isNT=true;pnl='NT';cls='rgba(255,215,0,0.12)';}
+        else if(dd.pnl!==0||dd.result!=='upcoming'){
           pnl=fmt(dd.pnl);
           cls=dd.pnl>=0?'rgba(0,255,136,0.12)':'rgba(255,85,85,0.12)';
         }
@@ -1348,7 +1348,8 @@ function renderAnalytics(){
             const dayIdx=dow-1;
             if(dayIdx>=0&&dayIdx<5&&w.trading?.days[dayIdx]){
               const dd=w.trading.days[dayIdx];
-              if(dd.pnl!==0||dd.result!=='upcoming'){
+              if(dd.result==='nt'){isNT=true;pnl='NT';cls='rgba(255,215,0,0.12)';}
+              else if(dd.pnl!==0||dd.result!=='upcoming'){
                 pnl=fmt(dd.pnl);
                 cls=dd.pnl>=0?'rgba(0,255,136,0.12)':'rgba(255,85,85,0.12)';
               }
@@ -1367,7 +1368,7 @@ function renderAnalytics(){
       <div style="font-size:14px;font-weight:700;color:${isWeekend?'rgba(255,255,255,0.3)':'rgba(255,255,255,0.8)'}">
         ${i}
       </div>
-      <div style="font-size:12px;font-weight:700;color:${pnl==='—'?'rgba(255,255,255,0.2)':pnl.includes('-')?'#FF5555':'#00FF88'};margin-top:4px">
+      <div style="font-size:12px;font-weight:700;color:${pnl==='—'?'rgba(255,255,255,0.2)':isNT?'#FFD700':pnl.includes('-')?'#FF5555':'#00FF88'};margin-top:4px">
         ${pnl}
       </div>
       ${!isWeekend?`<div style="font-size:8px;color:rgba(0,255,136,0.4);margin-top:4px">view</div>`:''}
@@ -1451,17 +1452,17 @@ function openDayDetail(dateStr){
   let pnl='—',result='—',grade='—',rr='—',pnlColor='rgba(255,255,255,0.3)';
   if(tradeData){
     pnl=fmt(tradeData.pnl);
-    result=tradeData.result?tradeData.result.toUpperCase():'—';
+    result=tradeData.result==='nt'?'NO TRADE':(tradeData.result?tradeData.result.toUpperCase():'—');
     grade=tradeData.grade||'—';
     rr=tradeData.rr?(tradeData.rr+'R'):'—';
-    pnlColor=tradeData.pnl>=0?'#00FF88':'#FF5555';
+    pnlColor=tradeData.result==='nt'?'#FFD700':(tradeData.pnl>=0?'#00FF88':'#FF5555');
   }
 
   const pnlEl=document.getElementById('day-pnl');
   if(pnlEl){pnlEl.textContent=pnl;pnlEl.style.color=pnlColor;}
 
   const resultEl=document.getElementById('day-result');
-  if(resultEl){resultEl.textContent=result;const resultColor=result==='WIN'?'#00FF88':result==='LOSS'?'#FF5555':'#5BB8FF';resultEl.style.color=resultColor;}
+  if(resultEl){resultEl.textContent=result;const resultColor=result==='WIN'?'#00FF88':result==='LOSS'?'#FF5555':result==='NO TRADE'?'#FFD700':'#5BB8FF';resultEl.style.color=resultColor;}
 
   const gradeEl=document.getElementById('day-grade');
   if(gradeEl)gradeEl.textContent=grade;
@@ -1655,14 +1656,14 @@ if(USE_FB){
       if(fbData.weekKey===_thisWeek){
         trading=fbData;
         // FORCE correct balance (prevent old Firebase data from corrupting balance)
-        trading.balance=49309.22;
-        trading.weekStartBal=49309.22;
+        trading.balance=trading.balance||50000;
+        trading.weekStartBal=trading.weekStartBal||50000;
         localStore('nqx-data',trading);
         updated=true;
       }
       // If Firebase has old week data, force fresh data instead
       else if(fbData.weekKey && fbData.weekKey!==_thisWeek){
-        const freshData={weekKey:_thisWeek,weekStartBal:49309.22,balance:49309.22,days:BLANK_DAYS()};
+        const freshData={weekKey:_thisWeek,weekStartBal:50000,balance:50000,days:BLANK_DAYS()};
         trading=freshData;
         localStore('nqx-data',trading);
         if(USE_FB)db.ref('nqxavier/nqx-data').set(freshData); // Push fresh data to Firebase
