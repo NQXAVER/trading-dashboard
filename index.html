@@ -63,6 +63,9 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
 .b-be{background:rgba(91,184,255,0.15);color:#5BB8FF}
 .b-nt{background:rgba(255,215,0,0.13);color:#FFD700}
 .b-up{background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.45)}
+.b-today{background:rgba(0,255,136,0.18);color:#00FF88;border:1px solid rgba(0,255,136,0.45)}
+.b-tomorrow{background:rgba(91,184,255,0.13);color:#5BB8FF;border:1px solid rgba(91,184,255,0.35)}
+.b-past{display:none}
 .day-note{font-size:12px;color:rgba(255,255,255,0.6);line-height:1.6}
 
 /* RULES */
@@ -485,6 +488,13 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
     </div>
   </div>
 
+  <!-- PERFORMANCE SUMMARY -->
+  <div style="background:#161616;border:1px solid rgba(0,255,136,0.25);border-radius:12px;padding:20px;margin-bottom:1.5rem">
+    <div style="font-size:13px;color:#00FF88;letter-spacing:1.5px;margin-bottom:16px;font-family:'Courier New',monospace;font-weight:700">📊 PERFORMANCE — ALL TIME</div>
+    <div id="perf-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px"></div>
+    <div id="perf-stats-row2" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px"></div>
+  </div>
+
   <div style="background:#161616;border:1px solid rgba(255,85,85,0.2);border-radius:12px;padding:24px;margin-bottom:2rem">
     <div style="font-size:13px;color:#FF5555;letter-spacing:1.5px;margin-bottom:20px;font-family:'Courier New',monospace;font-weight:700">📅 MONTH CALENDAR — DAILY P&L</div>
     <div id="analytics-calendar" style="display:grid;grid-template-columns:repeat(7,1fr);gap:12px"></div>
@@ -746,7 +756,8 @@ let trading=load('nqx-data',{weekKey:'',balance:50000,days:BLANK_DAYS()});
 // ============ EVAL RESET MIGRATION ============
 // One-time wipe of legacy XFA data when this dashboard is repurposed for the new TopStep Eval.
 // Detects any prior XFA balance/data and rewrites cleanly to $50,000 starting state.
-const _evalMigrated = localStorage.getItem('nqx-eval-migrated-v1');
+// Also clears 21-day challenge and fitness so the new Eval era starts from Day 0.
+const _evalMigrated = localStorage.getItem('nqx-eval-migrated-v2');
 if(!_evalMigrated){
   trading={
     weekKey:_thisWeek,
@@ -755,8 +766,15 @@ if(!_evalMigrated){
     days:BLANK_DAYS()
   };
   localStorage.setItem('nqx-data',JSON.stringify(trading));
-  localStorage.setItem('nqx-eval-migrated-v1','1');
-  console.log('🔄 Eval migration: dashboard reset to $50,000 starting balance.');
+
+  // Reset 21-day challenge — fresh start on the Eval
+  localStorage.setItem('nqx-challenge',JSON.stringify({started:false,startDate:null,days:{}}));
+
+  // Reset fitness data too so the new era is clean
+  localStorage.setItem('nqx-fitness',JSON.stringify({days:{}}));
+
+  localStorage.setItem('nqx-eval-migrated-v2','1');
+  console.log('🔄 Eval migration v2: dashboard reset to $50,000, 21-day cleared, fitness cleared.');
 }
 
 // FORCE fresh week data - DO NOT ALLOW OLD WEEK DATA TO PERSIST
@@ -913,7 +931,20 @@ function renderTrading(){
     if(isToday)cls+=' today-hl';
     const pnlHtml=d.result==='nt'?`<div class="day-pnl c-gold">$0.00</div>`:(d.result!=='upcoming'?`<div class="day-pnl ${d.pnl>0?'c-green':d.pnl<0?'c-red':'c-blue'}">${fmt(d.pnl)}</div>`:`<div class="day-pnl pnl-blank">—</div>`);
     let bc='b-up',bt='UPCOMING';
-    if(d.result==='win'){bc='b-win';bt='WIN'}else if(d.result==='loss'){bc='b-loss';bt='LOSS'}else if(d.result==='be'){bc='b-be';bt='BREAKEVEN'}else if(d.result==='nt'){bc='b-nt';bt='NO TRADE'}
+    if(d.result==='win'){bc='b-win';bt='WIN'}
+    else if(d.result==='loss'){bc='b-loss';bt='LOSS'}
+    else if(d.result==='be'){bc='b-be';bt='BREAKEVEN'}
+    else if(d.result==='nt'){bc='b-nt';bt='NO TRADE'}
+    else if(d.result==='upcoming'){
+      // Time-aware label for empty days: past=hidden, today=TODAY, tomorrow=TOMORROW, else=UPCOMING
+      const _td=new Date(todayStr+'T00:00:00');
+      const _dd=new Date(info.date+'T00:00:00');
+      const _diff=Math.round((_dd-_td)/86400000);
+      if(_diff<0){bc='b-past';bt='';}
+      else if(_diff===0){bc='b-today';bt='TODAY';}
+      else if(_diff===1){bc='b-tomorrow';bt='TOMORROW';}
+      else {bc='b-up';bt='UPCOMING';}
+    }
     const gradeHtml=d.grade?`<div class="grade-badge ${gradeClass(d.grade)}">${d.grade}${d.rr?' · '+d.rr+'R':''}</div>`:'';
     const newsHtml=(ffNews[info.date]||[]).length>0?`<div class="ff-news-wrap">${(ffNews[info.date]).map(n=>`<div class="ff-event"><span class="ff-event-flag">🔴</span><span class="ff-event-name">${n.title}</span><span class="ff-event-time">${n.time}</span></div>`).join('')}</div>`:'';
     cal.innerHTML+=`<div class="${cls}"><div class="today-pill">TODAY</div><div class="day-nm">${info.nm}</div><div class="day-dt">${info.dt}</div>${pnlHtml}<div class="badge ${bc}">${bt}</div>${gradeHtml}${newsHtml}</div>`;
@@ -930,6 +961,24 @@ function saveTradeData(){
     trading.days[day].result=result;
     trading.days[day].grade=grade;
     if(!isNaN(rr))trading.days[day].rr=rr;
+
+    // ===== AUTO-SYNC into 21-day challenge =====
+    // When you log a trade result here, the corresponding day on the 21-day tab
+    // gets credit automatically (win=+3, be=+1, no-trade=+0). Rule-following days
+    // also auto-check the "Followed Trading Rules" task.
+    const dateStr=WEEK_DAYS[day]?.date;
+    if(dateStr){
+      if(!challenge.days)challenge.days={};
+      if(!challenge.days[dateStr])challenge.days[dateStr]={};
+      const cd=challenge.days[dateStr];
+      cd.tradeResult=result; // 'win' | 'loss' | 'be' | 'nt' | 'upcoming'
+      // Auto-check "Followed Trading Rules" for rule-respecting outcomes.
+      if(result==='win'||result==='be'||result==='nt'){cd.trading=true;}
+      // Don't auto-uncheck on loss — leave it for user judgment (clean loss vs rule break).
+      // Re-calculate points if the day was already submitted, so the bonus appears live.
+      if(cd.submitted){cd.points=calcPts(cd);}
+      store('nqx-challenge',challenge);
+    }
   }
   store('nqx-data',trading);renderTrading();document.getElementById('edit-panel').classList.remove('open');
 }
@@ -1233,10 +1282,65 @@ function archiveWeek(){
   console.log('📊 archiveWeek complete. Now have',analytics.weeks.length,'weeks');
 }
 
+// Collects every day across current week + archived weeks into one flat array
+function gatherAllDays(){
+  const all=[];
+  // current week
+  if(trading.days){
+    trading.days.forEach((d,i)=>{if(d&&d.result&&d.result!=='upcoming'){all.push({...d,date:WEEK_DAYS[i]?.date});}});
+  }
+  // archived weeks
+  (analytics.weeks||[]).forEach(w=>{
+    (w.trading?.days||[]).forEach(d=>{
+      if(d&&d.result&&d.result!=='upcoming')all.push(d);
+    });
+  });
+  return all;
+}
+
+function renderPerfStats(){
+  const wrap1=document.getElementById('perf-stats');
+  const wrap2=document.getElementById('perf-stats-row2');
+  if(!wrap1||!wrap2)return;
+  const all=gatherAllDays();
+  const wins=all.filter(d=>d.result==='win');
+  const losses=all.filter(d=>d.result==='loss');
+  const bes=all.filter(d=>d.result==='be');
+  const nts=all.filter(d=>d.result==='nt');
+  const tradedDays=wins.length+losses.length+bes.length; // NT excluded from win-rate denominator
+  const totalDays=all.length;
+  const wr=tradedDays>0?Math.round(wins.length/tradedDays*100):0;
+  const totalPnL=all.reduce((a,d)=>a+(d.pnl||0),0);
+  const bestDay=all.reduce((b,d)=>(d.pnl||0)>(b?.pnl||-Infinity)?d:b,null);
+  const worstDay=all.reduce((b,d)=>(d.pnl||0)<(b?.pnl||Infinity)?d:b,null);
+  const grades=all.map(d=>d.grade).filter(Boolean);
+  const gradeMap={'A+':4.3,'A':4.0,'B+':3.3,'B':3.0,'C':2.0,'F':0};
+  const gradeAvg=grades.length>0?(grades.reduce((a,g)=>a+(gradeMap[g]||0),0)/grades.length):0;
+  const gradeLetter=gradeAvg>=4.15?'A+':gradeAvg>=3.85?'A':gradeAvg>=3.15?'B+':gradeAvg>=2.5?'B':gradeAvg>=1.5?'C':gradeAvg>0?'F':'—';
+  const avgRR=(()=>{const rrs=all.map(d=>parseFloat(d.rr)).filter(r=>!isNaN(r)&&r>0);return rrs.length>0?(rrs.reduce((a,r)=>a+r,0)/rrs.length):0;})();
+  const ruleBreaks=all.filter(d=>d.grade==='F').length;
+
+  const card=(lbl,val,color)=>`<div class="sc"><div class="sc-l">${lbl}</div><div class="sc-v ${color||''}">${val}</div></div>`;
+  wrap1.innerHTML=
+    card('ALL-TIME P&L',(totalPnL>=0?'+':'')+'$'+totalPnL.toFixed(2),totalPnL>=0?'c-green':'c-red')+
+    card('WIN RATE',wr+'%',wr>=50?'c-green':'c-red')+
+    card('DAYS TRADED',tradedDays,'c-white')+
+    card('NO-TRADE DAYS',nts.length,'c-gold');
+  wrap2.innerHTML=
+    card('GRADE AVG',gradeLetter,'c-blue')+
+    card('AVG R:R',avgRR>0?avgRR.toFixed(2)+'R':'—','c-blue')+
+    card('BEST DAY',bestDay?'+$'+Math.abs(bestDay.pnl||0).toFixed(2):'—','c-green')+
+    card('RULE BREAKS (F)',ruleBreaks,ruleBreaks>0?'c-red':'c-white');
+}
+
 function renderAnalytics(){
   // FORCE reload analytics from localStorage to ensure we have latest data
   analytics=load('nqx-analytics',{weeks:[]});
   console.log('📊 renderAnalytics called. Reloaded analytics:', analytics, 'weeks:', analytics?.weeks?.length);
+
+  // ===== PERFORMANCE SUMMARY (all time) =====
+  renderPerfStats();
+
   // Weekly reviews section
   const pw=document.getElementById('analytics-weeks');pw.innerHTML='';
 
