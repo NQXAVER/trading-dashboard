@@ -319,7 +319,7 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
 <!-- ======= TRADING ======= -->
 <div class="tab active" id="tab-trading"><div class="container">
   <div class="hdr">
-    <div><div class="brand">NQXAVIER</div><div class="sub">LUCID 50K FLEX EVAL &nbsp;·&nbsp; MNQ / NQ PROP TRADER</div></div>
+    <div><div class="brand">NQXAVIER</div><div class="sub">LUCID 50K FLEX FUNDED &nbsp;·&nbsp; MNQ / NQ PROP TRADER</div></div>
     <div class="bal-block">
       <div class="bal-lbl">ACCOUNT BALANCE</div>
       <div class="bal-val" id="bal-display">$51,456.50</div>
@@ -342,9 +342,9 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
     <div style="font-size:12px;color:rgba(255,255,255,0.65);margin-top:6px;line-height:1.6">Stay disciplined. Bad conditions = no entry. Missing one trade hurts less than forcing one. Discipline > Greed.</div>
   </div>
   <div class="rules-box">
-    <div class="rules-ttl">NON-NEGOTIABLE RULES — LUCID 50K FLEX EVAL</div>
+    <div class="rules-ttl">NON-NEGOTIABLE RULES — LUCID 50K FLEX FUNDED</div>
     <div class="rules-grid">
-      <div class="rule-row"><div class="dot"></div><div class="rule-txt">$70 isn't disposable. Treat every click like real money.</div></div>
+      <div class="rule-row"><div class="dot"></div><div class="rule-txt">This is REAL money now. Funded does not mean disposable.</div></div>
       <div class="rule-row"><div class="dot"></div><div class="rule-txt">1 trade per day default. Win or Loss → locked out.</div></div>
       <div class="rule-row"><div class="dot"></div><div class="rule-txt">BE → 1 more only if all 6 gates pass (see below).</div></div>
       <div class="rule-row"><div class="dot"></div><div class="rule-txt">NO entries before 10:00 AM or after 11:00 AM ET.</div></div>
@@ -353,7 +353,9 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
       <div class="rule-row"><div class="dot"></div><div class="rule-txt">EQ + OTE retrace required. Discount FVG default, premium needs HTF override.</div></div>
       <div class="rule-row"><div class="dot"></div><div class="rule-txt">Close Lucid + 11 AM alarm + website blocker = manual lockout.</div></div>
       <div class="rule-row"><div class="dot"></div><div class="rule-txt">XFA stays OFF until Alpha lockouts restored AND 20–30 clean days here.</div></div>
-      <div class="rule-row"><div class="dot"></div><div class="rule-txt">Max ~$1,500/day for 50% consistency. Don't chase a $2k runner.</div></div>
+      <div class="rule-row"><div class="dot"></div><div class="rule-txt">Platform PDLL = $500, PDPT = $1,500, Action = Liquidate and Block.</div></div>
+      <div class="rule-row"><div class="dot"></div><div class="rule-txt">Earn the scale. Start small, size up only as cumulative profit grows.</div></div>
+      <div class="rule-row"><div class="dot"></div><div class="rule-txt">5 trading days minimum before payout — no rushing.</div></div>
     </div>
     <div class="divider"></div>
     <div style="font-size:11px;color:#FFD700;letter-spacing:1.5px;margin-bottom:10px;font-family:'Courier New',monospace;font-weight:700">BE → SECOND-TRADE GATE (ALL 6 MUST PASS)</div>
@@ -407,7 +409,7 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
     </div>
     <button class="save-btn" onclick="saveTradeData()">SAVE</button>
   </div>
-  <div class="footer">NQXAVIER · LUCID 50K FLEX EVAL · STARTED JUN 2026</div>
+  <div class="footer">NQXAVIER · LUCID 50K FLEX FUNDED · PASSED JUN 10, 2026</div>
 </div></div>
 
 <!-- ======= 21-DAY CHALLENGE ======= -->
@@ -794,6 +796,30 @@ if(!_evalMigrated){
 
   localStorage.setItem('nqx-eval-migrated-v3','1');
   console.log('🔄 Eval migration v3: Lucid Day 1 WIN +$1,456.50 seeded, balance $51,456.50.');
+}
+
+// Migration v4: Mark Monday June 8 of THIS week as No Trade (NT) — discipline rep: locked out instead of chasing FOMO.
+const _v4 = localStorage.getItem('nqx-eval-migrated-v4');
+if(!_v4){
+  // Ensure we're on the June 8 week before seeding, otherwise wait until that week
+  if(_thisWeek === '2026-06-08'){
+    if(trading.days && trading.days[0]){
+      trading.days[0] = {result:'nt', pnl:0, grade:'A'};
+      localStorage.setItem('nqx-data',JSON.stringify(trading));
+    }
+    // Also sync to challenge: trading-rule task checked, tradeResult = nt (no trading bonus but rule followed)
+    const _monKey = WEEK_DAYS[0]?.date;
+    if(_monKey){
+      const ch = JSON.parse(localStorage.getItem('nqx-challenge')||'{"started":false,"startDate":null,"days":{}}');
+      if(!ch.days) ch.days = {};
+      if(!ch.days[_monKey]) ch.days[_monKey] = {};
+      ch.days[_monKey].tradeResult = 'nt';
+      ch.days[_monKey].trading = true;
+      localStorage.setItem('nqx-challenge',JSON.stringify(ch));
+    }
+    localStorage.setItem('nqx-eval-migrated-v4','1');
+    console.log('🔄 Migration v4: Monday seeded as No Trade (locked out instead of chasing FOMO).');
+  }
 }
 
 // FORCE fresh week data - DO NOT ALLOW OLD WEEK DATA TO PERSIST
