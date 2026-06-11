@@ -322,8 +322,8 @@ body{background:#0a0a0a;color:#e8e8e8;font-family:'Inter',system-ui,sans-serif;m
     <div><div class="brand">NQXAVIER</div><div class="sub">LUCID 50K FLEX FUNDED &nbsp;·&nbsp; MNQ / NQ PROP TRADER</div></div>
     <div class="bal-block">
       <div class="bal-lbl">ACCOUNT BALANCE</div>
-      <div class="bal-val" id="bal-display">$51,456.50</div>
-      <div class="buf-val" id="buf-display">Buffer $3,456.50 · Limit $48,000</div>
+      <div class="bal-val" id="bal-display">$53,000.00</div>
+      <div class="buf-val" id="buf-display">Buffer $5,000 · Limit $48,000 · EVAL PASSED ✓</div>
     </div>
   </div>
   <div class="stats">
@@ -819,6 +819,35 @@ if(!_v4){
     }
     localStorage.setItem('nqx-eval-migrated-v4','1');
     console.log('🔄 Migration v4: Monday seeded as No Trade (locked out instead of chasing FOMO).');
+  }
+}
+
+// Migration v5: Seed Tuesday Jun 9 WIN +$1,334 and Wednesday Jun 10 WIN +$520 (pass day). Updates balance to $53,000.
+const _v5 = localStorage.getItem('nqx-eval-migrated-v5');
+if(!_v5){
+  if(_thisWeek === '2026-06-08'){
+    if(trading.days){
+      trading.days[1] = {result:'win', pnl:1334, grade:'A', rr:1.54};      // Tuesday
+      trading.days[2] = {result:'win', pnl:520, grade:'A+', rr:1.85};      // Wednesday (BE first trade then Win; net +$520 on 1 micro - eval-passing trade)
+    }
+    trading.balance = 53000;
+    localStorage.setItem('nqx-data',JSON.stringify(trading));
+
+    // Auto-sync to challenge tradeResults
+    const ch = JSON.parse(localStorage.getItem('nqx-challenge')||'{"started":false,"startDate":null,"days":{}}');
+    if(!ch.days) ch.days = {};
+    [1,2].forEach(idx=>{
+      const k = WEEK_DAYS[idx]?.date;
+      if(k){
+        if(!ch.days[k]) ch.days[k] = {};
+        ch.days[k].tradeResult = 'win';
+        ch.days[k].trading = true;
+      }
+    });
+    localStorage.setItem('nqx-challenge',JSON.stringify(ch));
+
+    localStorage.setItem('nqx-eval-migrated-v5','1');
+    console.log('🔄 Migration v5: Tue WIN +$1,334, Wed WIN +$520 (pass day). Balance $53,000. EVAL PASSED.');
   }
 }
 
