@@ -2791,6 +2791,13 @@ function renderPayroll(){
       if (!load) return;
       load.DriverPay = e.currentTarget.value === "" ? "" : Number(e.currentTarget.value);
       await saveLoadSilently(load);
+      // For a combined row, keep the pay on this ONE load and zero the rest of
+      // the group so the total can never double-count.
+      const childIds = (e.currentTarget.dataset.children || "").split(",").filter(Boolean);
+      for (const cid of childIds){
+        const child = STATE.loads.find(x => x.LoadID === cid);
+        if (child && Number(child.DriverPay || 0) !== 0){ child.DriverPay = 0; await saveLoadSilently(child); }
+      }
       renderPayroll();
     });
   });
@@ -2851,10 +2858,14 @@ function renderPayroll(){
       const ids = (e.currentTarget.dataset.order || "").split(",").filter(Boolean);
       if (ids.length < 2) return;
       const rev = ids.slice().reverse();
+      let grp = "";
       for (let i = 0; i < rev.length; i++){
         const l = STATE.loads.find(x => x.LoadID === rev[i]);
-        if (l){ l.GroupSeq = i + 1; await saveLoadSilently(l); }
+        if (l){ l.GroupSeq = i + 1; grp = l.PayrollGroup || grp; await saveLoadSilently(l); }
       }
+      // Re-anchor the combined pay onto the NEW first load so it never
+      // double-counts after a flip.
+      if (grp) await consolidateGroup(grp);
       renderPayroll();
     });
   });
@@ -2983,8 +2994,17 @@ function payGroupRowHtml(loads, groupKey){
   const destStr   = lane.map(s => s.split(" → ")[1]).join(" + ");
   const commentsBits = sortedLoads.map(l => l.DriverComments || "").filter(Boolean);
   const comments = commentsBits.join(" / ");
-  const payVal = head.DriverPay != null && head.DriverPay !== "" ? head.DriverPay : "";
-  const childIds = sortedLoads.slice(1).map(l => l.LoadID).join(",");
+  // Combined pay = SUM of every member of this group (across the whole board,
+  // not just the visible week) so it never blanks out when you change weeks or
+  // flip the order. Editing writes to ONE stable anchor (lowest LoadID) and
+  // zeros the rest, so it can never double-count.
+  const _grpKey = String(groupKey || "").trim().toUpperCase();
+  const _allMembers = STATE.loads.filter(l => String(l.PayrollGroup || "").trim().toUpperCase() === _grpKey);
+  const _grpMembers = _allMembers.length ? _allMembers : sortedLoads;
+  const _sumPay = _grpMembers.reduce((a,l) => a + (Number(l.DriverPay)||0), 0);
+  const payVal = _sumPay ? _sumPay : "";
+  const payAnchorId = [..._grpMembers].sort((a,b) => String(a.LoadID).localeCompare(String(b.LoadID)))[0].LoadID;
+  const childIds = _grpMembers.map(l => l.LoadID).filter(id => id !== payAnchorId).join(",");
   // Build a stacked date display showing EVERY date in the group so the
   // printed PDF reads "Mon 04/22 + Wed 04/24" instead of hiding dates behind
   // a "+1 MORE" tag.
@@ -3019,7 +3039,7 @@ function payGroupRowHtml(loads, groupKey){
           <input type="text" class="cell-input group-cell no-print" data-id="${head.LoadID}" data-children="${escapeHtml(childIds)}" value="${escapeHtml(groupKey)}" title="Combined route — clear this label on any load to ungroup it" style="width:38px;text-align:center;padding:6px 4px;font-size:11px;text-transform:uppercase;background:rgba(163,230,53,.15)" maxlength="6" />
         </div>
       </td>
-      <td class="amount-col"><input type="number" step="0.01" inputmode="decimal" class="cell-input pay-cell" data-id="${head.LoadID}" data-children="${escapeHtml(childIds)}" value="${payVal}" placeholder="0.00" title="Combined pay for ${sortedLoads.length} loads in group ${escapeHtml(groupKey)}" /></td>
+      <td class="amount-col"><input type="number" step="0.01" inputmode="decimal" class="cell-input pay-cell" data-id="${payAnchorId}" data-children="${escapeHtml(childIds)}" value="${payVal}" placeholder="0.00" title="Combined pay for ${sortedLoads.length} loads in group ${escapeHtml(groupKey)}" /></td>
     </tr>
   `;
 }
