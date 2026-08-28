@@ -2967,7 +2967,9 @@ function payGroupRowHtml(loads, groupKey){
   // different days still show all of them.
   const _uniqDates = [];
   sortedLoads.forEach(l => {
-    const key = (l.PickupDate || "").slice(0,10);
+    const dx = parseLocalDate(l.PickupDate);
+    // Normalize to a real calendar key so "2026-08-21" and "08/21/2026" match.
+    const key = dx ? (dx.getFullYear()+"-"+(dx.getMonth()+1)+"-"+dx.getDate()) : String(l.PickupDate||"");
     if (key && !_uniqDates.some(u => u.key === key)) _uniqDates.push({ key, date: l.PickupDate });
   });
   const dateLines = _uniqDates.map(u => {
