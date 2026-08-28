@@ -1,0 +1,3746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#0e0d0c" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Hch" />
+<title>Hch Logistics</title>
+<!-- App icon: lime "Hch" italic serif on warm-black rounded square — matches the dashboard's editorial palette.
+     Embedded as SVG data URIs (no separate image files needed since this is a single-file app on GitHub Pages). -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCIgeTE9IjAiIHgyPSIwIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMTYxNDEyIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMGEwOTA4Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIHJ4PSIxMDAiIGZpbGw9InVybCgjYmcpIi8+PHRleHQgeD0iMjU2IiB5PSIyNjUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJJb3dhbiBPbGQgU3R5bGUsIFBhbGF0aW5vIExpbm90eXBlLCBQYWxhdGlubywgR2VvcmdpYSwgVGltZXMgTmV3IFJvbWFuLCBzZXJpZiIgZm9udC1zdHlsZT0iaXRhbGljIiBmb250LXdlaWdodD0iNjAwIiBmb250LXNpemU9IjE4MCIgZmlsbD0iI2EzZTYzNSIgbGV0dGVyLXNwYWNpbmc9Ii00Ij5IY2g8L3RleHQ+PGxpbmUgeDE9IjIxOCIgeTE9IjI5NSIgeDI9IjI5NCIgeTI9IjI5NSIgc3Ryb2tlPSIjYTNlNjM1IiBzdHJva2Utd2lkdGg9IjIiLz48dGV4dCB4PSIyNTYiIHk9IjM0NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Ii1hcHBsZS1zeXN0ZW0sIEJsaW5rTWFjU3lzdGVtRm9udCwgSGVsdmV0aWNhLCBBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjcwMCIgZm9udC1zaXplPSIzNiIgZmlsbD0iI2EzZTYzNSIgbGV0dGVyLXNwYWNpbmc9IjciPkxPR0lTVElDUzwvdGV4dD48dGV4dCB4PSIyNTYiIHk9IjM5NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Ii1hcHBsZS1zeXN0ZW0sIEJsaW5rTWFjU3lzdGVtRm9udCwgSGVsdmV0aWNhLCBBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjUwMCIgZm9udC1zaXplPSIyMiIgZmlsbD0iIzlhOGY3ZCIgbGV0dGVyLXNwYWNpbmc9IjgiPkxMQzwvdGV4dD48L3N2Zz4=" />
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCIgeTE9IjAiIHgyPSIwIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMTYxNDEyIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMGEwOTA4Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIHJ4PSIxMDAiIGZpbGw9InVybCgjYmcpIi8+PHRleHQgeD0iMjU2IiB5PSIyNjUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJJb3dhbiBPbGQgU3R5bGUsIFBhbGF0aW5vIExpbm90eXBlLCBQYWxhdGlubywgR2VvcmdpYSwgVGltZXMgTmV3IFJvbWFuLCBzZXJpZiIgZm9udC1zdHlsZT0iaXRhbGljIiBmb250LXdlaWdodD0iNjAwIiBmb250LXNpemU9IjE4MCIgZmlsbD0iI2EzZTYzNSIgbGV0dGVyLXNwYWNpbmc9Ii00Ij5IY2g8L3RleHQ+PGxpbmUgeDE9IjIxOCIgeTE9IjI5NSIgeDI9IjI5NCIgeTI9IjI5NSIgc3Ryb2tlPSIjYTNlNjM1IiBzdHJva2Utd2lkdGg9IjIiLz48dGV4dCB4PSIyNTYiIHk9IjM0NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Ii1hcHBsZS1zeXN0ZW0sIEJsaW5rTWFjU3lzdGVtRm9udCwgSGVsdmV0aWNhLCBBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjcwMCIgZm9udC1zaXplPSIzNiIgZmlsbD0iI2EzZTYzNSIgbGV0dGVyLXNwYWNpbmc9IjciPkxPR0lTVElDUzwvdGV4dD48dGV4dCB4PSIyNTYiIHk9IjM5NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Ii1hcHBsZS1zeXN0ZW0sIEJsaW5rTWFjU3lzdGVtRm9udCwgSGVsdmV0aWNhLCBBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjUwMCIgZm9udC1zaXplPSIyMiIgZmlsbD0iIzlhOGY3ZCIgbGV0dGVyLXNwYWNpbmc9IjgiPkxMQzwvdGV4dD48L3N2Zz4=" />
+<link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiSGNoIExvZ2lzdGljcyIsInNob3J0X25hbWUiOiJIY2giLCJzdGFydF91cmwiOiIuIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiIzBlMGQwYyIsInRoZW1lX2NvbG9yIjoiIzBlMGQwYyIsImljb25zIjpbeyJzcmMiOiJkYXRhOmltYWdlL3N2Zyt4bWw7YmFzZTY0LFBITjJaeUI0Yld4dWN6MGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TUM5emRtY2lJSFpwWlhkQ2IzZzlJakFnTUNBMU1USWdOVEV5SWo0OFpHVm1jejQ4YkdsdVpXRnlSM0poWkdsbGJuUWdhV1E5SW1KbklpQjRNVDBpTUNJZ2VURTlJakFpSUhneVBTSXdJaUI1TWowaU1TSStQSE4wYjNBZ2IyWm1jMlYwUFNJd0lpQnpkRzl3TFdOdmJHOXlQU0lqTVRZeE5ERXlJaTgrUEhOMGIzQWdiMlptYzJWMFBTSXhJaUJ6ZEc5d0xXTnZiRzl5UFNJak1HRXdPVEE0SWk4K1BDOXNhVzVsWVhKSGNtRmthV1Z1ZEQ0OEwyUmxabk0rUEhKbFkzUWdkMmxrZEdnOUlqVXhNaUlnYUdWcFoyaDBQU0kxTVRJaUlISjRQU0l4TURBaUlHWnBiR3c5SW5WeWJDZ2pZbWNwSWk4K1BIUmxlSFFnZUQwaU1qVTJJaUI1UFNJeU5qVWlJSFJsZUhRdFlXNWphRzl5UFNKdGFXUmtiR1VpSUdadmJuUXRabUZ0YVd4NVBTSkpiM2RoYmlCUGJHUWdVM1I1YkdVc0lGQmhiR0YwYVc1dklFeHBibTkwZVhCbExDQlFZV3hoZEdsdWJ5d2dSMlZ2Y21kcFlTd2dWR2x0WlhNZ1RtVjNJRkp2YldGdUxDQnpaWEpwWmlJZ1ptOXVkQzF6ZEhsc1pUMGlhWFJoYkdsaklpQm1iMjUwTFhkbGFXZG9kRDBpTmpBd0lpQm1iMjUwTFhOcGVtVTlJakU0TUNJZ1ptbHNiRDBpSTJFelpUWXpOU0lnYkdWMGRHVnlMWE53WVdOcGJtYzlJaTAwSWo1SVkyZzhMM1JsZUhRK1BHeHBibVVnZURFOUlqSXhPQ0lnZVRFOUlqSTVOU0lnZURJOUlqSTVOQ0lnZVRJOUlqSTVOU0lnYzNSeWIydGxQU0lqWVRObE5qTTFJaUJ6ZEhKdmEyVXRkMmxrZEdnOUlqSWlMejQ4ZEdWNGRDQjRQU0l5TlRZaUlIazlJak0wTlNJZ2RHVjRkQzFoYm1Ob2IzSTlJbTFwWkdSc1pTSWdabTl1ZEMxbVlXMXBiSGs5SWkxaGNIQnNaUzF6ZVhOMFpXMHNJRUpzYVc1clRXRmpVM2x6ZEdWdFJtOXVkQ3dnU0dWc2RtVjBhV05oTENCQmNtbGhiQ3dnYzJGdWN5MXpaWEpwWmlJZ1ptOXVkQzEzWldsbmFIUTlJamN3TUNJZ1ptOXVkQzF6YVhwbFBTSXpOaUlnWm1sc2JEMGlJMkV6WlRZek5TSWdiR1YwZEdWeUxYTndZV05wYm1jOUlqY2lQa3hQUjBsVFZFbERVend2ZEdWNGRENDhkR1Y0ZENCNFBTSXlOVFlpSUhrOUlqTTVOU0lnZEdWNGRDMWhibU5vYjNJOUltMXBaR1JzWlNJZ1ptOXVkQzFtWVcxcGJIazlJaTFoY0hCc1pTMXplWE4wWlcwc0lFSnNhVzVyVFdGalUzbHpkR1Z0Um05dWRDd2dTR1ZzZG1WMGFXTmhMQ0JCY21saGJDd2djMkZ1Y3kxelpYSnBaaUlnWm05dWRDMTNaV2xuYUhROUlqVXdNQ0lnWm05dWRDMXphWHBsUFNJeU1pSWdabWxzYkQwaUl6bGhPR1kzWkNJZ2JHVjBkR1Z5TFhOd1lXTnBibWM5SWpnaVBreE1Rend2ZEdWNGRENDhMM04yWno0PSIsInNpemVzIjoiNTEyeDUxMiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=" />
+<style>
+  :root {
+    /* Editorial ledger palette — warm-black paper with orange ink */
+    --bg: #0e0d0c;
+    --panel: #161412;
+    --panel-2: #1d1a17;
+    --border: #2a2520;
+    --hairline: #3a342d;
+    --text: #f4ede1;
+    --muted: #9a8f7d;
+    --accent: #a3e635;       /* lime ink */
+    --accent-2: #d9f99d;     /* light lime */
+    --warn: #d9f99d;
+    --danger: #d6483a;
+    --ok: #b9a96b;
+    --chip-bg: #1d1a17;
+    --shadow: 0 8px 30px rgba(0,0,0,.55);
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Georgia", "Times New Roman", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px; min-height: 100vh;
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+  body { padding: env(safe-area-inset-top) env(safe-area-inset-right) calc(env(safe-area-inset-bottom) + 96px) env(safe-area-inset-left); }
+
+  /* Header — editorial masthead */
+  header.top {
+    position: sticky; top: 0; z-index: 20;
+    background: linear-gradient(180deg, var(--bg) 0%, rgba(14,13,12,.92) 100%);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--hairline);
+    padding: 18px 22px 0;
+  }
+  .brand-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .brand { display: flex; align-items: baseline; gap: 14px; }
+  .brand .wordmark {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 600;
+    font-size: 36px;
+    letter-spacing: -.5px;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .brand .divider {
+    display: inline-block;
+    width: 1px; height: 22px;
+    background: var(--hairline);
+    align-self: center;
+  }
+  .brand .lockup {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .25em;
+    color: var(--text);
+    text-transform: uppercase;
+  }
+  .brand small { display: none; }
+  .hdr-meta {
+    margin-top: 4px;
+    font-size: 10.5px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .hdr-meta .sep { color: var(--hairline); margin: 0 9px; }
+  .hdr-actions { display: flex; gap: 8px; }
+  .icon-btn {
+    width: 36px; height: 36px; border-radius: 4px;
+    border: 1px solid var(--hairline); background: transparent;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--text); cursor: pointer;
+    transition: border-color .15s, color .15s;
+  }
+  .icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .icon-btn:active { transform: scale(.96); }
+
+  /* Stats */
+  .stats {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+    margin: 12px 16px 0;
+  }
+  .stat {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 14px; padding: 12px 14px;
+  }
+  .stat .label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .6px; }
+  .stat .value { font-size: 22px; font-weight: 800; margin-top: 4px; }
+  .stat .value.money { color: var(--accent); }
+  .stat .sub { color: var(--muted); font-size: 12px; margin-top: 2px; }
+  @media (min-width: 680px) { .stats { grid-template-columns: repeat(4, 1fr); } }
+
+  /* Filter chips */
+  .filters {
+    display: flex; gap: 8px; padding: 14px 16px 6px;
+    overflow-x: auto; scrollbar-width: none;
+  }
+  .filters::-webkit-scrollbar { display: none; }
+  .chip {
+    white-space: nowrap;
+    background: transparent; color: var(--muted);
+    border: 1px solid var(--hairline); border-radius: 4px;
+    padding: 8px 14px; font-size: 12px; font-weight: 600; cursor: pointer;
+    text-transform: uppercase; letter-spacing: .12em;
+    transition: color .15s, border-color .15s;
+  }
+  .chip:hover { color: var(--text); border-color: var(--text); }
+  .chip.active { background: var(--accent); color: #0d1a02; border-color: var(--accent); }
+
+  /* Load list */
+  .list { display: flex; flex-direction: column; gap: 10px; padding: 10px 16px; }
+  .empty {
+    text-align: center; color: var(--muted);
+    padding: 40px 20px; background: var(--panel);
+    border-radius: 16px; border: 1px dashed var(--border);
+  }
+  .load-card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 14px; padding: 14px; cursor: pointer;
+    display: grid; grid-template-columns: 1fr auto; gap: 6px 12px;
+    transition: transform .08s ease;
+    position: relative;
+  }
+  .load-card:active { transform: scale(.995); }
+  .load-card.is-new {
+    border-color: var(--warn);
+    background: linear-gradient(135deg, rgba(245,158,11,.08), var(--panel));
+  }
+  .load-card.is-new::before {
+    content: "NEW · NEEDS DRIVER";
+    position: absolute; top: -10px; left: 12px;
+    background: var(--warn); color: #1a1004;
+    font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 999px;
+    letter-spacing: .5px;
+  }
+  .new-chip { background: transparent; color: var(--accent); border-color: var(--accent); }
+  .new-chip.active { background: var(--accent); color: #0d1a02; border-color: var(--accent); }
+  .new-chip.active { background: var(--warn); color: #1a1004; border-color: var(--warn); }
+  .date-divider {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .8px;
+    color: var(--muted); font-weight: 700;
+    padding: 16px 0 4px; margin: 0;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .date-divider::after {
+    content: ""; flex: 1; height: 1px; background: var(--border);
+  }
+  .date-divider .count {
+    color: var(--muted); font-weight: 500; font-size: 11px;
+    background: var(--panel-2); padding: 2px 8px; border-radius: 4px;
+  }
+  .load-card .route { grid-column: 1 / 2; font-weight: 700; font-size: 16px; line-height: 1.35; }
+  .load-card .route .arrow { color: var(--muted); margin: 0 6px; }
+  .load-card .meta { grid-column: 1 / 2; color: var(--muted); font-size: 13px; }
+  .load-card .right { grid-column: 2 / 3; text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+  .load-card .rate { font-weight: 800; color: var(--accent); font-size: 17px; }
+  .status {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 999px; letter-spacing: .3px;
+    border: 1px solid transparent;
+  }
+  .status.booked       { background: transparent; color: #5fa8f5; border-color: #5fa8f5; }
+  .status.dispatched   { background: transparent; color: var(--text); border-color: var(--hairline); }
+  .status.in-transit   { background: transparent; color: var(--accent); border-color: var(--accent); }
+  .status.delivered    { background: transparent; color: var(--accent); border-color: var(--accent); }
+  .status.invoiced     { background: transparent; color: var(--danger); border-color: var(--danger); }
+  .status.paid         { background: var(--accent); color: #0d1a02; border-color: var(--accent); }
+  .status.cancelled    { background: transparent; color: var(--danger); border-color: var(--danger); }
+
+  /* FAB */
+  .fab {
+    position: fixed; right: calc(20px + env(safe-area-inset-right));
+    bottom: calc(20px + env(safe-area-inset-bottom));
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--accent);
+    color: #0d1a02; font-size: 28px; font-weight: 600;
+    line-height: 56px; text-align: center;
+    border: none; cursor: pointer; box-shadow: var(--shadow);
+    z-index: 15;
+    transition: transform .15s, background .15s;
+  }
+  .fab:hover { background: var(--accent-2); transform: translateY(-1px); }
+  .fab:active { transform: scale(.95); }
+
+  /* Modal */
+  .modal-bg {
+    position: fixed; inset: 0; background: rgba(5,10,20,.7);
+    display: none; z-index: 50; backdrop-filter: blur(4px);
+  }
+  .modal-bg.open { display: flex; align-items: flex-end; justify-content: center; }
+  .modal {
+    background: var(--panel); width: 100%; max-width: 560px;
+    border-radius: 6px 6px 0 0; border-top: 1px solid var(--hairline);
+    border-left: 1px solid var(--hairline); border-right: 1px solid var(--hairline);
+    max-height: 92vh; overflow-y: auto; padding: 22px 24px calc(24px + env(safe-area-inset-bottom));
+    animation: slideUp .22s ease;
+  }
+  @media (min-width: 640px) { .modal { border-radius: 6px; margin-bottom: 5vh; border-bottom: 1px solid var(--hairline); } .modal-bg.open { align-items: center; } }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  .modal h2 {
+    margin: 4px 0 18px; font-size: 26px;
+    font-family: var(--serif); font-style: italic; font-weight: 500;
+    color: var(--text);
+  }
+  .modal .close { float: right; background: none; border: none; color: var(--muted); font-size: 26px; cursor: pointer; line-height: 1; padding: 0; }
+  .modal .close:hover { color: var(--accent); }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-grid .full { grid-column: 1 / -1; }
+  label {
+    display: block; font-size: 10px; color: var(--muted); margin-bottom: 6px;
+    font-weight: 700; text-transform: uppercase; letter-spacing: .22em;
+  }
+  input, select, textarea {
+    width: 100%; padding: 11px 12px; border-radius: 4px;
+    background: transparent; border: 1px solid var(--hairline);
+    color: var(--text); font-size: 15px; font-family: inherit;
+    transition: border-color .15s;
+  }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
+  textarea { resize: vertical; min-height: 70px; }
+
+  .btn-row { display: flex; gap: 10px; margin-top: 22px; }
+  .btn {
+    flex: 1; padding: 13px; border-radius: 4px; border: none;
+    font-size: 12px; font-weight: 700; cursor: pointer;
+    text-transform: uppercase; letter-spacing: .18em;
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .btn-primary { background: var(--accent); color: #0d1a02; }
+  .btn-primary:hover { background: var(--accent-2); }
+  .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--hairline); }
+  .btn-secondary:hover { border-color: var(--text); }
+  .btn-danger { background: transparent; color: var(--danger); border: 1px solid rgba(214,72,58,.45); }
+  .btn-danger:hover { background: rgba(214,72,58,.1); }
+
+  /* Toast */
+  .toast {
+    position: fixed; left: 50%; transform: translateX(-50%);
+    bottom: calc(90px + env(safe-area-inset-bottom));
+    background: var(--panel); border: 1px solid var(--border);
+    padding: 12px 18px; border-radius: 10px; z-index: 100;
+    box-shadow: var(--shadow); font-size: 14px;
+    opacity: 0; pointer-events: none; transition: opacity .2s ease;
+  }
+  .toast.show { opacity: 1; }
+  .toast.err { border-color: rgba(239,68,68,.5); color: #fca5a5; }
+
+  /* Banner for config */
+  .banner {
+    margin: 10px 16px 0; padding: 10px 12px;
+    background: rgba(245,158,11,.1); border: 1px solid rgba(245,158,11,.35);
+    border-radius: 10px; font-size: 13px; color: #fbbf24;
+  }
+  .banner a { color: inherit; text-decoration: underline; }
+
+  /* Details view */
+  .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .detail-row:last-child { border-bottom: none; }
+  .detail-row .k { color: var(--muted); font-size: 13px; }
+  .detail-row .v { text-align: right; font-weight: 600; }
+
+  /* View switch — editorial underline tabs */
+  .view-switch {
+    display: flex; gap: 0; margin: 22px -22px 0;
+    background: transparent; padding: 0;
+    border: none; border-top: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--hairline);
+    overflow-x: auto; scrollbar-width: none;
+  }
+  .view-switch::-webkit-scrollbar { display: none; }
+  .vtab {
+    flex: 0 0 auto;
+    padding: 14px 18px; border-radius: 0;
+    background: transparent; border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    color: var(--muted);
+    font-size: 11.5px; font-weight: 700; cursor: pointer;
+    text-transform: uppercase; letter-spacing: .18em;
+    font-family: var(--sans);
+    transition: color .15s, border-color .15s;
+    white-space: nowrap;
+  }
+  .vtab:hover { color: var(--text); }
+  .vtab.active {
+    background: transparent; color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  /* Fuel and Invoiced tabs always read in red — money out / awaiting payment */
+  .vtab[data-view="invoiced"],
+  .vtab[data-view="fuel"] {
+    color: var(--danger);
+  }
+  .vtab[data-view="invoiced"]:hover,
+  .vtab[data-view="fuel"]:hover {
+    color: #ef6d5e;
+  }
+  .vtab[data-view="invoiced"].active,
+  .vtab[data-view="fuel"].active {
+    color: var(--danger);
+    border-bottom-color: var(--danger);
+  }
+
+  /* Week nav */
+  .week-nav {
+    display: flex; align-items: center; gap: 12px;
+    padding: 18px 22px 6px; justify-content: center;
+  }
+  .week-nav .icon-btn {
+    width: 44px; height: 44px;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-size: 18px;
+    background: transparent;
+    transition: background .12s, transform .08s;
+  }
+  .week-nav .icon-btn:hover { background: var(--accent); color: #0d1a02; }
+  .week-nav .icon-btn:active { transform: scale(.92); background: var(--accent-2); }
+  .week-label {
+    flex: 1; text-align: center; font-weight: 500; font-size: 17px;
+    font-family: var(--serif); font-style: italic; color: var(--text);
+  }
+
+  /* Payroll sheet (printable table) */
+  .payroll-sheet {
+    background: var(--panel); border: 1px solid var(--hairline);
+    border-radius: 6px; margin: 18px 22px 0; padding: 26px 28px;
+    overflow-x: auto;
+  }
+  .pay-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 24px; gap: 16px; flex-wrap: wrap;
+    padding-bottom: 18px; border-bottom: 1px solid var(--hairline);
+  }
+  .co-name {
+    font-family: var(--serif); font-weight: 600; font-size: 26px;
+    letter-spacing: -.2px;
+  }
+  .co-addr {
+    color: var(--muted); font-size: 11px; margin-top: 6px;
+    letter-spacing: .2em; text-transform: uppercase; font-weight: 600;
+  }
+  .pay-week {
+    margin-top: 10px;
+    font-family: var(--serif); font-style: italic;
+    font-size: 18px; font-weight: 500;
+    color: var(--text);
+    letter-spacing: 0;
+  }
+  .driver-name {
+    font-family: var(--serif); font-style: italic;
+    font-size: 22px; font-weight: 500; padding: 8px 16px;
+    background: transparent; border-radius: 0;
+    border: none; border-left: 2px solid var(--accent);
+    color: var(--accent);
+  }
+  .pay-table {
+    width: 100%; border-collapse: collapse; font-size: 14px;
+    table-layout: fixed;
+  }
+  .pay-table th, .pay-table td {
+    padding: 12px 10px; border: none; border-bottom: 1px solid var(--border);
+    vertical-align: top; word-wrap: break-word;
+  }
+  .pay-table th {
+    background: transparent; text-align: left; font-weight: 700;
+    text-transform: uppercase; font-size: 10px; letter-spacing: .25em;
+    color: var(--muted);
+    border-bottom: 1px solid var(--hairline);
+    padding-bottom: 10px;
+  }
+  .pay-table tbody tr:nth-child(even) td { background: transparent; }
+  .pay-table tbody tr:hover td { background: rgba(163,230,53,.05); }
+  .pay-table .date-col { font-weight: 600; white-space: normal; color: var(--text); }
+  .pay-table .amount-col {
+    text-align: right; font-weight: 600; color: var(--text);
+    white-space: nowrap; font-variant-numeric: tabular-nums;
+    font-family: var(--serif); font-style: italic; font-size: 16px;
+  }
+  .pay-table col.c-date    { width: 12%; }
+  .pay-table col.c-carrier { width: 14%; }
+  .pay-table col.c-pickup  { width: 16%; }
+  .pay-table col.c-deliv   { width: 16%; }
+  .pay-table col.c-comment { width: 22%; }
+  .pay-table col.c-total   { width: 20%; }
+  .pay-table input.cell-input {
+    width: 100%; padding: 6px 8px;
+    background: rgba(0,0,0,0.15); border: 1px solid var(--border);
+    color: var(--text); border-radius: 6px; font-size: 14px;
+    font-family: inherit;
+  }
+  .pay-table input.pay-cell {
+    text-align: right; font-weight: 600; color: var(--text);
+    font-variant-numeric: tabular-nums;
+    -moz-appearance: textfield;
+    min-width: 0;
+    font-family: var(--serif); font-style: italic; font-size: 16px;
+    background: transparent;
+  }
+  .pay-table input.pay-cell::-webkit-outer-spin-button,
+  .pay-table input.pay-cell::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .pay-table tr.extra-tr td { background: rgba(163,230,53,.05); }
+  .pay-table tr.extra-tr td:first-child { color: var(--accent); font-family: var(--serif); font-style: italic; font-weight: 500; }
+  .pay-table tfoot .grand-label {
+    text-align: right; font-weight: 700;
+    background: transparent;
+    text-transform: uppercase; letter-spacing: .25em; font-size: 10px;
+    color: var(--muted);
+    border-top: 2px solid var(--hairline); padding-top: 16px;
+  }
+  .pay-table tfoot .grand-amt {
+    font-weight: 600; font-size: 24px; color: var(--accent);
+    background: transparent; text-align: right;
+    font-family: var(--serif); font-style: italic;
+    border-top: 2px solid var(--hairline); padding-top: 14px;
+    font-variant-numeric: tabular-nums;
+  }
+  .x-cell-btn {
+    background: transparent; border: none; color: var(--danger);
+    font-size: 16px; cursor: pointer; padding: 0 4px; float: right;
+  }
+  .pay-actions {
+    padding: 16px; display: flex; justify-content: center;
+  }
+  .pay-actions .btn { max-width: 300px; }
+  @media (max-width: 640px) {
+    .payroll-sheet {
+      padding: 12px 8px; margin: 8px; border-radius: 12px;
+      overflow-x: auto; -webkit-overflow-scrolling: touch;
+    }
+    /* Give the table breathing room — horizontal scroll instead of squishing text */
+    .pay-table {
+      font-size: 13px; table-layout: fixed;
+      width: 100%; min-width: 640px;
+    }
+    .pay-table th, .pay-table td {
+      padding: 10px 8px; word-break: normal; overflow-wrap: break-word;
+    }
+    .pay-table th {
+      font-size: 11px; padding: 8px;
+    }
+    .pay-table .date-col { white-space: nowrap; }
+    .pay-table .amount-col {
+      font-size: 14px; padding: 10px 8px;
+      white-space: nowrap; overflow: visible;
+    }
+    .pay-table input.cell-input { font-size: 13px; padding: 6px 8px; }
+    .pay-table input.pay-cell { font-size: 14px; min-width: 0; padding: 6px 4px; }
+    /* Mobile column balance — total gets enough room for $1,200 */
+    .pay-table col.c-date    { width: 13%; }
+    .pay-table col.c-carrier { width: 14%; }
+    .pay-table col.c-pickup  { width: 16%; }
+    .pay-table col.c-deliv   { width: 16%; }
+    .pay-table col.c-comment { width: 23%; }
+    .pay-table col.c-total   { width: 18%; }
+    .pay-table tfoot .grand-amt { font-size: 15px; padding: 12px 8px; }
+    .driver-name { font-size: 16px; padding: 8px 12px; }
+    .co-name { font-size: 16px; }
+    /* Subtle scroll hint */
+    .payroll-sheet::-webkit-scrollbar { height: 6px; }
+    .payroll-sheet::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    /* Tabs across the top scroll horizontally if too many */
+    .view-switch {
+      display: flex; gap: 6px; overflow-x: auto; -webkit-overflow-scrolling: touch;
+      padding: 4px 12px 8px; scrollbar-width: none;
+    }
+    .view-switch::-webkit-scrollbar { display: none; }
+    .vtab { flex: 0 0 auto; white-space: nowrap; padding: 8px 14px; font-size: 13px; }
+    /* Stat cards stack neatly */
+    .lb-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 12px; }
+    .lb-stats .stat { padding: 12px 10px; }
+    .lb-stats .stat .label { font-size: 10px; }
+    .lb-stats .stat .value { font-size: 18px; font-variant-numeric: tabular-nums; }
+    /* Driver chips wrap nicely */
+    #driverChips { gap: 6px; padding: 8px 10px; flex-wrap: wrap; }
+    .chip { padding: 6px 12px; font-size: 13px; }
+    /* Extras inside the box are easier to read */
+    .extras-block .extra-row { padding: 10px; font-size: 13px; }
+    .extras-block .amt { font-size: 14px; font-variant-numeric: tabular-nums; }
+
+    /* === Editorial mobile polish === */
+    /* Masthead — keep wordmark + lockup on one line, shrink everything */
+    header.top { padding: 12px 14px 0; }
+    .brand-row { gap: 6px; flex-wrap: nowrap; min-width: 0; }
+    .brand { gap: 8px; min-width: 0; flex-shrink: 1; overflow: hidden; }
+    .brand .wordmark { font-size: 24px; flex-shrink: 0; }
+    .brand .divider  { height: 16px; flex-shrink: 0; }
+    .brand .lockup   { font-size: 8.5px; letter-spacing: .18em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    /* Icon buttons: never shrink, always visible — translate (🌐) and lang toggle (EN/ES) live here */
+    .hdr-actions { flex-shrink: 0; gap: 4px; }
+    .icon-btn { width: 30px; height: 30px; font-size: 13px; flex-shrink: 0; padding: 0; }
+    /* On very narrow phones (< 360px), drop the lockup entirely so all 4 buttons still fit */
+    @media (max-width: 359px) {
+      .brand .lockup, .brand .divider { display: none; }
+    }
+    .hdr-meta {
+      font-size: 9px; letter-spacing: .18em;
+      margin-top: 2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .hdr-meta .sep { margin: 0 6px; }
+    /* Tab bar — full-bleed scroll strip */
+    .view-switch { margin: 14px -14px 0; padding: 0; gap: 0; }
+    .vtab { padding: 12px 14px; font-size: 10.5px; letter-spacing: .14em; }
+
+    /* Loadboard hero — shrink the serif headline so it fits the screen */
+    .lb-header {
+      padding: 18px 14px 14px;
+      gap: 10px; align-items: flex-start;
+    }
+    .lb-co-name { font-size: 26px; line-height: 1.1; }
+    .lb-co-addr { font-size: 13px; margin-top: 6px; }
+    .lb-week-badge { font-size: 9.5px; letter-spacing: .2em; text-align: left; }
+    .lb-week-badge span { font-size: 16px; }
+
+    /* Week-nav — buttons wrap to next row if needed, NEW chip drops below */
+    .week-nav { padding: 12px 14px 4px; gap: 8px; flex-wrap: wrap; }
+    .week-nav .icon-btn { width: 38px; height: 38px; font-size: 15px; }
+    .week-label { font-size: 14px; flex: 1 1 auto; min-width: 140px; }
+    .new-chip { width: 100%; margin-left: 0 !important; text-align: center; padding: 10px; }
+
+    /* Stats — compact serif numbers, 2-col grid with hairlines */
+    .lb-stats { margin: 14px 14px 0; padding: 0; }
+    .lb-stats .stat { padding: 12px 12px; }
+    .lb-stats .stat .label { font-size: 9px; letter-spacing: .2em; }
+    .lb-stats .stat .value { font-size: 22px; font-variant-numeric: tabular-nums; margin-top: 4px; }
+
+    /* Legend — stack on mobile */
+    .lb-legend {
+      padding: 12px 14px; gap: 8px;
+      flex-direction: column; align-items: flex-start;
+    }
+    .fee-tag { font-size: 12px; margin-right: 4px; }
+    .lb-status-legend { gap: 12px; flex-wrap: wrap; }
+
+    /* Table — full-bleed scrollable, with subtle scroll affordance */
+    .lb-table-wrap { margin: 14px 0 100px; padding: 0 14px; }
+    .lb-table { font-size: 12.5px; min-width: 720px; }
+    .lb-table th { padding: 10px 8px; font-size: 9px; letter-spacing: .18em; }
+    .lb-table td { padding: 12px 8px; }
+    .lb-table tr.day-divider td { font-size: 14px; padding: 16px 8px 6px; }
+
+    /* Driver P&L cards — full-width hairline rows */
+    .driversList, #driversList { padding: 0 14px; }
+    .driver-card { padding: 18px 0; }
+    .driver-card .name { font-size: 22px; }
+    .pnl-row { font-size: 13px; }
+    .pnl-row.net .amt { font-size: 22px; }
+    .company-total { margin: 22px 14px 100px; }
+    .company-total .title { font-size: 20px; }
+    .company-total .pnl-row.net .amt { font-size: 26px; }
+
+    /* Fuel totals + banner */
+    .needs-driver-banner { margin: 12px 14px 0; }
+    .diesel-totals { margin: 0 14px 100px; padding: 14px 0; gap: 28px; }
+    .diesel-totals .value { font-size: 22px; }
+
+    /* Payroll sheet — smaller margins + headline */
+    .payroll-sheet { margin: 12px 14px 0; padding: 18px 16px; }
+    .pay-header { padding-bottom: 14px; margin-bottom: 16px; }
+    .driver-name { font-size: 18px; padding: 6px 12px; }
+
+    /* Modals get a touch more vertical room */
+    .modal { padding: 18px 18px calc(20px + env(safe-area-inset-bottom)); }
+    .modal h2 { font-size: 22px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .form-grid .full { grid-column: 1; }
+
+    /* FAB out of the way of safe area */
+    .fab { width: 52px; height: 52px; font-size: 26px; line-height: 52px; }
+  }
+  /* Print-only footer — hidden on screen */
+  .print-footer { display: none; }
+
+  @media print {
+    /* margin:0 suppresses Chrome's auto-rendered date/title/URL/page-number — body padding restores visual margin */
+    @page { margin: 0; size: auto; }
+    html, body { background: white !important; color: black !important; }
+    body { padding: 0.5in 0.5in 0.8in 0.5in !important; margin: 0 !important; }
+    .no-print, header.top, .fab, .banner, #configBanner, .toast, .modal-bg { display: none !important; }
+    .payroll-sheet { background: white !important; color: black !important; border: none !important; padding: 0 !important; margin: 0 !important; box-shadow: none; }
+    .co-name, .co-addr, .driver-name, .pay-week { color: black !important; }
+    .driver-name { background: transparent !important; border: 1px solid #666 !important; }
+    /* Sole "Hch Logistics" wording — centered at the bottom of every printed page */
+    .print-footer {
+      display: block !important;
+      position: fixed; bottom: 0.4in; left: 0; right: 0;
+      text-align: center;
+      padding: 0;
+      font-size: 10pt;
+      color: #555 !important;
+      background: transparent;
+    }
+    .pay-table th { background: #e5e5e5 !important; color: black !important; }
+    .pay-table td { border: 1px solid #666 !important; color: black !important; background: white !important; }
+    .pay-table tbody tr:nth-child(even) td { background: #f5f5f5 !important; }
+    .pay-table tr.extra-tr td { background: #f9f9e6 !important; }
+    .pay-table .amount-col, .pay-table input.pay-cell { color: black !important; }
+    .pay-table input.cell-input { background: transparent !important; border: none !important; color: black !important; padding: 0 !important; }
+    .pay-table tfoot .grand-label, .pay-table tfoot .grand-amt { background: #e5e5e5 !important; color: black !important; }
+    .x-cell-btn { display: none !important; }
+    /* Print column balance — give Date room for "Wednesday", trim Comments */
+    .pay-table { table-layout: fixed; width: 100%; font-size: 11px; }
+    .pay-table col.c-date    { width: 14%; }
+    .pay-table col.c-carrier { width: 12%; }
+    .pay-table col.c-pickup  { width: 16%; }
+    .pay-table col.c-deliv   { width: 16%; }
+    .pay-table col.c-comment { width: 22%; }
+    .pay-table col.c-total   { width: 20%; }
+    /* Keep day name + city names on a single line — wrap only at word boundaries */
+    .pay-table .date-col       { white-space: nowrap !important; }
+    .pay-table th, .pay-table td {
+      word-break: keep-all !important;
+      overflow-wrap: normal !important;
+      hyphens: none !important;
+      padding: 8px 6px !important;
+      vertical-align: top;
+    }
+    /* Trailer / load number can break if truly necessary, never mid-word for prose */
+    .pay-table td.allow-break { overflow-wrap: anywhere !important; }
+  }
+
+  /* Section heads in payroll */
+  .section-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 16px 8px;
+    font-size: 10.5px; text-transform: uppercase; letter-spacing: .25em;
+    color: var(--muted); font-weight: 700;
+  }
+  .tiny-btn {
+    background: transparent; color: var(--accent); border: 1px solid var(--accent);
+    padding: 6px 12px; border-radius: 4px; font-size: 10px; font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase; letter-spacing: .15em;
+    transition: background .15s, color .15s;
+  }
+  .tiny-btn:hover { background: var(--accent); color: #0d1a02; }
+
+  /* Extra row */
+  .extra-row {
+    display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center;
+    padding: 12px 14px; background: transparent; border: none;
+    border-bottom: 1px solid var(--hairline);
+    border-radius: 0;
+  }
+  .extra-row .amt {
+    font-weight: 600; color: var(--accent);
+    font-family: var(--serif); font-style: italic; font-size: 16px;
+    font-variant-numeric: tabular-nums;
+  }
+  .extra-row .x-btn {
+    background: transparent; border: none; color: var(--muted); font-size: 18px;
+    cursor: pointer; padding: 0 6px;
+  }
+  .extra-row .x-btn:hover { color: var(--danger); }
+
+  /* AJX chip — visually distinct so user knows it's a special carrier-settlement view */
+  .chip.chip-company {
+    background: transparent;
+    border: 1px solid var(--accent-2);
+    color: var(--accent-2);
+  }
+  .chip.chip-company.active { background: var(--accent-2); color: #0d1a02; border-color: var(--accent-2); }
+  /* Custom / part-time driver chip — dashed border so it reads as different from the 5 regulars */
+  .chip.chip-custom {
+    background: transparent;
+    border: 1px dashed var(--muted);
+    color: var(--text);
+    font-style: italic;
+  }
+  .chip.chip-custom.active { background: var(--text); color: var(--bg); border-style: solid; border-color: var(--text); font-style: normal; }
+
+  /* Extras block — lives inside the printable payroll-sheet box */
+  .extras-block {
+    margin-top: 22px;
+    padding: 16px 0 0;
+    border-top: 1px solid var(--hairline);
+  }
+  .extras-block .section-head { padding: 0 0 10px; }
+  .extras-block .list { padding: 0; gap: 0; display: flex; flex-direction: column; }
+  .extras-block .extra-row {
+    background: transparent;
+  }
+
+  /* Payroll total */
+  .pay-total {
+    margin: 18px 16px 10px; padding: 14px 16px;
+    background: linear-gradient(135deg, rgba(34,197,94,.15), rgba(14,165,233,.15));
+    border: 1px solid var(--accent); border-radius: 14px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 17px; font-weight: 800;
+  }
+  .pay-total .total-amt { color: var(--accent); font-size: 22px; }
+
+  /* Fuel table */
+  .fuel-table .col-gallons { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .fuel-table .col-ppg { text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .fuel-table .col-total {
+    text-align: right; font-weight: 600;
+    font-family: var(--serif); font-style: italic; font-size: 16px;
+    color: var(--text); font-variant-numeric: tabular-nums;
+  }
+  .fuel-table tr.needs-driver-row td { background: rgba(163,230,53,.07); }
+  .fuel-table tr.needs-driver-row td.drv-cell {
+    color: var(--accent); font-weight: 600;
+  }
+  .needs-driver-banner {
+    margin: 14px 22px 0; padding: 12px 16px;
+    background: transparent; border: 1px solid var(--accent);
+    border-left-width: 3px;
+    color: var(--accent); border-radius: 4px; font-size: 13px;
+    font-family: var(--serif); font-style: italic;
+  }
+  .diesel-totals {
+    margin: 0 22px 100px; padding: 18px 0;
+    background: transparent; border: none;
+    border-top: 1px solid var(--hairline);
+    border-radius: 0;
+    display: flex; gap: 60px; align-items: baseline;
+  }
+  .diesel-totals .block { display: flex; flex-direction: column; }
+  .diesel-totals .label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .25em;
+    color: var(--muted); font-weight: 700;
+  }
+  .diesel-totals .value {
+    font-family: var(--serif); font-style: italic;
+    font-size: 26px; font-weight: 500; margin-top: 6px;
+    font-variant-numeric: tabular-nums;
+  }
+  .diesel-totals .value.gallons { color: var(--text); }
+  .diesel-totals .value.cost { color: var(--danger); }
+
+  /* Fuel card (legacy, kept for any fallback) */
+  .fuel-card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 14px; padding: 14px; cursor: pointer;
+    display: grid; grid-template-columns: 1fr auto; gap: 6px 12px;
+    position: relative;
+  }
+  .fuel-card.needs-driver {
+    border-color: var(--warn);
+    background: linear-gradient(135deg, rgba(245,158,11,.08), var(--panel));
+  }
+  .fuel-card.needs-driver::before {
+    content: "NEEDS DRIVER";
+    position: absolute; top: -10px; left: 12px;
+    background: var(--warn); color: #1a1004;
+    font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 999px;
+    letter-spacing: .5px;
+  }
+  .fuel-card:active { transform: scale(.995); }
+  .fuel-card .top { font-weight: 700; font-size: 15px; }
+  .fuel-card .top .vendor { color: var(--accent-2); }
+  .fuel-card .meta { color: var(--muted); font-size: 13px; }
+  .fuel-card .right {
+    text-align: right; display: flex; flex-direction: column;
+    align-items: flex-end; gap: 2px;
+  }
+  .fuel-card .total { font-weight: 800; color: var(--accent); font-size: 17px; }
+  .fuel-card .ppg { color: var(--muted); font-size: 11px; }
+  .fuel-card .gallons { color: var(--text); font-size: 13px; font-weight: 600; }
+  .fuel-card .notes { grid-column: 1 / -1; color: var(--muted); font-size: 12px; font-style: italic; }
+
+  /* Driver P&L card */
+  .driver-card {
+    background: transparent; border: none;
+    border-bottom: 1px solid var(--hairline);
+    border-radius: 0; padding: 22px 0;
+  }
+  .driver-card .name {
+    font-family: var(--serif); font-style: italic;
+    font-size: 26px; font-weight: 500; margin-bottom: 4px;
+    text-transform: none; letter-spacing: 0;
+    color: var(--text);
+  }
+  .driver-card .summary {
+    color: var(--muted); font-size: 11px; margin-bottom: 14px;
+    text-transform: uppercase; letter-spacing: .2em; font-weight: 600;
+  }
+  .pnl-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 6px 0; font-size: 14px;
+  }
+  .pnl-row.gross { color: var(--text); font-weight: 600; }
+  .pnl-row.gross .amt { color: var(--text); }
+  .pnl-row.cost { color: var(--muted); }
+  .pnl-row.cost .amt { color: var(--danger); font-variant-numeric: tabular-nums; }
+  .pnl-row.divider { border-top: 1px solid var(--hairline); margin-top: 8px; padding-top: 12px; }
+  .pnl-row.net {
+    font-size: 14px; font-weight: 700;
+    padding-top: 10px;
+    text-transform: uppercase; letter-spacing: .2em;
+  }
+  .pnl-row.net .amt {
+    color: var(--accent); font-size: 26px;
+    font-family: var(--serif); font-style: italic; font-weight: 500;
+    letter-spacing: 0; text-transform: none;
+    font-variant-numeric: tabular-nums;
+  }
+  .pnl-row.net.negative .amt { color: var(--danger); }
+  .pnl-row .label { color: var(--text); }
+  .pnl-row.cost .label { color: var(--muted); }
+  .pnl-row .amt { font-variant-numeric: tabular-nums; }
+  .margin-pill {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    padding: 2px 8px; border-radius: 2px; margin-left: 8px;
+    background: transparent; color: var(--accent); border: 1px solid var(--accent);
+    text-transform: uppercase; letter-spacing: .15em;
+  }
+  .margin-pill.warn { color: var(--warn); border-color: var(--warn); }
+  .margin-pill.bad  { color: var(--danger); border-color: var(--danger); }
+  .company-total {
+    margin: 28px 22px 100px; padding: 24px 0 18px;
+    background: transparent;
+    border: none; border-top: 2px solid var(--accent); border-radius: 0;
+  }
+  .company-total .title {
+    font-family: var(--serif); font-style: italic; font-size: 24px;
+    text-transform: none; letter-spacing: 0;
+    font-weight: 500; color: var(--accent); margin-bottom: 12px;
+  }
+  .company-total .pnl-row.net .amt { font-size: 32px; }
+
+  /* === Loadboard weekly view === */
+  .lb-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    padding: 28px 22px 22px; margin: 0;
+    background: transparent; border: none; border-bottom: 1px solid var(--hairline);
+    gap: 20px; flex-wrap: wrap;
+  }
+  .lb-co-name {
+    font-family: var(--serif);
+    font-weight: 600; font-size: 38px; letter-spacing: -.5px;
+    color: var(--text); line-height: 1.05;
+  }
+  .lb-co-addr {
+    color: var(--muted);
+    font-size: 14px; letter-spacing: 0; text-transform: none;
+    margin-top: 8px; font-weight: 400; line-height: 1.5;
+    max-width: 460px;
+  }
+  .lb-co-addr b { color: var(--text); }
+  .lb-week-badge {
+    text-align: right; color: var(--accent); font-weight: 700;
+    font-size: 10.5px; letter-spacing: .25em; line-height: 1.7;
+    text-transform: uppercase;
+  }
+  .lb-week-badge span {
+    display: block; margin-top: 4px;
+    font-family: var(--serif); font-style: italic;
+    font-size: 22px; color: var(--text); font-weight: 500;
+    letter-spacing: 0; text-transform: none;
+  }
+
+  .lb-stats {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 0;
+    margin: 18px 22px 0;
+    border-top: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--hairline);
+  }
+  .lb-stats .stat {
+    padding: 16px 18px;
+    background: transparent; border: none;
+    border-right: 1px solid var(--hairline);
+    border-radius: 0;
+  }
+  .lb-stats .stat:last-child { border-right: none; }
+  .lb-stats .stat .label {
+    font-weight: 700; color: var(--muted);
+    font-size: 9.5px; letter-spacing: .25em; text-transform: uppercase;
+  }
+  .lb-stats .stat .value {
+    font-family: var(--serif); font-style: italic;
+    font-size: 28px; font-weight: 500; margin-top: 6px;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+  .lb-stat-gross  .value { color: var(--text); }
+  .lb-stat-fees   .value { color: var(--danger); }
+  .lb-stat-diesel .value { color: var(--danger); }
+  .lb-stat-pay    .value { color: var(--danger); }
+  .lb-stat-ajx    .value { color: var(--danger); }
+  .lb-stat-net    .value { color: var(--accent); }
+  /* Make deduction stat labels also pick up the red so the "money out" cluster reads as one block */
+  .lb-stat-fees   .label,
+  .lb-stat-diesel .label,
+  .lb-stat-pay    .label,
+  .lb-stat-ajx    .label { color: var(--danger); opacity: .75; }
+  @media (max-width: 768px) {
+    .lb-stats { grid-template-columns: repeat(2, 1fr); }
+    .lb-stats .stat { border-right: none; border-bottom: 1px solid var(--hairline); }
+    .lb-stats .stat:nth-child(odd) { border-right: 1px solid var(--hairline); }
+    .lb-stats .stat:nth-last-child(-n+1) { border-bottom: none; }
+  }
+
+  .lb-legend {
+    display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+    padding: 14px 22px; margin: 0;
+    background: transparent; border-radius: 0;
+    border-top: none; border-bottom: 1px solid var(--hairline);
+    font-size: 11px; color: var(--muted);
+    letter-spacing: .1em;
+  }
+  .lb-legend b {
+    color: var(--text); font-weight: 700;
+    text-transform: uppercase; letter-spacing: .2em; font-size: 10.5px;
+    margin-right: 6px;
+  }
+  .fee-tag {
+    display: inline-block; margin: 0 8px 0 0; color: var(--danger);
+    font-weight: 600; font-family: var(--serif); font-style: italic;
+    font-size: 13px; letter-spacing: 0;
+  }
+  .lb-status-legend { display: flex; gap: 18px; color: var(--muted); }
+  .lb-status-legend .dot {
+    display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+    margin-right: 6px; vertical-align: middle;
+  }
+  .dot.active   { background: #5fa8f5; }
+  .dot.invoiced { background: var(--danger); }
+  .dot.paid     { background: var(--accent); }
+
+  .lb-table-wrap {
+    margin: 18px 22px 100px; background: transparent;
+    border: none; border-radius: 0; overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .lb-table { width: 100%; min-width: 820px; border-collapse: collapse; font-size: 14px; }
+  .lb-table .col-rate, .lb-table .col-fee, .lb-table .col-net {
+    text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums;
+  }
+  .lb-table .col-load { text-align: left; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .lb-table th {
+    background: transparent; padding: 14px 14px 10px; text-align: left;
+    color: var(--muted); font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .25em;
+    border-bottom: 1px solid var(--hairline); white-space: nowrap;
+  }
+  .lb-table td {
+    padding: 16px 14px; border-bottom: 1px solid var(--border);
+    vertical-align: middle; white-space: nowrap;
+  }
+  .lb-table tr.load-row { cursor: pointer; transition: background .1s; }
+  .lb-table tr.load-row:hover td { background: rgba(163,230,53,.05); }
+  .lb-table tr.load-row.is-new td { background: rgba(163,230,53,.1); }
+  .lb-table tr.day-divider td {
+    background: transparent; color: var(--accent);
+    font-family: var(--serif); font-style: italic; font-weight: 500;
+    text-transform: none; letter-spacing: 0;
+    font-size: 16px; padding: 22px 14px 8px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .lb-table tr.subsection td {
+    color: var(--muted); font-style: italic; font-size: 11px;
+    padding: 4px 14px; background: transparent;
+    letter-spacing: .15em; text-transform: uppercase;
+  }
+  .lb-table .col-driver { font-weight: 600; color: var(--text); }
+  .lb-table .col-rate   { font-weight: 600; color: var(--text); }
+  .lb-table .col-net    { font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .lb-table .col-load   { color: var(--text); font-weight: 600; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 13px; letter-spacing: .02em; }
+  .lb-table .col-status { width: 14px; padding: 0; position: relative; }
+  .lb-table .col-status .row-dot {
+    display: block; width: 6px; height: 100%; min-height: 32px;
+    margin-left: 4px; border-radius: 3px;
+    cursor: pointer; transition: width .12s ease;
+  }
+  .lb-table .col-status .row-dot:hover { width: 10px; }
+  .lb-table .col-status .row-dot.active    { background: #5fa8f5; }
+  .lb-table .col-status .row-dot.invoiced  { background: var(--danger); }
+  .lb-table .col-status .row-dot.paid      { background: var(--accent); }
+  .lb-table .col-status .row-dot.detention { background: #f5d442; }
+  /* Load # color follows status — editorial palette */
+  .lb-table .col-load.s-active    { color: #5fa8f5; }
+  .lb-table .col-load.s-invoiced  { color: var(--danger); }
+  .lb-table .col-load.s-paid      { color: var(--accent); }
+  .lb-table .col-load.s-detention { color: #f5d442; }
+
+  /* Status picker popover */
+  .status-popover {
+    position: fixed; z-index: 200;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 10px; padding: 6px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.5);
+    display: none; min-width: 160px;
+  }
+  .status-popover.open { display: block; }
+  .status-popover button {
+    display: flex; align-items: center; gap: 10px; width: 100%;
+    padding: 8px 12px; border: none; background: transparent;
+    color: var(--text); font-size: 14px; font-weight: 600;
+    cursor: pointer; text-align: left; border-radius: 6px;
+    font-family: inherit;
+  }
+  .status-popover button:hover { background: var(--panel-2); }
+  .status-popover button .swatch {
+    width: 12px; height: 12px; border-radius: 50%;
+  }
+  .status-popover button.current { background: var(--panel-2); }
+  .status-popover button.current::after { content: "✓"; margin-left:auto; color: var(--accent); }
+  .trailer-pill {
+    display: inline-block; padding: 2px 8px;
+    background: transparent; color: var(--muted);
+    border: 1px solid var(--hairline);
+    border-radius: 3px; font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11px; font-weight: 600; letter-spacing: .03em;
+  }
+  .fee-pill {
+    display: inline-block; padding: 0;
+    background: transparent; color: var(--danger);
+    border: none;
+    font-family: var(--serif); font-style: italic;
+    font-size: 12px; font-weight: 500;
+  }
+  .new-row-tag {
+    display: inline-block; padding: 2px 7px; margin-left: 8px;
+    background: var(--accent); color: #0d1a02;
+    font-size: 9px; font-weight: 700; border-radius: 2px;
+    letter-spacing: .15em; text-transform: uppercase;
+    vertical-align: 2px;
+  }
+
+  /* Loading */
+  .spinner {
+    width: 20px; height: 20px; border: 3px solid rgba(255,255,255,.2);
+    border-top-color: var(--text); border-radius: 50%;
+    animation: spin .8s linear infinite; display: inline-block; vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  /* Mic button pulse while recording — visual cue that the mic is hot */
+  @keyframes micPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.7); }
+    50%      { box-shadow: 0 0 0 10px rgba(255, 59, 48, 0); }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand-row">
+    <div class="brand">
+      <span class="wordmark">Hch</span>
+      <span class="divider"></span>
+      <span class="lockup">Logistics&nbsp;LLC</span>
+    </div>
+    <div class="hdr-actions">
+      <button class="icon-btn" id="btnTranslate" title="Translate Spanish → English / Traducir Español → Inglés" aria-label="Translate">🌐</button>
+      <button class="icon-btn" id="btnLang" title="Switch language / Cambiar idioma" aria-label="Language">EN</button>
+      <button class="icon-btn" id="btnRefresh" title="Refresh" aria-label="Refresh">↻</button>
+      <button class="icon-btn" id="btnSettings" title="Settings" aria-label="Settings">⚙</button>
+    </div>
+  </div>
+  <div class="hdr-meta">
+    Frederick, MD <span class="sep">·</span> DOT 2792875 <span class="sep">·</span> MC 937646
+  </div>
+  <div class="view-switch" role="tablist">
+    <button class="vtab active" data-view="loads"     role="tab" data-i18n>Load board</button>
+    <button class="vtab"        data-view="invoiced"  role="tab" data-i18n>Invoiced</button>
+    <button class="vtab"        data-view="paid"      role="tab" data-i18n>Paid</button>
+    <button class="vtab"        data-view="payroll"   role="tab" data-i18n>Payroll</button>
+    <button class="vtab"        data-view="fuel"      role="tab" data-i18n>Fuel</button>
+    <button class="vtab"        data-view="drivers"   role="tab" data-i18n>P&amp;L</button>
+  </div>
+</header>
+
+<div id="configBanner" class="banner" style="display:none">
+  Demo mode — no backend connected. Paste your Google Apps Script URL in ⚙ Settings to save real data.
+</div>
+
+<!-- ================== LOADS VIEW (weekly) ================== -->
+<div id="loadsView">
+  <div class="lb-header">
+    <div>
+      <div class="lb-co-name">The week in motion.</div>
+      <div class="lb-co-addr" id="lbHeadline">Week: <span id="lbWeekText">—</span> · Fri→Thu</div>
+    </div>
+    <div class="lb-week-badge">Payroll week<br><span id="lbWeekRange">—</span></div>
+  </div>
+  <div class="week-nav no-print">
+    <button class="icon-btn" id="btnLbWeekPrev" aria-label="Previous week">◀</button>
+    <div class="week-label" id="lbWeekLabel">—</div>
+    <button class="icon-btn" id="btnLbWeekNext" aria-label="Next week">▶</button>
+    <button class="icon-btn" id="btnLbWeekToday" title="Jump to this week">●</button>
+    <button class="chip new-chip" id="btnLbNewFilter" style="margin-left:12px">⭐ Show only NEW</button>
+  </div>
+  <section class="lb-stats" id="lbStats"></section>
+  <div class="lb-legend">
+    <div><b>Fees:</b>
+      <span class="fee-tag">RXO 2.5%</span>
+      <span class="fee-tag">KNX 3.5%</span>
+      <span class="fee-tag">CH Robinson 2%</span>
+      <span class="fee-tag">Uber $30</span>
+      <span class="fee-tag">UPS 2.5%</span>
+    </div>
+    <div class="lb-status-legend">
+      <span><span class="dot active"></span>Active</span>
+      <span><span class="dot invoiced"></span>Invoiced</span>
+      <span><span class="dot paid"></span>Paid</span>
+    </div>
+  </div>
+  <div class="lb-table-wrap">
+    <table class="lb-table" id="lbTable"></table>
+  </div>
+</div>
+
+<!-- ================== INVOICED VIEW (status = Invoiced, sorted newest first) ================== -->
+<div id="invoicedView" style="display:none">
+  <div class="lb-header">
+    <div>
+      <div class="lb-co-name">Awaiting payment.</div>
+      <div class="lb-co-addr" id="invoicedMeta">Every load marked invoiced — most recent first.</div>
+    </div>
+    <div class="lb-week-badge">Status<br><span>Invoiced</span></div>
+  </div>
+  <section class="lb-stats" id="invoicedStats"></section>
+  <div class="lb-table-wrap">
+    <table class="lb-table" id="invoicedTable"></table>
+  </div>
+</div>
+
+<!-- ================== PAID VIEW (status = Paid, sorted newest first) ================== -->
+<div id="paidView" style="display:none">
+  <div class="lb-header">
+    <div>
+      <div class="lb-co-name">Money in the bank.</div>
+      <div class="lb-co-addr" id="paidMeta">Every load marked paid — most recent first.</div>
+    </div>
+    <div class="lb-week-badge">Status<br><span>Paid</span></div>
+  </div>
+  <section class="lb-stats" id="paidStats"></section>
+  <div class="lb-table-wrap">
+    <table class="lb-table" id="paidTable"></table>
+  </div>
+</div>
+
+<!-- ================== PAYROLL VIEW ================== -->
+<div id="payrollView" style="display:none">
+  <div class="week-nav no-print">
+    <button class="icon-btn" id="btnWeekPrev" aria-label="Previous week">◀</button>
+    <div class="week-label" id="weekLabel">—</div>
+    <button class="icon-btn" id="btnWeekNext" aria-label="Next week">▶</button>
+    <button class="icon-btn" id="btnWeekToday" title="This week">●</button>
+  </div>
+  <div class="filters no-print" id="driverChips"></div>
+
+  <div class="payroll-sheet">
+    <div class="pay-header">
+      <div>
+        <div class="co-name">Hch Logistics, LLC</div>
+        <div class="co-addr">7192 Allegheny Dr, Frederick, MD 21702</div>
+        <div class="pay-week" id="payWeekDisplay">—</div>
+      </div>
+      <div class="driver-name" id="driverNameDisplay">—</div>
+    </div>
+    <table class="pay-table">
+      <colgroup>
+        <col class="c-date" />
+        <col class="c-carrier" />
+        <col class="c-pickup" />
+        <col class="c-deliv" />
+        <col class="c-comment" />
+        <col class="c-total" />
+      </colgroup>
+      <thead>
+        <tr id="payHeadDriver">
+          <th>Date</th>
+          <th>Broker</th>
+          <th>Pickup</th>
+          <th>Delivery</th>
+          <th>Comments</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody id="payTbody"></tbody>
+      <tfoot>
+        <tr id="payGrandRow">
+          <td colspan="4"></td>
+          <td class="grand-label">Total</td>
+          <td class="grand-amt" id="payGrandTotal">$0.00</td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <div class="extras-block">
+      <div class="section-head">
+        <div>Extra compensation / deductions</div>
+        <button class="tiny-btn no-print" id="btnAddExtra">+ Add</button>
+      </div>
+      <div class="list" id="extrasList" style="padding-top:0"></div>
+    </div>
+
+    <!-- Print-only footer: small "Hch Logistics" centered at the bottom of every printed page -->
+    <div class="print-footer">Hch Logistics</div>
+  </div>
+
+  <div class="pay-actions no-print">
+    <button class="btn btn-secondary" id="btnPrint">Print / Save PDF</button>
+  </div>
+</div>
+
+<!-- ================== DRIVERS / P&L VIEW ================== -->
+<div id="driversView" style="display:none">
+  <div class="week-nav">
+    <button class="icon-btn" id="btnDrvWeekPrev" aria-label="Previous week">◀</button>
+    <div class="week-label" id="drvWeekLabel">—</div>
+    <button class="icon-btn" id="btnDrvWeekNext" aria-label="Next week">▶</button>
+    <button class="icon-btn" id="btnDrvWeekToday" title="This week">●</button>
+  </div>
+  <div class="list" id="driversList"></div>
+  <div class="company-total" id="companyTotal"></div>
+</div>
+
+<!-- ================== FUEL VIEW ================== -->
+<div id="fuelView" style="display:none">
+  <div class="week-nav">
+    <button class="icon-btn" id="btnFuelWeekPrev" aria-label="Previous week">◀</button>
+    <div class="week-label" id="fuelWeekLabel">—</div>
+    <button class="icon-btn" id="btnFuelWeekNext" aria-label="Next week">▶</button>
+    <button class="icon-btn" id="btnFuelWeekToday" title="This week">●</button>
+  </div>
+  <div class="needs-driver-banner" id="fuelNeedsBanner" style="display:none"></div>
+  <div class="lb-table-wrap" style="margin-bottom:0">
+    <table class="lb-table fuel-table" id="fuelTable"></table>
+  </div>
+  <div class="diesel-totals" id="fuelTotals"></div>
+</div>
+
+<button class="fab" id="btnAdd" aria-label="Add load">+</button>
+
+<!-- Status picker popover -->
+<div class="status-popover" id="statusPopover">
+  <button data-status="Booked"><span class="swatch" style="background:#5fa8f5"></span>Active</button>
+  <button data-status="Invoiced"><span class="swatch" style="background:#d6483a"></span>Invoiced</button>
+  <button data-status="Paid"><span class="swatch" style="background:#a3e635"></span>Paid</button>
+  <button data-status="Detention"><span class="swatch" style="background:#f5d442"></span>Detention / Layover</button>
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="modal-bg" id="modalEdit">
+  <div class="modal">
+    <button class="close" id="closeEdit" aria-label="Close">×</button>
+    <h2 id="modalTitle">Add Load</h2>
+    <form id="editForm">
+      <div class="form-grid">
+        <div>
+          <label>Load #</label>
+          <input name="LoadNumber" placeholder="22788832" required />
+        </div>
+        <div>
+          <label>Broker</label>
+          <input name="Broker" placeholder="RXO" list="brokerList" />
+        </div>
+        <div class="full"><hr style="border:none;border-top:1px solid var(--border);margin:4px 0;" /></div>
+
+        <div>
+          <label>Origin City</label>
+          <input name="OriginCity" placeholder="Kutztown" />
+        </div>
+        <div>
+          <label>Origin State</label>
+          <input name="OriginState" placeholder="PA" maxlength="2" style="text-transform:uppercase" />
+        </div>
+        <div>
+          <label>Dest City</label>
+          <input name="DestCity" placeholder="Alexandria" />
+        </div>
+        <div>
+          <label>Dest State</label>
+          <input name="DestState" placeholder="VA" maxlength="2" style="text-transform:uppercase" />
+        </div>
+
+        <div>
+          <label>Pickup</label>
+          <input name="PickupDate" type="date" />
+        </div>
+        <div>
+          <label>Delivery</label>
+          <input name="DeliveryDate" type="date" />
+        </div>
+
+        <div>
+          <label>Rate ($)</label>
+          <input name="Rate" type="number" step="0.01" placeholder="1400" inputmode="decimal" />
+        </div>
+        <div>
+          <label>Status</label>
+          <select name="Status">
+            <option>Booked</option>
+            <option>Dispatched</option>
+            <option>In Transit</option>
+            <option>Delivered</option>
+            <option>Invoiced</option>
+            <option>Paid</option>
+            <option>Detention</option>
+            <option>Cancelled</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Driver <span style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0">— pick from list or type a custom name</span></label>
+          <input type="text" name="Driver" list="driverList" placeholder="— Unassigned —" autocomplete="off" />
+        </div>
+        <div>
+          <label>Truck #</label>
+          <input name="Truck" placeholder="101" />
+        </div>
+        <div>
+          <label>Trailer # <span style="font-weight:500;text-transform:none">— UPS moves</span></label>
+          <input name="TrailerNumber" placeholder="BOWZ200233" style="text-transform:uppercase" />
+        </div>
+        <div></div>
+
+        <div class="full"><hr style="border:none;border-top:1px solid var(--border);margin:4px 0;" /></div>
+        <div>
+          <label>Driver Pay ($) <span style="font-weight:500;text-transform:none">— for payroll</span></label>
+          <input name="DriverPay" type="number" step="0.01" placeholder="leave blank to fill later" inputmode="decimal" />
+        </div>
+        <div></div>
+
+        <div class="full">
+          <label>Notes</label>
+          <textarea name="Notes" placeholder="Any notes..."></textarea>
+        </div>
+      </div>
+
+      <input type="hidden" name="LoadID" />
+
+      <div class="btn-row">
+        <button type="button" class="btn btn-secondary" id="btnCancelEdit">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="btnSaveEdit">Save</button>
+      </div>
+      <div class="btn-row" id="deleteRow" style="display:none">
+        <button type="button" class="btn btn-danger" id="btnDelete">Delete load</button>
+      </div>
+    </form>
+    <datalist id="brokerList">
+      <option value="RXO"></option>
+      <option value="CH Robinson"></option>
+      <option value="Knight"></option>
+      <option value="Schneider"></option>
+      <option value="J.B. Hunt"></option>
+      <option value="Coyote"></option>
+      <option value="Uber Freight"></option>
+      <option value="Convoy"></option>
+      <option value="TQL"></option>
+      <option value="Echo Global"></option>
+      <option value="Landstar"></option>
+    </datalist>
+    <datalist id="driverList"></datalist>
+    <datalist id="fuelDriverList"></datalist>
+  </div>
+</div>
+
+<!-- Add Fuel Receipt Modal -->
+<div class="modal-bg" id="modalFuel">
+  <div class="modal">
+    <button class="close" id="closeFuel" aria-label="Close">×</button>
+    <h2 id="fuelTitle">Add fuel receipt</h2>
+    <form id="fuelForm">
+      <div class="form-grid">
+        <div>
+          <label>Date</label>
+          <input name="Date" type="date" required />
+        </div>
+        <div>
+          <label>Vendor</label>
+          <input name="Vendor" placeholder="Mudflap" list="vendorList" />
+        </div>
+        <div>
+          <label>Driver <span style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0">— pick from list or type a custom name</span></label>
+          <input type="text" name="Driver" list="fuelDriverList" placeholder="— Unassigned —" autocomplete="off" />
+        </div>
+        <div>
+          <label>Truck #</label>
+          <input name="Truck" placeholder="101" />
+        </div>
+        <div class="full">
+          <label>Location</label>
+          <input name="Location" placeholder="Pilot — Carlisle, PA" />
+        </div>
+        <div>
+          <label>Gallons</label>
+          <input name="Gallons" type="number" step="any" inputmode="decimal" placeholder="85.2" id="fuelGal" />
+        </div>
+        <div>
+          <label>Total $</label>
+          <input name="TotalAmount" type="number" step="0.01" inputmode="decimal" placeholder="351.04" id="fuelTotal" required />
+        </div>
+        <div class="full" style="color:var(--muted);font-size:13px;margin:-4px 0 0">
+          <span id="fuelPpgPreview">$/gal will compute automatically</span>
+        </div>
+        <div class="full">
+          <label>Notes</label>
+          <input name="Notes" placeholder="DEF, paid by Mudflap card #5, etc." />
+        </div>
+        <input type="hidden" name="ReceiptID" />
+        <input type="hidden" name="PricePerGallon" />
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn btn-secondary" id="btnCancelFuel">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+      <div class="btn-row" id="fuelDeleteRow" style="display:none">
+        <button type="button" class="btn btn-danger" id="btnDeleteFuel">Delete receipt</button>
+      </div>
+    </form>
+    <datalist id="vendorList">
+      <option value="Mudflap"></option>
+      <option value="Pilot"></option>
+      <option value="Loves"></option>
+      <option value="TA / Petro"></option>
+      <option value="Comdata"></option>
+      <option value="EFS"></option>
+      <option value="Sheetz"></option>
+      <option value="Wawa"></option>
+      <option value="Speedway"></option>
+    </datalist>
+  </div>
+</div>
+
+<!-- Add Extra (payroll compensation/deduction) Modal -->
+<div class="modal-bg" id="modalExtra">
+  <div class="modal">
+    <button class="close" id="closeExtra" aria-label="Close">×</button>
+    <h2 id="extraTitle">Add compensation</h2>
+    <form id="extraForm">
+      <div class="form-grid">
+        <div>
+          <label>Date</label>
+          <input name="Date" type="date" required />
+        </div>
+        <div>
+          <label>Amount ($)</label>
+          <input name="Amount" type="number" step="0.01" inputmode="decimal" required />
+        </div>
+        <div class="full">
+          <label>Note</label>
+          <input name="Note" placeholder="Layover Kutztown, fuel reimbursement, etc." required />
+        </div>
+        <input type="hidden" name="ExtraID" />
+        <input type="hidden" name="Driver" />
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn btn-secondary" id="btnCancelExtra">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal-bg" id="modalDetail">
+  <div class="modal">
+    <button class="close" id="closeDetail" aria-label="Close">×</button>
+    <h2 id="detailTitle">Load</h2>
+    <div id="detailBody"></div>
+    <div class="btn-row">
+      <button type="button" class="btn btn-secondary" id="btnCloseDetail">Close</button>
+      <button type="button" class="btn btn-primary" id="btnEditLoad">Edit</button>
+    </div>
+  </div>
+</div>
+
+<!-- Settings Modal -->
+<div class="modal-bg" id="modalSettings">
+  <div class="modal">
+    <button class="close" id="closeSettings" aria-label="Close">×</button>
+    <h2>Settings</h2>
+    <label>Google Apps Script Web App URL</label>
+    <input id="apiUrl" placeholder="https://script.google.com/macros/s/.../exec" />
+    <p style="color:var(--muted); font-size:12px; margin-top:8px;">
+      This is where your loads are saved. See the setup guide for how to create one (takes ~5 minutes).
+    </p>
+    <label style="margin-top:14px">Access token (optional)</label>
+    <input id="apiToken" placeholder="shared secret (must match script)" />
+    <div class="btn-row">
+      <button type="button" class="btn btn-secondary" id="btnTestConn">Test</button>
+      <button type="button" class="btn btn-primary" id="btnSaveSettings">Save</button>
+    </div>
+    <p id="testResult" style="color:var(--muted); font-size:13px; margin-top:10px"></p>
+  </div>
+</div>
+
+<!-- Translator Modal: Spanish in (voice-to-text via phone keyboard mic), natural English out -->
+<div class="modal-bg" id="modalTranslate">
+  <div class="modal" style="max-width:640px">
+    <button class="close" id="closeTranslate" aria-label="Close">×</button>
+    <h2>Traducir / Translate</h2>
+    <p style="color:var(--muted);font-size:13px;margin:0 0 14px">
+      Habla o escribe en español. La versión en inglés aparece abajo, lista para copiar y pegar al correo.
+      <br><span style="font-size:11px;color:var(--accent)">Tip: en el teléfono, toca el ícono del micrófono en tu teclado para hablar en español.</span>
+    </p>
+
+    <label>Tu mensaje (Español)</label>
+    <div style="position:relative">
+      <textarea id="trInputEs" rows="5" placeholder="Toca el micrófono 🎤 abajo y habla, o escribe aquí en español" style="width:100%;font-size:15px;line-height:1.5;padding-right:8px"></textarea>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap">
+      <button type="button" class="btn btn-primary" id="btnTrMic" style="flex:0 0 auto;background:var(--danger);color:#fff;display:flex;align-items:center;gap:6px" title="Habla en español — toca para empezar / parar">
+        <span id="trMicIcon">🎤</span>
+        <span id="trMicLabel">Hablar</span>
+      </button>
+      <button type="button" class="btn btn-primary" id="btnDoTranslate" style="flex:0 0 auto">Traducir →</button>
+      <button type="button" class="btn btn-secondary" id="btnTrClear" style="flex:0 0 auto">Borrar</button>
+      <span id="trStatus" style="color:var(--muted);font-size:12px;margin-left:auto"></span>
+    </div>
+
+    <label style="margin-top:18px">English (copia esto al correo)</label>
+    <textarea id="trOutputEn" rows="5" placeholder="The English version will appear here…" style="width:100%;font-size:15px;line-height:1.5;background:rgba(163,230,53,.06);border-color:var(--accent)"></textarea>
+
+    <div class="btn-row">
+      <button type="button" class="btn btn-secondary" id="btnTrClose">Cerrar / Close</button>
+      <button type="button" class="btn btn-primary" id="btnTrCopy">Copiar inglés</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===================================================================
+   HCH Logistics — Load Board
+   Single-file dashboard. Data is stored in a Google Sheet via a
+   Google Apps Script Web App (see SETUP.md).
+   =================================================================== */
+
+const LS_KEY_API   = "hch.apiUrl";
+const LS_KEY_TOKEN = "hch.apiToken";
+const LS_KEY_CACHE = "hch.cache.v1";
+const LS_KEY_LANG  = "hch.lang";  // "en" | "es" — UI language preference
+
+// Default API URL — baked in at setup. Can be overridden in Settings.
+const DEFAULT_API_URL = "https://script.google.com/macros/s/AKfycbyGK5qc0wPK2ndjgvQW6hKFMXG3wsdtbux9iFRgRCYCw_pnSvx87CU3sBCS82xYfzxl/exec";
+
+let STATE = {
+  apiUrl: localStorage.getItem(LS_KEY_API) || DEFAULT_API_URL,
+  apiToken: localStorage.getItem(LS_KEY_TOKEN) || "",
+  view: "loads",           // "loads" | "payroll" | "fuel" | "drivers"
+  filter: "week",
+  lbWeekStart: null,       // weekly view (loads tab)
+  lbShowOnlyNew: false,
+  loads: [],
+  extras: [],
+  fuel: [],
+  loading: false,
+  // Payroll view state
+  payDriver: "",
+  payWeekStart: null,
+  // Fuel view state
+  fuelDriver: "all",       // "all" or driver name
+  fuelWeekStart: null,
+  // Drivers/P&L view state
+  drvWeekStart: null,
+  // UI language: "en" or "es". Toggled by the EN/ES button in the header.
+  lang: localStorage.getItem(LS_KEY_LANG) || "en",
+};
+
+/* ===================================================================
+   BILINGUAL: Spanish translation dictionary
+   The owner (Henry's father) primarily speaks Spanish. Switching the
+   EN/ES button in the header re-labels every visible string on the
+   dashboard so he can run dispatch in Spanish while the dispatcher
+   (Henry) keeps English. Both look at the same underlying data.
+   =================================================================== */
+const I18N_ES = {
+  // Header / metadata
+  "LOGISTICS LLC": "LOGÍSTICA LLC",
+  "Logistics LLC": "Logística LLC",
+  "Logistics LLC": "Logística LLC",
+  // Tabs
+  "Load board": "Cargas",
+  "Invoiced": "Facturado",
+  "Paid": "Pagado",
+  "Payroll": "Nómina",
+  "Fuel": "Combustible",
+  "P&L": "Ganancia",
+  "P& L": "Ganancia",
+  // Hero headlines
+  "The week in motion.": "La semana en movimiento.",
+  "Awaiting payment.": "Esperando pago.",
+  "Money in the bank.": "Dinero en el banco.",
+  "Payroll week": "Semana de pago",
+  "Status": "Estado",
+  // Status labels
+  "Active": "Activo",
+  "Booked": "Reservado",
+  "Dispatched": "Despachado",
+  "In Transit": "En tránsito",
+  "Delivered": "Entregado",
+  "Detention": "Detención",
+  "Cancelled": "Cancelado",
+  "Detention / Layover": "Detención / Espera",
+  // Stats
+  "Gross revenue": "Ingresos brutos",
+  "Quick pay fees": "Cargos pago rápido",
+  "Diesel": "Diesel",
+  "Driver pay": "Pago al chofer",
+  "AJX settlement": "Liquidación AJX",
+  "Net profit": "Ganancia neta",
+  "GROSS REVENUE": "INGRESOS BRUTOS",
+  "QUICK PAY FEES": "CARGOS PAGO RÁPIDO",
+  "DIESEL": "DIESEL",
+  "DRIVER PAY": "PAGO AL CHOFER",
+  "AJX SETTLEMENT": "LIQUIDACIÓN AJX",
+  "NET PROFIT": "GANANCIA NETA",
+  // Loadboard / table headers
+  "Date": "Fecha",
+  "Driver": "Chofer",
+  "Trailer": "Tráiler",
+  "Broker": "Corredor",
+  "Carrier": "Corredor",
+  "Pickup": "Recogida",
+  "Delivery": "Entrega",
+  "Rate": "Tarifa",
+  "Fee": "Cargo",
+  "Net": "Neto",
+  "Load #": "Carga #",
+  "Comments": "Comentarios",
+  "Total": "Total",
+  "Lane": "Ruta",
+  "Quickpay": "Pago rápido",
+  "AJX net": "Neto AJX",
+  "Location": "Ubicación",
+  "Vendor": "Vendedor",
+  "Gallons": "Galones",
+  "Price/Gal": "Precio/Gal",
+  "Amount": "Monto",
+  "Truck": "Camión",
+  // Buttons / actions
+  "Refresh": "Actualizar",
+  "Settings": "Configuración",
+  "Save": "Guardar",
+  "Cancel": "Cancelar",
+  "Delete": "Eliminar",
+  "Close": "Cerrar",
+  "Edit": "Editar",
+  "Add": "Agregar",
+  "+ Add": "+ Agregar",
+  "Test": "Probar",
+  "Print / Save PDF": "Imprimir / Guardar PDF",
+  "This week": "Esta semana",
+  "Last week": "Semana pasada",
+  "Next week": "Próxima semana",
+  "Add Load": "Agregar carga",
+  "Edit Load": "Editar carga",
+  "Add Fuel Receipt": "Agregar recibo de combustible",
+  "Add Compensation": "Agregar compensación",
+  "Load": "Carga",
+  // Modal labels
+  "Origin City": "Ciudad de origen",
+  "Origin State": "Estado de origen",
+  "Dest City": "Ciudad de destino",
+  "Dest State": "Estado de destino",
+  "Origin Zip": "Código postal origen",
+  "Dest Zip": "Código postal destino",
+  "Pickup Date": "Fecha de recogida",
+  "Delivery Date": "Fecha de entrega",
+  "Rate ($)": "Tarifa ($)",
+  "Truck #": "Camión #",
+  "Trailer #": "Tráiler #",
+  "Driver Pay ($)": "Pago al chofer ($)",
+  "Notes": "Notas",
+  "Note": "Nota",
+  "— Unassigned —": "— Sin asignar —",
+  "Settings": "Configuración",
+  "Google Apps Script Web App URL": "URL de la aplicación web de Google Apps Script",
+  "Access token (optional)": "Token de acceso (opcional)",
+  "Date (YYYY-MM-DD)": "Fecha (AAAA-MM-DD)",
+  // Common phrases
+  "All assigned": "Todos asignados",
+  "all assigned.": "todos asignados.",
+  "need a driver": "necesitan chofer",
+  "need a driver.": "necesitan chofer.",
+  "load booked": "carga reservada",
+  "loads booked": "cargas reservadas",
+  "total revenue": "ingresos totales",
+  "Pick a driver above.": "Elige un chofer arriba.",
+  "Pick a driver first": "Elige un chofer primero",
+  "All loads marked invoiced": "Todas las cargas marcadas facturadas",
+  "All loads marked paid": "Todas las cargas marcadas pagadas",
+  "Every load marked invoiced — most recent first.": "Cada carga marcada como facturada — la más reciente primero.",
+  "Every load marked paid — most recent first.": "Cada carga marcada como pagada — la más reciente primero.",
+  "Saved": "Guardado",
+  "Refreshing…": "Actualizando…",
+  "Save failed: ": "Falló al guardar: ",
+  "Settings saved": "Configuración guardada",
+  "Copied to clipboard": "Copiado al portapapeles",
+  // Fees legend
+  "Fees:": "Cargos:",
+  // NEW filter
+  "Show only NEW (need driver)": "Mostrar solo NUEVAS (sin chofer)",
+  "Show only NEW": "Mostrar solo NUEVAS",
+  "NEW need driver — show only": "NUEVAS sin chofer — mostrar solo",
+  "Showing": "Mostrando",
+  "NEW (clear)": "NUEVAS (borrar)",
+  "NEW · NEEDS DRIVER": "NUEVA · SIN CHOFER",
+  "NEW": "NUEVA",
+  // Section heads
+  "Extra compensation / deductions": "Compensación extra / deducciones",
+  "No extras this week. Tap": "Sin extras esta semana. Toca",
+  "to log layover, fuel reimbursement, etc.": "para registrar espera, reembolso de combustible, etc.",
+  "Jump to this week": "Saltar a esta semana",
+  "Previous week": "Semana anterior",
+  // Week-of label (printed on payroll PDF)
+  "Week of": "Semana de",
+  // Empty / loading states
+  "Loading…": "Cargando…",
+  "No loads this week. Tap": "No hay cargas esta semana. Toca",
+  "to add one or wait for the next email pull.": "para agregar una o espera el próximo correo.",
+  "No NEW loads this week.": "No hay cargas NUEVAS esta semana.",
+  "All loads marked Invoiced — most recent at top": "Todas las cargas marcadas Facturadas — la más reciente arriba",
+  "All loads marked Paid — most recent at top": "Todas las cargas marcadas Pagadas — la más reciente arriba",
+  // Loadboard hero subtitle dynamic parts
+  "total revenue": "ingresos totales",
+  "Demo mode — no backend connected. Paste your Google Apps Script URL in ⚙ Settings to save real data.": "Modo demo — sin conexión al servidor. Pega la URL de Google Apps Script en ⚙ Configuración para guardar datos reales.",
+  // Day names for table dividers
+  "Friday": "Viernes",
+  "Saturday": "Sábado",
+  "Sunday": "Domingo",
+  "Monday": "Lunes",
+  "Tuesday": "Martes",
+  "Wednesday": "Miércoles",
+  "Thursday": "Jueves",
+  // Short day names
+  "Fri": "Vie",
+  "Sat": "Sáb",
+  "Sun": "Dom",
+  "Mon": "Lun",
+  "Tue": "Mar",
+  "Wed": "Mié",
+  "Thu": "Jue",
+  // Subsections
+  "RATE CON LOADS": "CARGAS CON RATE-CON",
+  "TRAILER PULLS": "JALES DE TRÁILER",
+  "Rate con loads": "Cargas con rate-con",
+  "Trailer pulls": "Jales de tráiler",
+  // Misc UI labels
+  "Total gallons": "Galones totales",
+  "Total cost": "Costo total",
+  "TOTAL GALLONS": "GALONES TOTALES",
+  "TOTAL COST": "COSTO TOTAL",
+  "Avg $/gal": "Promedio $/gal",
+  "AVG $/GAL": "PROMEDIO $/GAL",
+  "Whole company": "Empresa completa",
+  "Driver P&L": "Ganancia por chofer",
+  "Margin": "Margen",
+  "Gross": "Bruto",
+  "Costs": "Costos",
+  "Net": "Neto",
+  "Pick / Save PDF": "Imprimir / Guardar PDF",
+  "Comments": "Comentarios",
+  // Settings demo banner
+  "Demo mode": "Modo demo",
+  "no backend connected": "sin conexión al servidor",
+  // Dispatch hint near translator
+  "Habla o escribe en español": "Habla o escribe en español",
+  // Combined-row label
+  "+1 MORE": "+1 MÁS",
+  "MORE": "MÁS",
+  // Trailer pulls
+  "UPS": "UPS",
+  "Demo mode — no backend connected.": "Modo demo — sin conexión al servidor.",
+  // Misc
+  "Search": "Buscar"
+};
+function tr(s){
+  if (STATE.lang !== "es") return s;
+  return (s in I18N_ES) ? I18N_ES[s] : s;
+}
+// Translate every element marked with [data-i18n] to the current language.
+// For elements that just need their textContent flipped, this is the simplest
+// path. Buttons and labels in static HTML use this attribute. Dynamic JS-rendered
+// content uses tr() inline.
+function applyLang(){
+  const lang = STATE.lang || "en";
+  document.documentElement.lang = lang;
+  // Phase 1: explicit data-i18n elements (their original text was tagged)
+  $$("[data-i18n]").forEach(el => {
+    const key = el.dataset.i18nOrig || el.textContent.trim();
+    if (!el.dataset.i18nOrig) el.dataset.i18nOrig = key;
+    el.textContent = tr(key);
+  });
+  $$("[data-i18n-attr]").forEach(el => {
+    // data-i18n-attr="placeholder:Original placeholder text|title:Original title"
+    el.dataset.i18nAttr.split("|").forEach(pair => {
+      const [attr, val] = pair.split(":");
+      const origKey = `__orig_${attr}`;
+      if (!el.dataset[origKey]) el.dataset[origKey] = val;
+      el.setAttribute(attr, tr(el.dataset[origKey]));
+    });
+  });
+  // Phase 2: DOM-walk fallback. Find every text node whose trimmed text exactly
+  // matches a dictionary key, and replace it with the Spanish version. This
+  // catches strings I haven't manually tagged (modals, JS-rendered content,
+  // dynamic labels). Stash the original text on a parent dataset so we can
+  // flip back to English later.
+  if (lang === "es") {
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+      acceptNode: (n) => {
+        if (!n.parentNode) return NodeFilter.FILTER_REJECT;
+        const tag = n.parentNode.tagName;
+        if (tag === "SCRIPT" || tag === "STYLE" || tag === "TEXTAREA" || tag === "INPUT") return NodeFilter.FILTER_REJECT;
+        const t = (n.nodeValue || "").trim();
+        return (t in I18N_ES) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+      }
+    });
+    let n;
+    while ((n = walker.nextNode())){
+      const orig = n.nodeValue;
+      const trimmed = orig.trim();
+      if (!n.parentNode.dataset.__i18nOrig) n.parentNode.dataset.__i18nOrig = trimmed;
+      // Preserve leading/trailing whitespace
+      n.nodeValue = orig.replace(trimmed, I18N_ES[trimmed]);
+    }
+    // Also flip placeholders + titles on inputs/buttons (they're attributes, not text nodes)
+    $$("input[placeholder], textarea[placeholder]").forEach(el => {
+      const cur = el.getAttribute("placeholder") || "";
+      const trimmed = cur.trim();
+      if (trimmed in I18N_ES) {
+        if (!el.dataset.__i18nPh) el.dataset.__i18nPh = trimmed;
+        el.setAttribute("placeholder", I18N_ES[trimmed]);
+      }
+    });
+    $$("button[title], [aria-label], [title]").forEach(el => {
+      ["title", "aria-label"].forEach(attr => {
+        const cur = el.getAttribute(attr);
+        if (!cur) return;
+        const trimmed = cur.trim();
+        if (trimmed in I18N_ES) {
+          const k = `__i18n_${attr}`;
+          if (!el.dataset[k]) el.dataset[k] = trimmed;
+          el.setAttribute(attr, I18N_ES[trimmed]);
+        }
+      });
+    });
+  } else {
+    // Switching back to English — restore originals from saved dataset
+    $$("[data-__i18n-orig]").forEach(el => {
+      const orig = el.dataset.__i18nOrig;
+      if (!orig) return;
+      // Find the text node that currently holds the (Spanish) translation and restore
+      el.childNodes.forEach(c => {
+        if (c.nodeType === 3 && c.nodeValue.trim()) {
+          c.nodeValue = c.nodeValue.replace(c.nodeValue.trim(), orig);
+        }
+      });
+      delete el.dataset.__i18nOrig;
+    });
+    $$("input[data-__i18n-ph], textarea[data-__i18n-ph]").forEach(el => {
+      el.setAttribute("placeholder", el.dataset.__i18nPh);
+      delete el.dataset.__i18nPh;
+    });
+    $$("[data-__i18n-title]").forEach(el => { el.setAttribute("title", el.dataset.__i18nTitle); delete el.dataset.__i18nTitle; });
+    $$("[data-__i18n-aria-label]").forEach(el => { el.setAttribute("aria-label", el.dataset.__i18nAriaLabel); delete el.dataset.__i18nAriaLabel; });
+  }
+  // Update language toggle button label to show what tapping it would switch TO
+  const btn = $("#btnLang");
+  if (btn) btn.textContent = lang === "en" ? "ES" : "EN";
+  // Re-render any active dynamic view so JS-rendered strings pick up the new language.
+  // Then re-walk the DOM to translate the freshly-rendered content.
+  if (typeof render === "function") {
+    try { render(); } catch(e){}
+    if (lang === "es") setTimeout(()=> applyLangDomWalkOnly(), 50);
+  }
+}
+
+// Helper: run only the DOM-walk part of applyLang (used after re-renders to
+// translate freshly-injected content without re-tagging static elements).
+function applyLangDomWalkOnly(){
+  if (STATE.lang !== "es") return;
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+    acceptNode: (n) => {
+      if (!n.parentNode) return NodeFilter.FILTER_REJECT;
+      const tag = n.parentNode.tagName;
+      if (tag === "SCRIPT" || tag === "STYLE" || tag === "TEXTAREA" || tag === "INPUT") return NodeFilter.FILTER_REJECT;
+      const t = (n.nodeValue || "").trim();
+      return (t in I18N_ES) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+    }
+  });
+  let n;
+  while ((n = walker.nextNode())){
+    const orig = n.nodeValue;
+    const trimmed = orig.trim();
+    n.nodeValue = orig.replace(trimmed, I18N_ES[trimmed]);
+  }
+  // Buttons/placeholders too
+  $$("input[placeholder], textarea[placeholder]").forEach(el => {
+    const cur = el.getAttribute("placeholder") || "";
+    const trimmed = cur.trim();
+    if (trimmed in I18N_ES) el.setAttribute("placeholder", I18N_ES[trimmed]);
+  });
+}
+
+/* ---- Demo data (shown if no API URL is configured) ---- */
+const DEMO_LOADS = [
+  { LoadID:"d-1", LoadNumber:"22788832", Broker:"RXO", OriginCity:"Kutztown", OriginState:"PA",
+    DestCity:"Alexandria", DestState:"VA", PickupDate: todayStr(0), DeliveryDate: todayStr(1),
+    Rate: 1850, Status:"Booked", Driver:"", Truck:"", Notes:"", CreatedAt: new Date().toISOString() },
+  { LoadID:"d-2", LoadNumber:"550424298", Broker:"CH Robinson", OriginCity:"Reading", OriginState:"PA",
+    DestCity:"Charlotte", DestState:"NC", PickupDate: todayStr(-1), DeliveryDate: todayStr(1),
+    Rate: 2100, Status:"In Transit", Driver:"Carlos", Truck:"101", Notes:"Drop trailer", CreatedAt: new Date().toISOString() },
+  { LoadID:"d-3", LoadNumber:"3517538", Broker:"Knight", OriginCity:"Allentown", OriginState:"PA",
+    DestCity:"Baltimore", DestState:"MD", PickupDate: todayStr(-2), DeliveryDate: todayStr(-1),
+    Rate: 950, Status:"Delivered", Driver:"Mike", Truck:"102", Notes:"", CreatedAt: new Date().toISOString() },
+  { LoadID:"d-4", LoadNumber:"22828259", Broker:"RXO", OriginCity:"Laurel", OriginState:"MD",
+    DestCity:"Williamsport", DestState:"MD", PickupDate: todayStr(-3), DeliveryDate: todayStr(-2),
+    Rate: 780, Status:"Paid", Driver:"Carlos", Truck:"101", Notes:"", CreatedAt: new Date().toISOString() },
+  { LoadID:"d-5", LoadNumber:"550137542", Broker:"CH Robinson", OriginCity:"Harrisburg", OriginState:"PA",
+    DestCity:"Richmond", DestState:"VA", PickupDate: todayStr(0), DeliveryDate: todayStr(1),
+    Rate: 1425, Status:"Dispatched", Driver:"Mike", Truck:"102", Notes:"", CreatedAt: new Date().toISOString() },
+];
+function todayStr(offsetDays){
+  const d = new Date(); d.setDate(d.getDate() + offsetDays);
+  return d.toISOString().slice(0,10);
+}
+
+/* ---------------- Helpers ---------------- */
+function $(sel, root=document){ return root.querySelector(sel); }
+function $$(sel, root=document){ return [...root.querySelectorAll(sel)]; }
+function fmt$(n){ if (n==null || isNaN(n)) return "—"; return "$" + Number(n).toLocaleString(undefined, {minimumFractionDigits:0, maximumFractionDigits:2}); }
+
+/* Broker factoring fees taken off each load before HCH gets paid. */
+const BROKER_FEES = {
+  "RXO":          { type: "percent", value: 2.5 },
+  "Knight":       { type: "percent", value: 3.5 },
+  "KNX":          { type: "percent", value: 3.5 },
+  "CH Robinson":  { type: "percent", value: 2 },
+  "Chrobinson":   { type: "percent", value: 2 },
+  "CHR":          { type: "percent", value: 2 },
+  "Uber Freight": { type: "flat",    value: 30 },
+  "Uber":         { type: "flat",    value: 30 },
+};
+function brokerFee(broker, rate){
+  if (!rate || rate <= 0) return 0;
+  const cfg = BROKER_FEES[broker] || BROKER_FEES[(broker||"").trim()];
+  if (!cfg) return 0;
+  if (cfg.type === "flat") return cfg.value;
+  return Math.round(rate * (cfg.value / 100) * 100) / 100;
+}
+function feeLabel(broker){
+  const cfg = BROKER_FEES[broker];
+  if (!cfg) return "";
+  return cfg.type === "flat" ? "$"+cfg.value+" flat" : cfg.value + "%";
+}
+function fmtDate(s){ if(!s) return ""; try { const d = parseLocalDate(s) || new Date(s); if (isNaN(d)) return s;
+  return d.toLocaleDateString(undefined, {month:"short", day:"numeric"});} catch(e){ return s; } }
+// Friday-Thursday week. Pass a Date to get the Friday that starts its pay-week.
+// Parse a YYYY-MM-DD string as a LOCAL date (avoids UTC timezone shift that pulls
+// 2026-04-17 back to Apr 16 in Eastern Time). For other inputs, fall through to native Date.
+function parseLocalDate(s){
+  if (s == null || s === "") return null;
+  if (s instanceof Date) return s;
+  if (typeof s === "string"){
+    const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (m) return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  }
+  return new Date(s);
+}
+
+function weekStartFri(d){
+  d = d ? new Date(d) : new Date();
+  const dow = d.getDay(); // 0=Sun..6=Sat
+  const diff = (dow - 5 + 7) % 7; // days back to Friday
+  const fri = new Date(d); fri.setDate(d.getDate() - diff); fri.setHours(0,0,0,0);
+  return fri;
+}
+function weekEndThu(friStart){
+  const thu = new Date(friStart); thu.setDate(friStart.getDate() + 6); thu.setHours(23,59,59,999);
+  return thu;
+}
+function weekRange(d){
+  const fri = weekStartFri(d || new Date());
+  return [fri, weekEndThu(fri)];
+}
+function inWeek(load, ref){
+  // Payroll convention: a load belongs to ONE week — the week of its PickupDate.
+  // Earlier this also matched on DeliveryDate, but that double-counted loads
+  // picked up Wed of one week and delivered Fri of the next (e.g. Hagerstown
+  // MD pickup 4/22 → Chiefland FL delivery 4/24 was showing on both weeks'
+  // payroll, causing Victor's Hagerstown→FL load to appear "already paid"
+  // last week AND again this week).
+  const [fri, thu] = weekRange(ref);
+  const pick = parseLocalDate(load.PickupDate);
+  return !!(pick && pick >= fri && pick <= thu);
+}
+function fmtWeekLabel(fri){
+  const thu = weekEndThu(fri);
+  const sameMonth = fri.getMonth() === thu.getMonth();
+  const opts = {month:"short", day:"numeric"};
+  const a = fri.toLocaleDateString(undefined, opts);
+  const b = sameMonth ? thu.toLocaleDateString(undefined, {day:"numeric"}) : thu.toLocaleDateString(undefined, opts);
+  return a + " – " + b + ", " + thu.getFullYear();
+}
+function showToast(msg, isErr=false){
+  const el = $("#toast");
+  el.textContent = msg;
+  el.classList.toggle("err", isErr);
+  el.classList.add("show");
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(()=> el.classList.remove("show"), 2600);
+}
+function uid(){ return "l_" + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function saveCache(loads){ try { localStorage.setItem(LS_KEY_CACHE, JSON.stringify(loads)); } catch(e){} }
+function loadCache(){ try { return JSON.parse(localStorage.getItem(LS_KEY_CACHE) || "null"); } catch(e){ return null; } }
+
+/* ---------------- API (Google Apps Script) ---------------- */
+async function api(action, payload={}){
+  if (!STATE.apiUrl) throw new Error("No API URL set");
+  const body = { action, token: STATE.apiToken || "", ...payload };
+  // text/plain avoids CORS preflight
+  const res = await fetch(STATE.apiUrl, {
+    method: "POST", headers: {"Content-Type": "text/plain;charset=utf-8"},
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) throw new Error("HTTP " + res.status);
+  const data = await res.json();
+  if (!data.ok) throw new Error(data.error || "Unknown error");
+  return data;
+}
+
+/* ---------------- Load flow ---------------- */
+// Strip junk that the email reader sometimes glues onto a city name:
+// leading appointment times ("AM"/"PM"/"8:00 AM") and dock/facility codes
+// ("URC-", "AO-", "SHN-"). So "AM Carlisle" -> "Carlisle",
+// "URC- Upper Marlboro" -> "Upper Marlboro". Leaves clean cities untouched.
+function cleanCity(s){
+  if (s == null || s === "") return s;
+  let c = String(s).trim();
+  c = c.replace(/^\s*\d{1,2}:\d{2}\s*(?:AM|PM)?\s+/i, ""); // "8:00 AM City"
+  c = c.replace(/^\s*(?:AM|PM)\s+/i, "");                  // "AM City" / "PM City"
+  c = c.replace(/^\s*[A-Z0-9]{2,5}-\s*/, "");              // "URC- City"
+  return c.trim();
+}
+function sanitizeLoads(loads){
+  (loads || []).forEach(l => {
+    if (l.OriginCity) l.OriginCity = cleanCity(l.OriginCity);
+    if (l.DestCity)   l.DestCity   = cleanCity(l.DestCity);
+  });
+  return loads;
+}
+
+// ONE-TIME auto-correction for this week's loads whose pickup/delivery the
+// email reader got wrong. Routes below are CH Robinson's own (Navisphere
+// export). Runs once, writes the fixes back through the API, then never again.
+const WEEK_FIX_ROUTES = {
+  "559492840": ["Pocomoke City","MD","Charles Town","WV"],
+  "559831151": ["Carlisle","PA","Chantilly","VA"],
+  "559833688": ["Carlisle","PA","Chantilly","VA"],
+  "559833721": ["Carlisle","PA","Chantilly","VA"],
+  "559833726": ["Carlisle","PA","Chantilly","VA"],
+  "559833727": ["Carlisle","PA","Chantilly","VA"],
+  "559833729": ["Carlisle","PA","Chantilly","VA"],
+  "559833743": ["Carlisle","PA","Chantilly","VA"],
+  "559833746": ["Carlisle","PA","Chantilly","VA"],
+  "559833759": ["Carlisle","PA","Chantilly","VA"],
+  "560402163": ["Upper Marlboro","MD","Willow Hill","PA"]
+};
+async function applyWeekFix(){
+  if (localStorage.getItem("hch.weekfix.v1")) return;
+  if (!STATE.apiUrl) return;
+  let n = 0;
+  for (const l of STATE.loads){
+    const f = WEEK_FIX_ROUTES[String(l.LoadNumber || "").trim()];
+    if (!f) continue;
+    if (l.OriginCity !== f[0] || l.OriginState !== f[1] || l.DestCity !== f[2] || l.DestState !== f[3]){
+      l.OriginCity = f[0]; l.OriginState = f[1]; l.DestCity = f[2]; l.DestState = f[3];
+      try { await saveLoadSilently(l); n++; } catch(e){}
+    }
+  }
+  localStorage.setItem("hch.weekfix.v1", "1");
+  if (n > 0){ showToast("Corrected " + n + " load location" + (n===1?"":"s")); render(); }
+}
+
+async function fetchLoads(){
+  if (!STATE.apiUrl){
+    STATE.loads = sanitizeLoads(loadCache() || DEMO_LOADS.slice());
+    STATE.extras = [];
+    STATE.fuel = [];
+    render();
+    return;
+  }
+  STATE.loading = true; renderStatsLoading();
+  try {
+    const [loadsResp, extrasResp, fuelResp] = await Promise.all([
+      api("list"),
+      api("listExtras").catch(() => ({ extras: [] })),
+      api("listFuel").catch(() => ({ fuel: [] }))
+    ]);
+    STATE.loads = sanitizeLoads(loadsResp.loads || []);
+    STATE.extras = extrasResp.extras || [];
+    STATE.fuel = fuelResp.fuel || [];
+    saveCache(STATE.loads);
+    await applyWeekFix();
+  } catch (e){
+    showToast("Couldn't fetch: " + e.message, true);
+    STATE.loads = sanitizeLoads(loadCache() || []);
+  } finally {
+    STATE.loading = false; render();
+  }
+}
+
+async function saveFuel(receipt){
+  if (!STATE.apiUrl){
+    if (!receipt.ReceiptID) receipt.ReceiptID = "f_" + Date.now().toString(36);
+    const i = STATE.fuel.findIndex(f => f.ReceiptID === receipt.ReceiptID);
+    if (i >= 0) STATE.fuel[i] = receipt; else STATE.fuel.push(receipt);
+    render(); showToast("Saved (demo mode)"); return;
+  }
+  try { await api("upsertFuel", { receipt }); await fetchLoads(); showToast("Receipt saved"); }
+  catch(e){ showToast("Save failed: " + e.message, true); }
+}
+async function deleteFuelReceipt(receiptID){
+  if (!confirm("Delete this fuel receipt?")) return;
+  if (!STATE.apiUrl){ STATE.fuel = STATE.fuel.filter(f => f.ReceiptID !== receiptID); render(); return; }
+  try { await api("deleteFuel", { ReceiptID: receiptID }); await fetchLoads(); }
+  catch(e){ showToast("Delete failed: " + e.message, true); }
+}
+
+async function saveExtra(extra){
+  if (!STATE.apiUrl){
+    if (!extra.ExtraID) extra.ExtraID = "x_" + Date.now().toString(36);
+    const i = STATE.extras.findIndex(x => x.ExtraID === extra.ExtraID);
+    if (i >= 0) STATE.extras[i] = extra; else STATE.extras.push(extra);
+    render(); showToast("Saved (demo mode)"); return;
+  }
+  try { await api("upsertExtra", { extra }); await fetchLoads(); showToast("Saved"); }
+  catch(e){ showToast("Save failed: " + e.message, true); }
+}
+async function deleteExtra(extraID){
+  if (!confirm("Remove this entry?")) return;
+  if (!STATE.apiUrl){
+    STATE.extras = STATE.extras.filter(x => x.ExtraID !== extraID);
+    render(); return;
+  }
+  try { await api("deleteExtra", { ExtraID: extraID }); await fetchLoads(); }
+  catch(e){ showToast("Delete failed: " + e.message, true); }
+}
+
+async function saveLoad(record){
+  if (!record.LoadID) record.LoadID = uid();
+  record.UpdatedAt = new Date().toISOString();
+  if (!record.CreatedAt) record.CreatedAt = record.UpdatedAt;
+
+  if (!STATE.apiUrl){
+    const i = STATE.loads.findIndex(l => l.LoadID === record.LoadID);
+    if (i >= 0) STATE.loads[i] = record; else STATE.loads.unshift(record);
+    saveCache(STATE.loads); render();
+    showToast("Saved (demo mode)");
+    return;
+  }
+  try {
+    await api("upsert", { load: record });
+    showToast("Saved");
+    await fetchLoads();
+  } catch(e){
+    showToast("Save failed: " + e.message, true);
+  }
+}
+
+async function deleteLoad(loadID){
+  if (!confirm("Delete this load? This can't be undone.")) return;
+  if (!STATE.apiUrl){
+    STATE.loads = STATE.loads.filter(l => l.LoadID !== loadID);
+    saveCache(STATE.loads); render();
+    showToast("Deleted (demo mode)");
+    return;
+  }
+  try {
+    await api("delete", { LoadID: loadID });
+    showToast("Deleted");
+    await fetchLoads();
+  } catch(e){
+    showToast("Delete failed: " + e.message, true);
+  }
+}
+
+/* ---------------- Rendering ---------------- */
+function statusClass(s){ return (s||"").toLowerCase().replace(/\s+/g,"-"); }
+
+function render(){
+  $("#configBanner").style.display = STATE.apiUrl ? "none" : "";
+  const loadsView = $("#loadsView"), invoicedView = $("#invoicedView"), paidView = $("#paidView"),
+        payrollView = $("#payrollView"), fuelView = $("#fuelView"), driversView = $("#driversView");
+  loadsView.style.display = invoicedView.style.display = paidView.style.display
+    = payrollView.style.display = fuelView.style.display = driversView.style.display = "none";
+  const fab = $("#btnAdd");
+  fab.style.display = "";
+  if (STATE.view === "payroll"){
+    payrollView.style.display = "";
+    renderPayroll();
+  } else if (STATE.view === "fuel"){
+    fuelView.style.display = "";
+    renderFuel();
+  } else if (STATE.view === "drivers"){
+    driversView.style.display = "";
+    fab.style.display = "none";
+    renderDrivers();
+  } else if (STATE.view === "invoiced"){
+    invoicedView.style.display = "";
+    fab.style.display = "none";
+    renderStatusBoard("Invoiced");
+  } else if (STATE.view === "paid"){
+    paidView.style.display = "";
+    fab.style.display = "none";
+    renderStatusBoard("Paid");
+  } else {
+    loadsView.style.display = "";
+    renderLoadboard();
+  }
+  if (STATE.view === "fuel") fab.setAttribute("aria-label","Add fuel receipt");
+  else fab.setAttribute("aria-label","Add load");
+  populateDriverDatalist();
+  // After every render, walk the DOM and translate any text nodes whose text
+  // matches a Spanish dictionary entry. This catches all the dynamic content
+  // that JS just injected (column headers, stat labels, driver chip names,
+  // empty-state messages, etc.) without me needing to wrap every render call
+  // with tr().
+  if (typeof applyLangDomWalkOnly === "function") applyLangDomWalkOnly();
+}
+
+/* ---------------- Invoiced + Paid status boards ---------------- */
+// Renders a flat list of all loads with the given status, newest first.
+function renderStatusBoard(status){
+  var prefix = status.toLowerCase();   // "invoiced" or "paid"
+  var loads = STATE.loads.filter(l => String(l.Status||"") === status);
+  // Sort: most recent at top — by UpdatedAt desc, fallback to PickupDate desc
+  loads.sort((a,b) => {
+    var au = a.UpdatedAt || a.CreatedAt || "";
+    var bu = b.UpdatedAt || b.CreatedAt || "";
+    if (au !== bu) return bu.localeCompare(au);
+    return (b.PickupDate||"").localeCompare(a.PickupDate||"");
+  });
+
+  // Top stats
+  var gross = loads.reduce((a,l) => a + (Number(l.Rate)||0), 0);
+  var fees  = loads.reduce((a,l) => a + brokerFee(l.Broker, Number(l.Rate)||0), 0);
+  var net   = gross - fees;
+  $("#"+prefix+"Stats").innerHTML = `
+    <div class="stat lb-stat-gross"><div class="label">${loads.length} LOAD${loads.length===1?"":"S"}</div><div class="value">${fmt$(gross)}</div></div>
+    <div class="stat lb-stat-fees"><div class="label">QUICK PAY FEES</div><div class="value">${fmt$(fees)}</div></div>
+    <div class="stat lb-stat-net"><div class="label">NET (after fees)</div><div class="value">${fmt$(net)}</div></div>
+  `;
+
+  // Table
+  var tbl = $("#"+prefix+"Table");
+  if (!loads.length){
+    tbl.innerHTML = `<tbody><tr><td style="text-align:center;color:var(--muted);padding:30px">
+      No ${status.toLowerCase()} loads yet. Tap a load's status dot on the Loads tab and pick <b>${status}</b>.
+    </td></tr></tbody>`;
+    return;
+  }
+
+  // Build header + rows (similar to renderLoadboard but flat, no day dividers)
+  var head = `<thead><tr>
+    <th class="col-status"></th>
+    <th class="col-date">Date</th>
+    <th class="col-driver">Driver</th>
+    <th class="col-trailer">Trailer</th>
+    <th class="col-carrier">Carrier</th>
+    <th class="col-pickup">Pickup</th>
+    <th class="col-delivery">Delivery</th>
+    <th class="col-rate">Rate</th>
+    <th class="col-fee">Fee</th>
+    <th class="col-net">Net</th>
+    <th class="col-load">Load #</th>
+  </tr></thead>`;
+  var body = "<tbody>" + loads.map(l => {
+    var rate = Number(l.Rate) || 0;
+    var fee  = brokerFee(l.Broker, rate);
+    var net  = rate - fee;
+    var dt   = parseLocalDate(l.PickupDate);
+    var md   = dt ? (dt.getMonth()+1).toString().padStart(2,"0")+"/"+dt.getDate().toString().padStart(2,"0") : "—";
+    var dotClass = status === "Paid" ? "paid" : (status === "Invoiced" ? "invoiced" : "active");
+    var loadStatusCls = "s-" + dotClass;
+    return `<tr class="load-row" data-id="${l.LoadID}">
+      <td class="col-status"><span class="row-dot ${dotClass}" data-status-pick="${l.LoadID}" title="Click to change status"></span></td>
+      <td class="col-date">${md}</td>
+      <td class="col-driver">${escapeHtml(l.Driver||"—")}</td>
+      <td class="col-trailer">${escapeHtml(l.TrailerNumber||"—")}</td>
+      <td class="col-carrier">${escapeHtml(l.Broker||"—")}</td>
+      <td class="col-pickup">${escapeHtml((l.OriginCity||"")+(l.OriginState?", "+l.OriginState:""))}</td>
+      <td class="col-delivery">${escapeHtml((l.DestCity||"")+(l.DestState?", "+l.DestState:""))}</td>
+      <td class="col-rate">${fmt$(rate)}</td>
+      <td class="col-fee"><span class="fee-pill">${feeLabel(l.Broker)||"—"}</span></td>
+      <td class="col-net">${fmt$(net)}</td>
+      <td class="col-load ${loadStatusCls}">${escapeHtml(String(l.LoadNumber||""))}</td>
+    </tr>`;
+  }).join("") + "</tbody>";
+  tbl.innerHTML = head + body;
+
+  // Wire row clicks → open detail modal
+  $$("#"+prefix+"Table .load-row").forEach(row => {
+    row.addEventListener("click", e => {
+      if (e.target.closest("[data-status-pick]")) return;
+      openDetail(row.dataset.id);
+    });
+  });
+  $$("#"+prefix+"Table [data-status-pick]").forEach(dot => {
+    dot.addEventListener("click", e => {
+      e.stopPropagation();
+      openStatusPopover(dot.dataset.statusPick, dot);
+    });
+  });
+}
+
+function populateDriverDatalist(){
+  // Always offer the 5 regulars first, then add any custom names that appear
+  // on existing loads (e.g. "Juan" — a part-time uncle who isn't in the
+  // standing list but did one trailer pull).
+  const used = new Set(STATE.loads.map(l => l.Driver).filter(Boolean));
+  const all  = [...DRIVERS_LIST];
+  used.forEach(n => { if (!all.includes(n)) all.push(n); });
+  $("#driverList").innerHTML = all.map(n => `<option value="${n}"></option>`).join("");
+  // Fuel driver picker also offers "AJX" (the carrier company) so fuel can be
+  // tagged to AJX and auto-deducted from AJX take-home in Payroll.
+  const fuelNames = [...all];
+  if (!fuelNames.includes("AJX")) fuelNames.push("AJX");
+  const fdl = $("#fuelDriverList");
+  if (fdl) fdl.innerHTML = fuelNames.map(n => `<option value="${n}"></option>`).join("");
+}
+
+function renderStatsLoading(){
+  $("#lbStats").innerHTML = `<div class="stat"><div class="label">Loading…</div><div class="value"><span class="spinner"></span></div></div>`;
+}
+
+function renderLoadboard(){
+  if (!STATE.lbWeekStart) STATE.lbWeekStart = weekStartFri(new Date());
+  const fri = STATE.lbWeekStart;
+  const thu = weekEndThu(fri);
+  // Note: #lbWeekText lives inside #lbHeadline whose innerHTML we rewrite
+  // below with the editorial subtext, so we guard it (it may be null after
+  // the first render).
+  const lbWeekTextEl = $("#lbWeekText");
+  if (lbWeekTextEl) lbWeekTextEl.textContent = fmtWeekLabel(fri);
+  const lbWeekRangeEl = $("#lbWeekRange");
+  if (lbWeekRangeEl) lbWeekRangeEl.textContent = (fri.getMonth()+1)+"/"+fri.getDate()+" – "+(thu.getMonth()+1)+"/"+thu.getDate();
+  const wkLabel = $("#lbWeekLabel");
+  if (wkLabel){
+    const today = weekStartFri(new Date());
+    const isThis = fri.getTime() === today.getTime();
+    const isLast = fri.getTime() === (today.getTime() - 7*24*60*60*1000);
+    const tag = isThis ? "This week" : isLast ? "Last week" : "";
+    wkLabel.innerHTML = `${tag ? `<span style="color:var(--accent);font-style:normal;font-family:var(--sans);font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;margin-right:10px">${tag}</span>` : ""}${fmtWeekLabel(fri)}`;
+  }
+
+  // Filter: loads with PickupDate in this week (all statuses)
+  // EXCEPTION: when "show only NEW" toggle is on, ignore week boundary so NEW loads
+  // from past/future weeks aren't hidden — user wants to see them regardless of when.
+  let weekLoads;
+  if (STATE.lbShowOnlyNew){
+    weekLoads = STATE.loads.filter(isNewFromGmail);
+    weekLoads.sort((a,b) => (b.CreatedAt||"").localeCompare(a.CreatedAt||""));
+  } else {
+    weekLoads = STATE.loads.filter(l => {
+      if (!l.PickupDate) return false;
+      const d = parseLocalDate(l.PickupDate); return d >= fri && d <= thu;
+    });
+  }
+
+  // Sort by date asc, then by created
+  weekLoads.sort((a,b) => (a.PickupDate||"").localeCompare(b.PickupDate||"") || (a.CreatedAt||"").localeCompare(b.CreatedAt||""));
+
+  // Stats: gross, fees, diesel (for week), driver pay, net
+  const gross = weekLoads.reduce((a,l) => a + (Number(l.Rate)||0), 0);
+  const fees  = weekLoads.reduce((a,l) => a + brokerFee(l.Broker, Number(l.Rate)||0), 0);
+  const diesel = STATE.fuel.filter(f => {
+    if (!f.Date) return false;
+    const d = parseLocalDate(f.Date); return d >= fri && d <= thu;
+  }).reduce((a,f) => a + (Number(f.TotalAmount)||0), 0);
+  const driverPay = weekLoads.reduce((a,l) => a + (Number(l.DriverPay)||0), 0)
+    + STATE.extras.filter(x => {
+        if (!x.Date) return false;
+        const d = parseLocalDate(x.Date); return d >= fri && d <= thu;
+      }).reduce((a,x) => a + (Number(x.Amount)||0), 0);
+  // AJX settlement = HCH owes AJX for Victor's loads (rate − quickpay − Victor's pay)
+  const victorLoads = weekLoads.filter(l => l.Driver === "Victor");
+  const ajxGross   = victorLoads.reduce((a,l) => a + (Number(l.Rate)||0), 0);
+  const ajxFees    = victorLoads.reduce((a,l) => a + brokerFee(l.Broker, Number(l.Rate)||0), 0);
+  const victorPay  = victorLoads.reduce((a,l) => a + (Number(l.DriverPay)||0), 0);
+  const ajxSettle  = Math.max(0, ajxGross - ajxFees - victorPay);
+
+  const netProfit = gross - fees - diesel - driverPay - ajxSettle;
+
+  $("#lbStats").innerHTML = `
+    <div class="stat lb-stat-gross"><div class="label">Gross revenue</div><div class="value">${fmt$(gross)}</div></div>
+    <div class="stat lb-stat-fees"><div class="label">Quick pay fees</div><div class="value">${fmt$(fees)}</div></div>
+    <div class="stat lb-stat-diesel"><div class="label">Diesel</div><div class="value">${fmt$(diesel)}</div></div>
+    <div class="stat lb-stat-pay"><div class="label">Driver pay</div><div class="value">${fmt$(driverPay)}</div></div>
+    ${ajxSettle>0 ? `<div class="stat lb-stat-ajx"><div class="label">AJX settlement</div><div class="value">${fmt$(ajxSettle)}</div></div>` : ""}
+    <div class="stat lb-stat-net"><div class="label">Net profit</div><div class="value">${fmt$(netProfit)}</div></div>
+  `;
+
+  // Editorial subtext under headline: count + revenue + need-driver tally
+  const headlineEl = $("#lbHeadline");
+  if (headlineEl){
+    const needCount = weekLoads.filter(l => !l.Driver).length;
+    const noun = weekLoads.length === 1 ? "load booked" : "loads booked";
+    const tail = needCount > 0
+      ? `, ${needCount} need a driver.`
+      : weekLoads.length ? `, all assigned.` : `.`;
+    headlineEl.innerHTML = `${weekLoads.length} ${noun}, total revenue <b style="color:var(--text);font-weight:600">${fmt$(gross)}</b>${tail}`;
+  }
+
+  // Update NEW button toggle visual
+  const newBtn = $("#btnLbNewFilter");
+  const newCount = STATE.loads.filter(isNewFromGmail).length;
+  newBtn.textContent = STATE.lbShowOnlyNew
+    ? `✓ Showing ${weekLoads.length} NEW (clear)`
+    : `⭐ ${newCount} NEW need driver — show only`;
+  newBtn.classList.toggle("active", STATE.lbShowOnlyNew);
+
+  // Build table: header row + rows grouped by day, sub-grouped by trailer-or-not
+  let tbody = `<thead><tr>
+    <th class="col-status"></th>
+    <th>Date</th><th>Driver</th><th>Trailer</th><th>Broker</th>
+    <th>Pickup</th><th>Delivery</th>
+    <th style="text-align:right">Rate</th>
+    <th>Fee</th>
+    <th style="text-align:right">Net</th>
+    <th>Load #</th>
+  </tr></thead><tbody>`;
+
+  if (!weekLoads.length){
+    tbody += `<tr><td colspan="11" style="text-align:center;color:var(--muted);padding:30px">
+      ${STATE.lbShowOnlyNew ? "No NEW loads this week." : "No loads this week. Tap <b>+</b> to add one or wait for the next email pull."}
+    </td></tr>`;
+  } else {
+    let lastDay = null;
+    let lastWasTrailer = null;
+    weekLoads.forEach(l => {
+      const day = (l.PickupDate||"").slice(0,10);
+      const isTrailer = !!(l.TrailerNumber && String(l.TrailerNumber).trim());
+      if (day !== lastDay){
+        lastDay = day; lastWasTrailer = null;
+        const dt = new Date(day + "T12:00");
+        const dayStr = dt.toLocaleDateString(undefined,{weekday:"short", month:"short", day:"numeric"}).toUpperCase();
+        tbody += `<tr class="day-divider"><td colspan="11">${dayStr}</td></tr>`;
+      }
+      if (isTrailer !== lastWasTrailer){
+        lastWasTrailer = isTrailer;
+        tbody += `<tr class="subsection"><td colspan="11">${isTrailer ? "UPS trailer moves" : "Rate con loads"}</td></tr>`;
+      }
+      const rate = Number(l.Rate)||0;
+      const fee  = brokerFee(l.Broker, rate);
+      const net  = rate - fee;
+      const cfg  = BROKER_FEES[l.Broker];
+      const feePillText = cfg ? (cfg.type==="flat" ? "$"+cfg.value+" flat" : cfg.value+"%") : "—";
+      const dotClass = (l.Status === "Paid") ? "paid"
+                     : (l.Status === "Invoiced" ? "invoiced"
+                     : (l.Status === "Detention" ? "detention" : "active"));
+      const isNew = isNewFromGmail(l);
+      const dt = parseLocalDate(l.PickupDate);
+      const md = (dt.getMonth()+1).toString().padStart(2,"0")+"/"+dt.getDate().toString().padStart(2,"0");
+      tbody += `
+        <tr class="load-row${isNew?" is-new":""}" data-id="${l.LoadID}">
+          <td class="col-status"><span class="row-dot ${dotClass}" data-status-pick="${l.LoadID}" title="Click to change status"></span></td>
+          <td>${md}</td>
+          <td class="col-driver">${escapeHtml(l.Driver || "—")}${isNew?'<span class="new-row-tag">NEW</span>':''}</td>
+          <td>${l.TrailerNumber ? `<span class="trailer-pill">${escapeHtml(l.TrailerNumber)}</span>` : "—"}</td>
+          <td>${escapeHtml(l.Broker || "—")}</td>
+          <td>${escapeHtml([l.OriginCity, l.OriginState].filter(Boolean).join(", ") || "—")}</td>
+          <td>${escapeHtml([l.DestCity, l.DestState].filter(Boolean).join(", ") || "—")}</td>
+          <td class="col-rate" style="text-align:right">${rate?fmt$(rate):"—"}</td>
+          <td>${fee>0?`<span class="fee-pill">${feePillText}</span>`:"—"}</td>
+          <td class="col-net" style="text-align:right">${rate?fmt$(net):"—"}</td>
+          <td class="col-load s-${dotClass}">${escapeHtml(l.LoadNumber || "—")}</td>
+        </tr>`;
+    });
+  }
+  tbody += `</tbody>`;
+  $("#lbTable").innerHTML = tbody;
+  $$("#lbTable .load-row").forEach(el => el.addEventListener("click", e => {
+    // Don't open detail if user clicked the status pill
+    if (e.target.closest("[data-status-pick]")) return;
+    openDetail(el.dataset.id);
+  }));
+  $$("#lbTable [data-status-pick]").forEach(el => el.addEventListener("click", e => {
+    e.stopPropagation();
+    openStatusPopover(el.dataset.statusPick, el);
+  }));
+}
+
+function openStatusPopover(loadId, anchorEl){
+  const pop = $("#statusPopover");
+  const load = STATE.loads.find(l => l.LoadID === loadId);
+  if (!load) return;
+  const r = anchorEl.getBoundingClientRect();
+  pop.style.left = Math.min(window.innerWidth - 180, r.right + 4) + "px";
+  pop.style.top  = Math.min(window.innerHeight - 180, r.top) + "px";
+  // Mark current
+  const currentBucket = (load.Status === "Paid") ? "Paid"
+                      : (load.Status === "Invoiced" ? "Invoiced"
+                      : (load.Status === "Detention" ? "Detention" : "Booked"));
+  $$("#statusPopover button").forEach(b => {
+    b.classList.toggle("current", b.dataset.status === currentBucket);
+    b.onclick = async () => {
+      load.Status = b.dataset.status;
+      pop.classList.remove("open");
+      await saveLoadSilently(load);
+      renderLoadboard();
+    };
+  });
+  pop.classList.add("open");
+}
+function closeStatusPopover(){ $("#statusPopover").classList.remove("open"); }
+
+function isNewFromGmail(l){
+  return !l.Driver && l.Source && String(l.Source).toLowerCase().startsWith("email:");
+}
+
+function renderList(){
+  const list = $("#list");
+  let filtered = STATE.loads.slice();
+  if (STATE.filter === "week"){
+    filtered = filtered.filter(inWeek);
+  } else if (STATE.filter === "new"){
+    filtered = filtered.filter(isNewFromGmail);
+  } else if (STATE.filter !== "all"){
+    filtered = filtered.filter(l => l.Status === STATE.filter);
+  }
+  // Always sort by pickup date desc, then created date desc
+  filtered.sort((a,b) => (b.PickupDate||"").localeCompare(a.PickupDate||"") || (b.CreatedAt||"").localeCompare(a.CreatedAt||""));
+
+  if (!filtered.length){
+    if (STATE.filter === "new"){
+      list.innerHTML = `<div class="empty">
+        <div style="font-size:30px;margin-bottom:6px">✅</div>
+        <div><b>All caught up.</b></div>
+        <div style="margin-top:6px">Every email-pulled load has a driver assigned.</div>
+      </div>`;
+    } else {
+      list.innerHTML = `<div class="empty">
+        <div style="font-size:30px;margin-bottom:6px">🚛</div>
+        <div><b>No loads yet</b></div>
+        <div style="margin-top:6px">Tap <b>+</b> to add one.</div>
+      </div>`;
+    }
+    return;
+  }
+
+  // Group by pickup date (YYYY-MM-DD) so dividers separate days
+  let html = "";
+  let lastDateKey = null;
+  filtered.forEach(l => {
+    const key = (l.PickupDate || "").slice(0,10) || "no-date";
+    if (key !== lastDateKey){
+      lastDateKey = key;
+      const label = key === "no-date" ? "No pickup date set" :
+        new Date(key + "T12:00").toLocaleDateString(undefined, {weekday:"long", month:"short", day:"numeric", year:"numeric"});
+      const sameDayCount = filtered.filter(x => (x.PickupDate||"").slice(0,10) === key).length;
+      html += `<div class="date-divider">${label}<span class="count">${sameDayCount} load${sameDayCount===1?"":"s"}</span></div>`;
+    }
+    const routeOrigin = [l.OriginCity, l.OriginState].filter(Boolean).join(", ");
+    const routeDest   = [l.DestCity, l.DestState].filter(Boolean).join(", ");
+    const broker = l.Broker ? l.Broker + " · " : "";
+    const pick = l.PickupDate ? "PU " + fmtDate(l.PickupDate) : "";
+    const deli = l.DeliveryDate ? "DEL " + fmtDate(l.DeliveryDate) : "";
+    const driverTag = l.Driver ? ` · 👤 ${escapeHtml(l.Driver)}` : "";
+    const newClass = isNewFromGmail(l) ? " is-new" : "";
+    html += `
+      <div class="load-card${newClass}" data-id="${l.LoadID}">
+        <div class="route">${escapeHtml(routeOrigin || "—")}<span class="arrow">→</span>${escapeHtml(routeDest || "—")}</div>
+        <div class="meta">${escapeHtml(broker)}#${escapeHtml(l.LoadNumber || "—")} ${pick?" · "+pick:""}${deli?" · "+deli:""}${driverTag}</div>
+        <div class="right">
+          <div class="rate">${fmt$(l.Rate)}</div>
+          <span class="status ${statusClass(l.Status)}">${escapeHtml(l.Status || "Booked")}</span>
+        </div>
+      </div>
+    `;
+  });
+  list.innerHTML = html;
+  $$("#list .load-card").forEach(el => el.addEventListener("click", ()=> openDetail(el.dataset.id)));
+}
+
+/* ---------------- Modals ---------------- */
+function openEdit(load){
+  const form = $("#editForm");
+  form.reset();
+  for (const k of ["LoadID","LoadNumber","Broker","OriginCity","OriginState","DestCity","DestState",
+                   "PickupDate","DeliveryDate","Rate","Status","Driver","Truck","Notes","DriverPay","TrailerNumber"]){
+    const el = form.elements[k]; if (!el) continue;
+    el.value = load && load[k] != null ? load[k] : "";
+  }
+  $("#modalTitle").textContent = load?.LoadID ? "Edit Load" : "Add Load";
+  $("#deleteRow").style.display = load?.LoadID ? "" : "none";
+  $("#modalEdit").classList.add("open");
+}
+function closeEdit(){ $("#modalEdit").classList.remove("open"); }
+
+function openDetail(id){
+  const l = STATE.loads.find(x => x.LoadID === id);
+  if (!l) return;
+  $("#detailTitle").textContent = `${l.OriginCity || "—"} → ${l.DestCity || "—"}`;
+  const rows = [
+    ["Load #", l.LoadNumber],
+    ["Broker", l.Broker],
+    ["Status", l.Status],
+    ["Rate", fmt$(l.Rate)],
+    ["Pickup", fmtDate(l.PickupDate)],
+    ["Delivery", fmtDate(l.DeliveryDate)],
+    ["Origin", [l.OriginCity, l.OriginState, l.OriginZip].filter(Boolean).join(", ")],
+    ["Dest", [l.DestCity, l.DestState, l.DestZip].filter(Boolean).join(", ")],
+    ["Driver", l.Driver],
+    ["Truck", l.Truck],
+    ["Notes", l.Notes],
+  ].filter(([,v]) => v != null && v !== "");
+  $("#detailBody").innerHTML = rows.map(([k,v]) =>
+    `<div class="detail-row"><div class="k">${k}</div><div class="v">${String(v).replace(/</g,"&lt;")}</div></div>`
+  ).join("");
+  $("#modalDetail").classList.add("open");
+  $("#btnEditLoad").onclick = ()=> { closeDetail(); openEdit(l); };
+}
+function closeDetail(){ $("#modalDetail").classList.remove("open"); }
+
+function openSettings(){
+  $("#apiUrl").value = STATE.apiUrl;
+  $("#apiToken").value = STATE.apiToken;
+  $("#testResult").textContent = "";
+  $("#modalSettings").classList.add("open");
+}
+function closeSettings(){ $("#modalSettings").classList.remove("open"); }
+
+/* ---------------- Payroll view ---------------- */
+// Fixed list of drivers — used for chips, dropdowns, and validation.
+// Order shown in the UI matches this order.
+const DRIVERS_LIST = ["Jose Luis", "Santiago", "Victor", "Cesar", "Henry"];
+
+// Map short driver names (used in chips/data) → full legal names (used on printable payroll).
+const DRIVER_FULL_NAMES = {
+  "Jose Luis": "Jose Rivera Rios",
+  "Santiago":  "Jose Santiago Echeverria",
+  "Victor":    "Victor Sinforiano Villatoro",
+  "Cesar":     "Cesar Hernandez",
+  "Henry":     "Henry Hernandez",
+};
+function fullDriverName(d){
+  if (!d) return "—";
+  return DRIVER_FULL_NAMES[d] || d;
+}
+
+function renderPayroll(){
+  if (!STATE.payWeekStart) STATE.payWeekStart = weekStartFri(new Date());
+  $("#weekLabel").textContent = fmtWeekLabel(STATE.payWeekStart);
+  // Print-visible week range under the company address.
+  // (Uses unique var names to avoid colliding with `const [fri,thu] = weekRange(...)`
+  //  declared further down in the same function scope.)
+  {
+    const _wkFri = STATE.payWeekStart;
+    const _wkThu = weekEndThu(_wkFri);
+    const _months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    const _sameMonth = _wkFri.getMonth() === _wkThu.getMonth();
+    const _wkStr = _sameMonth
+      ? `Week of ${_months[_wkFri.getMonth()]} ${_wkFri.getDate()}–${_wkThu.getDate()}, ${_wkThu.getFullYear()}`
+      : `Week of ${_months[_wkFri.getMonth()]} ${_wkFri.getDate()} – ${_months[_wkThu.getMonth()]} ${_wkThu.getDate()}, ${_wkThu.getFullYear()}`;
+    const _payWk = $("#payWeekDisplay");
+    if (_payWk) _payWk.textContent = _wkStr;
+  }
+
+  // Driver chips — fixed list of 5 + AJX (carrier-company settlement for Victor's loads)
+  if (!STATE.payDriver) STATE.payDriver = DRIVERS_LIST[0];
+  // Build chip list: the 5 regulars + AJX always show, then any CUSTOM driver
+  // names found on existing loads (e.g. "Juan" — a part-time driver who isn't
+  // in the standing list but did one or more loads). Custom drivers get a
+  // distinct visual treatment so they're easy to spot.
+  const customDrivers = [...new Set(STATE.loads.map(l => l.Driver).filter(Boolean))]
+    .filter(d => !DRIVERS_LIST.includes(d) && d !== "AJX")
+    .sort();
+  const allChips = [...DRIVERS_LIST, ...customDrivers, "AJX"];
+  $("#driverChips").innerHTML = allChips.map(d => {
+    const isAjx = d === "AJX";
+    const isCustom = customDrivers.includes(d);
+    const cls = "chip" + (d === STATE.payDriver ? " active" : "")
+              + (isAjx ? " chip-company" : "")
+              + (isCustom ? " chip-custom" : "");
+    return `<button class="${cls}" data-driver="${escapeHtml(d)}" title="${isCustom ? "Custom / part-time driver" : ""}">${escapeHtml(d)}</button>`;
+  }).join("");
+
+  // Wire up chip click handlers BEFORE any early return so AJX → other drivers works.
+  $$("#driverChips .chip").forEach(ch => ch.addEventListener("click", ()=>{
+    STATE.payDriver = ch.dataset.driver;
+    renderPayroll();
+  }));
+
+  // If AJX is selected, render the carrier-settlement view and stop.
+  if (STATE.payDriver === "AJX"){
+    renderAjxSettlement();
+    return;
+  }
+
+  // Driver name display at top of the payroll sheet — use full legal name.
+  $("#driverNameDisplay").textContent = fullDriverName(STATE.payDriver);
+
+  // Restore the standard driver-payroll table header (in case we were previously on AJX)
+  $("#payHeadDriver").innerHTML = `
+    <th>Date</th>
+    <th>Broker</th>
+    <th>Pickup</th>
+    <th>Delivery</th>
+    <th>Comments</th>
+    <th>Total</th>`;
+
+  // Filter loads for this driver + this week, sort by pickup date
+  const weekLoadsRaw = STATE.loads.filter(l =>
+    l.Driver === STATE.payDriver && inWeek(l, STATE.payWeekStart));
+  weekLoadsRaw.sort(cmpLoads);
+
+  // Group loads by PayrollGroup (when set). Loads with the same non-empty
+  // PayrollGroup label render as ONE combined row showing both lanes and a
+  // single editable DriverPay (stored on the FIRST load in the group; sibling
+  // loads' DriverPay is forced to 0 so the grand total stays correct).
+  // Solo loads (no PayrollGroup) render normally.
+  const _groupBuckets = new Map(); // groupKey → array of loads
+  const _soloLoads = [];           // ungrouped, render in original order
+  const _groupedRows = [];         // [{ key, loads }] in render order (first load's date wins)
+  weekLoadsRaw.forEach(l => {
+    const g = String(l.PayrollGroup || "").trim();
+    if (!g){ _soloLoads.push(l); return; }
+    if (!_groupBuckets.has(g)){
+      _groupBuckets.set(g, []);
+      _groupedRows.push({ key: g, loads: _groupBuckets.get(g) });
+    }
+    _groupBuckets.get(g).push(l);
+  });
+  // Build a flat render list: each entry is either {kind:'solo', load} or {kind:'group', loads:[...]}.
+  const _renderList = [];
+  _soloLoads.forEach(l => _renderList.push({ kind:'solo', load: l }));
+  _groupedRows.forEach(g => _renderList.push({ kind:'group', loads: g.loads, key: g.key }));
+  // Sort by earliest pickup date within each entry
+  _renderList.sort((a,b) => {
+    const la = a.kind === 'solo' ? a.load : [...a.loads].sort(cmpLoads)[0];
+    const lb = b.kind === 'solo' ? b.load : [...b.loads].sort(cmpLoads)[0];
+    return cmpLoads(la, lb);
+  });
+  // For backwards compat, weekLoads is kept as the flat raw list (used by grand total below)
+  const weekLoads = weekLoadsRaw;
+
+  // Extras for this driver + week
+  const [fri, thu] = weekRange(STATE.payWeekStart);
+  const wkExtras = STATE.extras.filter(x => {
+    if (x.Driver !== STATE.payDriver) return false;
+    if (!x.Date) return false;
+    const d = parseLocalDate(x.Date);
+    return d >= fri && d <= thu;
+  }).sort((a,b) => (a.Date||"").localeCompare(b.Date||""));
+
+  // Render tbody: loads + extras
+  const tbody = $("#payTbody");
+  let rowsHtml = _renderList.map(item =>
+    item.kind === 'solo' ? payRowHtml(item.load) : payGroupRowHtml(item.loads, item.key)
+  ).join("");
+  rowsHtml += wkExtras.map(x => extraRowHtml(x)).join("");
+  if (!STATE.payDriver){
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:30px">Pick a driver above.</td></tr>`;
+  } else if (!weekLoads.length && !wkExtras.length){
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:30px">
+      No loads for ${escapeHtml(STATE.payDriver)} this week. Use ◀ ▶ to change week, or assign loads in the Loads tab.
+    </td></tr>`;
+  } else {
+    tbody.innerHTML = rowsHtml;
+  }
+
+  // Wire up inline edits
+  $$(".pay-table input.pay-cell").forEach(inp => {
+    inp.addEventListener("change", async e => {
+      const id = e.currentTarget.dataset.id;
+      const load = STATE.loads.find(x => x.LoadID === id);
+      if (!load) return;
+      load.DriverPay = e.currentTarget.value === "" ? "" : Number(e.currentTarget.value);
+      await saveLoadSilently(load);
+      renderPayroll();
+    });
+  });
+  $$(".pay-table input.note-cell").forEach(inp => {
+    inp.addEventListener("change", async e => {
+      const id = e.currentTarget.dataset.id;
+      const load = STATE.loads.find(x => x.LoadID === id);
+      if (!load) return;
+      // Payroll Comments column writes to its OWN field (DriverComments) so it
+      // never bleeds back into the loadboard's Notes field. Notes stays for
+      // loadboard-only context (parser hints, lane history, etc.).
+      load.DriverComments = e.currentTarget.value;
+      await saveLoadSilently(load);
+    });
+  });
+  // Group-label input — type the same letter/number on multiple loads to
+  // combine them into one payroll row. Clearing the label ungroups the WHOLE
+  // group (every member, not just the first load) and restores each load's
+  // original pay, so combining is fully reversible.
+  $$(".pay-table input.group-cell").forEach(inp => {
+    inp.addEventListener("change", async e => {
+      const headId = e.currentTarget.dataset.id;
+      const childIds = (e.currentTarget.dataset.children || "").split(",").filter(Boolean);
+      const memberIds = [headId, ...childIds];
+      const newVal = String(e.currentTarget.value || "").trim().toUpperCase();
+      if (newVal === ""){
+        // UNGROUP every member of this row and put back each load's pre-group pay.
+        for (const lid of memberIds){
+          const load = STATE.loads.find(x => x.LoadID === lid);
+          if (!load) continue;
+          load.PayrollGroup = "";
+          const stash = localStorage.getItem("hch.grouppay." + lid);
+          if (stash !== null){
+            load.DriverPay = (stash === "") ? "" : Number(stash);
+            localStorage.removeItem("hch.grouppay." + lid);
+          }
+          await saveLoadSilently(load);
+        }
+      } else {
+        // Apply the label to every member of this row, then consolidate the pay.
+        for (const lid of memberIds){
+          const load = STATE.loads.find(x => x.LoadID === lid);
+          if (load && String(load.PayrollGroup || "").trim().toUpperCase() !== newVal){
+            load.PayrollGroup = newVal;
+            await saveLoadSilently(load);
+          }
+        }
+        await consolidateGroup(newVal);
+      }
+      renderPayroll();
+    });
+  });
+  $$(".x-cell-btn").forEach(b => b.addEventListener("click", ()=> deleteExtra(b.dataset.id)));
+  // (chip handlers wired earlier so AJX view also gets them)
+
+  // Empty-state extras list (below main sheet) — show a prompt or list with remove buttons
+  $("#extrasList").innerHTML = wkExtras.length
+    ? wkExtras.map(x => `
+        <div class="extra-row">
+          <div><b>${escapeHtml(x.Note || "—")}</b>
+            <div style="color:var(--muted);font-size:12px">${fmtDate(x.Date)}</div>
+          </div>
+          <div class="amt">${fmt$(x.Amount)}</div>
+          <button class="x-btn" data-id="${x.ExtraID}" aria-label="Delete">×</button>
+        </div>
+      `).join("")
+    : `<div class="empty" style="padding:18px;margin:0 16px">No extras this week. Tap <b>+ Add</b> to log layover, fuel reimbursement, etc.</div>`;
+  $$("#extrasList .x-btn").forEach(b => b.addEventListener("click", ()=> deleteExtra(b.dataset.id)));
+
+  // Grand total
+  const loadPay = weekLoads.reduce((a,l) => a + (Number(l.DriverPay)||0), 0);
+  const extrasPay = wkExtras.reduce((a,x) => a + (Number(x.Amount)||0), 0);
+  $("#payGrandTotal").textContent = fmt$(loadPay + extrasPay);
+}
+
+// Order loads chronologically: pickup DATE, then pickup TIME (earlier first),
+// then when it was added, then load number. This keeps two loads on the same
+// day (e.g. a combined pair) reading first-to-last, top to bottom.
+function _puTimeKey(l){
+  const m = String(l.PickupTime || "").match(/(\d{1,2}):(\d{2})/);
+  return m ? (m[1].padStart(2,"0") + ":" + m[2]) : "99:99";
+}
+function cmpLoads(a,b){
+  return (a.PickupDate||"").localeCompare(b.PickupDate||"")
+      || _puTimeKey(a).localeCompare(_puTimeKey(b))
+      || (a.CreatedAt||"").localeCompare(b.CreatedAt||"")
+      || String(a.LoadNumber||"").localeCompare(String(b.LoadNumber||""));
+}
+
+// Combine the pay of every load sharing a payroll-group label onto the FIRST
+// (earliest) load and zero the others, so all totals count the group's pay once.
+// Each load's pre-group pay is stashed in localStorage the first time it's
+// grouped, so ungrouping (clearing the label) restores it exactly.
+async function consolidateGroup(label){
+  label = String(label || "").trim().toUpperCase();
+  if (!label) return;
+  const members = STATE.loads.filter(l => String(l.PayrollGroup || "").trim().toUpperCase() === label);
+  if (members.length < 2) return; // a group of one — nothing to combine
+  const sorted = [...members].sort(cmpLoads);
+  const head = sorted[0];
+  members.forEach(l => {
+    if (localStorage.getItem("hch.grouppay." + l.LoadID) === null){
+      localStorage.setItem("hch.grouppay." + l.LoadID,
+        (l.DriverPay === "" || l.DriverPay == null) ? "" : String(l.DriverPay));
+    }
+  });
+  const sum = members.reduce((a,l) => a + (Number(l.DriverPay)||0), 0);
+  for (const l of sorted.slice(1)){
+    if (Number(l.DriverPay||0) !== 0){ l.DriverPay = 0; await saveLoadSilently(l); }
+  }
+  if ((Number(head.DriverPay)||0) !== sum){ head.DriverPay = sum; await saveLoadSilently(head); }
+}
+
+function payRowHtml(l){
+  const d = parseLocalDate(l.PickupDate) || new Date(l.CreatedAt || Date.now());
+  const dow = d.toLocaleDateString(undefined,{weekday:"long"});
+  const mm = (d.getMonth()+1).toString().padStart(2,"0");
+  const dd = d.getDate().toString().padStart(2,"0");
+  const origin = [l.OriginCity, l.OriginState].filter(Boolean).join(" ");
+  const dest = [l.DestCity, l.DestState].filter(Boolean).join(" ");
+  // Carrier column shows broker name; for UPS trailer pulls (where TrailerNumber is set) show only the trailer number.
+  const carrier = l.TrailerNumber ? String(l.TrailerNumber) : (l.Broker || "");
+  const payVal = l.DriverPay != null && l.DriverPay !== "" ? l.DriverPay : "";
+  const groupVal = l.PayrollGroup || "";
+  // Comments cell holds two inputs: the wide text comment + a tiny "Group" input.
+  // Type the same group label (e.g. "1" or "A") on multiple loads to merge them
+  // into one combined row with one editable pay field.
+  return `
+    <tr>
+      <td class="date-col"><b>${dow}</b><br>${mm}/${dd}</td>
+      <td>${escapeHtml(carrier || "—")}</td>
+      <td>${escapeHtml(origin || "—")}</td>
+      <td>${escapeHtml(dest || "—")}</td>
+      <td>
+        <div style="display:flex;gap:6px;align-items:center">
+          <input type="text" class="cell-input note-cell" data-id="${l.LoadID}" value="${escapeHtml(l.DriverComments||"")}" placeholder="" style="flex:1;min-width:0" />
+          <input type="text" class="cell-input group-cell no-print" data-id="${l.LoadID}" value="${escapeHtml(groupVal)}" placeholder="grp" title="Type same label on multiple loads to combine them" style="width:38px;text-align:center;padding:6px 4px;font-size:11px;text-transform:uppercase" maxlength="6" />
+        </div>
+      </td>
+      <td class="amount-col"><input type="number" step="0.01" inputmode="decimal" class="cell-input pay-cell" data-id="${l.LoadID}" value="${payVal}" placeholder="0.00" /></td>
+    </tr>
+  `;
+}
+
+// Combined payroll row for a group of loads sharing the same PayrollGroup label.
+// Lane shows BOTH legs with a "+" separator. Pay field is editable on the FIRST
+// load in the group; sibling loads' DriverPay is forced to 0 so the grand total
+// stays correct (single combined number from the parent + 0 from siblings).
+function payGroupRowHtml(loads, groupKey){
+  if (!loads || !loads.length) return "";
+  const sortedLoads = [...loads].sort(cmpLoads);
+  const head = sortedLoads[0];
+  const d = parseLocalDate(head.PickupDate) || new Date(head.CreatedAt || Date.now());
+  const dow = d.toLocaleDateString(undefined,{weekday:"long"});
+  const mm = (d.getMonth()+1).toString().padStart(2,"0");
+  const dd = d.getDate().toString().padStart(2,"0");
+  const carrierBits = sortedLoads.map(l => l.TrailerNumber || l.Broker || "").filter(Boolean);
+  const carrier = [...new Set(carrierBits)].join(" + ");
+  const lane = sortedLoads.map(l => {
+    const o = [l.OriginCity, l.OriginState].filter(Boolean).join(" ") || "?";
+    const d2 = [l.DestCity, l.DestState].filter(Boolean).join(" ") || "?";
+    return o + " → " + d2;
+  });
+  const originStr = lane.map(s => s.split(" → ")[0]).join(" + ");
+  const destStr   = lane.map(s => s.split(" → ")[1]).join(" + ");
+  const commentsBits = sortedLoads.map(l => l.DriverComments || "").filter(Boolean);
+  const comments = commentsBits.join(" / ");
+  const payVal = head.DriverPay != null && head.DriverPay !== "" ? head.DriverPay : "";
+  const childIds = sortedLoads.slice(1).map(l => l.LoadID).join(",");
+  // Build a stacked date display showing EVERY date in the group so the
+  // printed PDF reads "Mon 04/22 + Wed 04/24" instead of hiding dates behind
+  // a "+1 MORE" tag.
+  // Show each UNIQUE pickup date once: same-day loads collapse to one date,
+  // different days still show all of them.
+  const _uniqDates = [];
+  sortedLoads.forEach(l => {
+    const key = (l.PickupDate || "").slice(0,10);
+    if (key && !_uniqDates.some(u => u.key === key)) _uniqDates.push({ key, date: l.PickupDate });
+  });
+  const dateLines = _uniqDates.map(u => {
+    const dx = parseLocalDate(u.date);
+    if (!dx) return "?";
+    const day = dx.toLocaleDateString(undefined,{weekday:"long"});
+    const m = (dx.getMonth()+1).toString().padStart(2,"0");
+    const dd2 = dx.getDate().toString().padStart(2,"0");
+    return `<div style="margin:2px 0"><b>${day}</b><br>${m}/${dd2}</div>`;
+  }).join('<div style="font-size:10px;color:var(--muted);margin:2px 0">+</div>');
+  return `
+    <tr class="group-row" data-group="${escapeHtml(groupKey)}">
+      <td class="date-col">${dateLines}</td>
+      <td>${escapeHtml(carrier || "—")}</td>
+      <td>${escapeHtml(originStr || "—")}</td>
+      <td>${escapeHtml(destStr || "—")}</td>
+      <td>
+        <div style="display:flex;gap:6px;align-items:center">
+          <input type="text" class="cell-input note-cell" data-id="${head.LoadID}" value="${escapeHtml(comments)}" placeholder="" style="flex:1;min-width:0" />
+          <input type="text" class="cell-input group-cell no-print" data-id="${head.LoadID}" data-children="${escapeHtml(childIds)}" value="${escapeHtml(groupKey)}" title="Combined route — clear this label on any load to ungroup it" style="width:38px;text-align:center;padding:6px 4px;font-size:11px;text-transform:uppercase;background:rgba(163,230,53,.15)" maxlength="6" />
+        </div>
+      </td>
+      <td class="amount-col"><input type="number" step="0.01" inputmode="decimal" class="cell-input pay-cell" data-id="${head.LoadID}" data-children="${escapeHtml(childIds)}" value="${payVal}" placeholder="0.00" title="Combined pay for ${sortedLoads.length} loads in group ${escapeHtml(groupKey)}" /></td>
+    </tr>
+  `;
+}
+
+function extraRowHtml(x){
+  const d = parseLocalDate(x.Date) || new Date();
+  const dow = d.toLocaleDateString(undefined,{weekday:"long"});
+  const mm = (d.getMonth()+1).toString().padStart(2,"0");
+  const dd = d.getDate().toString().padStart(2,"0");
+  return `
+    <tr class="extra-tr">
+      <td class="date-col"><b>${dow}</b><br>${mm}/${dd}</td>
+      <td colspan="4"><em>Extra:</em> ${escapeHtml(x.Note || "")}
+        <button class="x-cell-btn" data-id="${x.ExtraID}" title="Remove">×</button>
+      </td>
+      <td class="amount-col">${fmt$(x.Amount)}</td>
+    </tr>
+  `;
+}
+
+/* AJX carrier settlement: Victor's loads minus quickpay fees minus driver pay = AJX take-home.
+   Also supports MANUAL extras (compensation / deductions) saved against Driver="AJX" —
+   added/edited via the "+ Add" button in the extras-block below the table. Extras
+   are summed (positive = bonus to AJX, negative = deduction) and folded into the
+   final AJX take-home so the grand total stays accurate. */
+function renderAjxSettlement(){
+  // Victor's loads in current pay week
+  const weekLoads = STATE.loads
+    .filter(l => l.Driver === "Victor" && inWeek(l, STATE.payWeekStart))
+    .sort((a,b) => (a.PickupDate||"").localeCompare(b.PickupDate||""));
+
+  // AJX extras (manual entries) for this week
+  const [_ajxFri, _ajxThu] = weekRange(STATE.payWeekStart);
+  const ajxExtras = STATE.extras.filter(x => {
+    if (x.Driver !== "AJX") return false;
+    if (!x.Date) return false;
+    const d = parseLocalDate(x.Date);
+    return d >= _ajxFri && d <= _ajxThu;
+  }).sort((a,b) => (a.Date||"").localeCompare(b.Date||""));
+  const totalExtras = ajxExtras.reduce((sum, x) => sum + (Number(x.Amount) || 0), 0);
+
+  // Fuel logged for AJX this week — auto-deducted from AJX take-home.
+  const ajxFuel = STATE.fuel.filter(f => {
+    if (f.Driver !== "AJX") return false;
+    if (!f.Date) return false;
+    const d = parseLocalDate(f.Date);
+    return d >= _ajxFri && d <= _ajxThu;
+  }).sort((a,b) => (a.Date||"").localeCompare(b.Date||""));
+  const totalFuel = ajxFuel.reduce((sum, f) => sum + (Number(f.TotalAmount) || 0), 0);
+
+  $("#driverNameDisplay").textContent = "AJX Logistics";
+
+  // Swap table header to AJX-specific columns
+  $("#payHeadDriver").innerHTML = `
+    <th>Date</th>
+    <th>Broker</th>
+    <th>Lane</th>
+    <th>Quickpay</th>
+    <th>Driver pay</th>
+    <th>AJX net</th>`;
+
+  const tbody = $("#payTbody");
+
+  // Empty state — but ONLY if there are no loads AND no extras
+  if (!weekLoads.length && !ajxExtras.length){
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:30px">
+      No Victor loads or AJX extras this week. Use ◀ ▶ to change week, or tap <b>+ Add</b> below to log a manual extra.</td></tr>`;
+    $("#payGrandTotal").textContent = fmt$(0);
+    $("#extrasList").innerHTML = `<div class="empty" style="padding:18px;margin:0 16px">No extras this week. Tap <b>+ Add</b> to log a one-off compensation or deduction for AJX.</div>`;
+    return;
+  }
+
+  let totalGross = 0, totalQp = 0, totalDriver = 0;
+  let rowsHtml = weekLoads.map(l => {
+    const d = parseLocalDate(l.PickupDate) || new Date();
+    const dow = d.toLocaleDateString(undefined,{weekday:"long"});
+    const mm = (d.getMonth()+1).toString().padStart(2,"0");
+    const dd = d.getDate().toString().padStart(2,"0");
+    const carrier = l.TrailerNumber ? String(l.TrailerNumber) : (l.Broker || "");
+    const lane = (l.OriginCity||"?") + " → " + (l.DestCity||"?");
+    const gross = Number(l.Rate) || 0;
+    const qp = brokerFee(l.Broker, gross);
+    const drv = Number(l.DriverPay) || 0;
+    const ajx = gross - qp - drv;
+    totalGross += gross; totalQp += qp; totalDriver += drv;
+    return `
+      <tr>
+        <td class="date-col"><b>${dow}</b><br>${mm}/${dd}</td>
+        <td>${escapeHtml(carrier || "—")}</td>
+        <td>${escapeHtml(lane)}</td>
+        <td class="amount-col" style="color:var(--muted)">−${fmt$(qp)}<br><span style="font-size:11px">${escapeHtml(feeLabel(l.Broker))}</span></td>
+        <td class="amount-col" style="color:var(--muted)">−${fmt$(drv)}<br><span style="font-size:11px">Victor</span></td>
+        <td class="amount-col" style="color:var(--accent);font-weight:800">${fmt$(ajx)}</td>
+      </tr>`;
+  }).join("");
+
+  // Append AJX manual extras as additional table rows (using the shared extraRowHtml renderer)
+  rowsHtml += ajxExtras.map(x => extraRowHtml(x)).join("");
+  tbody.innerHTML = rowsHtml;
+
+  // Wire up the × delete buttons for any extras rows we just rendered in the AJX table
+  $$(".pay-table .x-cell-btn").forEach(b => b.addEventListener("click", () => deleteExtra(b.dataset.id)));
+
+  // Grand total = AJX take-home from Victor's loads − fuel + manual extras (signed)
+  const totalAjx = totalGross - totalQp - totalDriver - totalFuel + totalExtras;
+  $("#payGrandTotal").textContent = fmt$(totalAjx);
+
+  // Summary panel in the extras section — keep the calculation breakdown visible,
+  // plus a list of any AJX extras with × buttons + a hint for the + Add button.
+  let summaryHtml = `
+    <div class="extra-row" style="grid-template-columns:1fr auto">
+      <div><b>Gross revenue</b><div style="color:var(--muted);font-size:12px">${weekLoads.length} load${weekLoads.length===1?"":"s"} for Victor</div></div>
+      <div class="amt" style="color:var(--text)">${fmt$(totalGross)}</div>
+    </div>
+    <div class="extra-row" style="grid-template-columns:1fr auto">
+      <div><b>Quickpay fees</b><div style="color:var(--muted);font-size:12px">Broker deductions</div></div>
+      <div class="amt" style="color:var(--danger)">−${fmt$(totalQp)}</div>
+    </div>
+    <div class="extra-row" style="grid-template-columns:1fr auto">
+      <div><b>Driver pay</b><div style="color:var(--muted);font-size:12px">Paid to Victor</div></div>
+      <div class="amt" style="color:var(--danger)">−${fmt$(totalDriver)}</div>
+    </div>${totalFuel > 0 ? `
+    <div class="extra-row" style="grid-template-columns:1fr auto">
+      <div><b>Fuel</b><div style="color:var(--muted);font-size:12px">${ajxFuel.length} AJX receipt${ajxFuel.length===1?"":"s"} this week</div></div>
+      <div class="amt" style="color:var(--danger)">−${fmt$(totalFuel)}</div>
+    </div>` : ""}`;
+  // Render each manual AJX extra as its own row in the summary panel with a × button
+  if (ajxExtras.length){
+    summaryHtml += ajxExtras.map(x => `
+      <div class="extra-row" style="grid-template-columns:1fr auto auto">
+        <div><b>${escapeHtml(x.Note || "Manual extra")}</b><div style="color:var(--muted);font-size:12px">${fmtDate(x.Date)} · AJX</div></div>
+        <div class="amt" style="color:${(Number(x.Amount)||0) >= 0 ? "var(--accent)" : "var(--danger)"}">${(Number(x.Amount)||0) >= 0 ? "" : "−"}${fmt$(Math.abs(Number(x.Amount)||0))}</div>
+        <button class="x-btn no-print" data-id="${x.ExtraID}" aria-label="Delete">×</button>
+      </div>`).join("");
+  }
+  summaryHtml += `
+    <div class="extra-row" style="grid-template-columns:1fr auto;background:linear-gradient(135deg, rgba(34,197,94,.15), rgba(14,165,233,.15));border:1px solid var(--accent)">
+      <div><b>AJX take-home</b></div>
+      <div class="amt" style="color:var(--accent);font-size:18px">${fmt$(totalAjx)}</div>
+    </div>`;
+  $("#extrasList").innerHTML = summaryHtml;
+
+  // Wire up × delete buttons on the summary panel extras (so user can remove them)
+  $$("#extrasList .x-btn").forEach(b => b.addEventListener("click", () => deleteExtra(b.dataset.id)));
+}
+
+function escapeHtml(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+async function saveLoadSilently(load){
+  // Quick save used by inline payroll edits — no full re-render mid-typing.
+  load.UpdatedAt = new Date().toISOString();
+  if (!STATE.apiUrl){ saveCache(STATE.loads); showToast("Saved"); return; }
+  try { await api("upsert", { load }); showToast("Saved"); }
+  catch(e){ showToast("Save failed: " + e.message, true); }
+}
+
+/* ---------------- Fuel view ---------------- */
+function renderFuel(){
+  if (!STATE.fuelWeekStart) STATE.fuelWeekStart = weekStartFri(new Date());
+  $("#fuelWeekLabel").textContent = fmtWeekLabel(STATE.fuelWeekStart);
+
+  // Filter receipts by week (no driver filter — show all). Sort by date ASC.
+  const [fri, thu] = weekRange(STATE.fuelWeekStart);
+  const filtered = STATE.fuel.filter(f => {
+    if (!f.Date) return false;
+    const d = parseLocalDate(f.Date);
+    return d >= fri && d <= thu;
+  }).sort((a,b) => (a.Date||"").localeCompare(b.Date||""));
+
+  // Stats
+  const totalAmt = filtered.reduce((a,f) => a + (Number(f.TotalAmount)||0), 0);
+  const totalGal = filtered.reduce((a,f) => a + (Number(f.Gallons)||0), 0);
+  const avgPpg = totalGal > 0 ? totalAmt / totalGal : 0;
+  const needsDriverCount = filtered.filter(f => !f.Driver).length;
+  const banner = $("#fuelNeedsBanner");
+  if (needsDriverCount > 0){
+    banner.style.display = "";
+    banner.innerHTML = `⭐ <b>${needsDriverCount}</b> receipt${needsDriverCount===1?"":"s"} need a driver assigned. Tap any amber row to set driver.`;
+  } else {
+    banner.style.display = "none";
+  }
+
+  // Build table
+  const table = $("#fuelTable");
+  let html = `<thead><tr>
+    <th>Date</th><th>Driver</th><th>Location</th>
+    <th style="text-align:right">Gallons</th>
+    <th style="text-align:right">$/Gal</th>
+    <th style="text-align:right">Total</th>
+    <th style="text-align:right">Saved</th>
+  </tr></thead><tbody>`;
+  if (!filtered.length){
+    html += `<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:30px">
+      No receipts this week. Mudflap receipts pull automatically every hour. Tap <b>+</b> to log a non-Mudflap receipt.
+    </td></tr>`;
+  } else {
+    filtered.forEach(f => {
+      const d = parseLocalDate(f.Date) || new Date();
+      const md = (d.getMonth()+1).toString().padStart(2,"0") + "/" + d.getDate().toString().padStart(2,"0");
+      const ppg = (Number(f.PricePerGallon)||0);
+      const gal = (Number(f.Gallons)||0);
+      const saved = Number(f.SavingsAmount)||0;
+      const retail = Number(f.RetailPricePerGal)||0;
+      const needsDriver = !f.Driver;
+      html += `
+        <tr class="load-row${needsDriver?" needs-driver-row":""}" data-id="${f.ReceiptID}">
+          <td>${md}</td>
+          <td class="col-driver drv-cell">${needsDriver ? "— assign driver" : escapeHtml(f.Driver)}</td>
+          <td>${escapeHtml(f.Location || "—")}</td>
+          <td class="col-gallons">${gal ? gal.toFixed(1) + " gal" : "—"}</td>
+          <td class="col-ppg">${ppg ? "$"+ppg.toFixed(3) : "—"}${retail?'<div style="font-size:10px;color:var(--muted)">retail $'+retail.toFixed(3)+'</div>':''}</td>
+          <td class="col-total">${fmt$(f.TotalAmount)}</td>
+          <td class="col-total" style="color:var(--accent)">${saved>0?"+"+fmt$(saved):"—"}</td>
+        </tr>
+      `;
+    });
+  }
+  html += `</tbody>`;
+  table.innerHTML = html;
+  $$("#fuelTable .load-row").forEach(el => el.addEventListener("click", ()=> openFuelModal(STATE.fuel.find(f => f.ReceiptID === el.dataset.id))));
+
+  // Footer totals
+  const totalSaved = filtered.reduce((a,f) => a + (Number(f.SavingsAmount)||0), 0);
+  $("#fuelTotals").innerHTML = `
+    <div class="block">
+      <div class="label">Total Gallons</div>
+      <div class="value gallons">${totalGal.toFixed(1)} gal</div>
+    </div>
+    <div class="block">
+      <div class="label">Total Diesel Cost</div>
+      <div class="value cost">${fmt$(totalAmt)}</div>
+    </div>
+    ${totalSaved > 0 ? `<div class="block">
+      <div class="label">Total Saved (Mudflap)</div>
+      <div class="value" style="color:var(--accent)">${fmt$(totalSaved)}</div>
+    </div>` : ''}
+    ${avgPpg ? `<div class="block" style="margin-left:auto;text-align:right">
+      <div class="label">Avg $/Gal</div>
+      <div class="value" style="color:var(--muted);font-size:16px">$${avgPpg.toFixed(3)}</div>
+    </div>` : ''}
+  `;
+}
+
+function openFuelModal(receipt){
+  const f = $("#fuelForm");
+  f.reset();
+  const today = new Date().toISOString().slice(0,10);
+  f.elements.Date.value = receipt?.Date || today;
+  f.elements.Vendor.value = receipt?.Vendor || "Mudflap";
+  f.elements.Driver.value = receipt?.Driver || (STATE.fuelDriver !== "all" ? STATE.fuelDriver : "");
+  f.elements.Truck.value = receipt?.Truck || "";
+  f.elements.Location.value = receipt?.Location || "";
+  f.elements.Gallons.value = receipt?.Gallons ?? "";
+  f.elements.TotalAmount.value = receipt?.TotalAmount ?? "";
+  f.elements.PricePerGallon.value = receipt?.PricePerGallon ?? "";
+  f.elements.Notes.value = receipt?.Notes || "";
+  f.elements.ReceiptID.value = receipt?.ReceiptID || "";
+  $("#fuelTitle").textContent = receipt?.ReceiptID ? "Edit fuel receipt" : "Add fuel receipt";
+  $("#fuelDeleteRow").style.display = receipt?.ReceiptID ? "" : "none";
+  updateFuelPpgPreview();
+  $("#modalFuel").classList.add("open");
+}
+function closeFuelModal(){ $("#modalFuel").classList.remove("open"); }
+function updateFuelPpgPreview(){
+  const g = Number($("#fuelGal").value)||0, t = Number($("#fuelTotal").value)||0;
+  $("#fuelPpgPreview").textContent = (g>0 && t>0) ? "→ $"+(t/g).toFixed(3)+" / gal" : "$/gal will compute automatically";
+}
+
+/* ---------------- Drivers / P&L view ---------------- */
+function renderDrivers(){
+  if (!STATE.drvWeekStart) STATE.drvWeekStart = weekStartFri(new Date());
+  $("#drvWeekLabel").textContent = fmtWeekLabel(STATE.drvWeekStart);
+
+  const [fri, thu] = weekRange(STATE.drvWeekStart);
+
+  // All loads in week (regardless of driver, for unassigned tracking)
+  const wkLoads = STATE.loads.filter(l => {
+    if (!l.PickupDate) return false;
+    const d = parseLocalDate(l.PickupDate);
+    return d >= fri && d <= thu;
+  });
+  const wkFuel = STATE.fuel.filter(f => {
+    if (!f.Date) return false;
+    const d = parseLocalDate(f.Date);
+    return d >= fri && d <= thu;
+  });
+  const wkExtras = STATE.extras.filter(x => {
+    if (!x.Date) return false;
+    const d = parseLocalDate(x.Date);
+    return d >= fri && d <= thu;
+  });
+
+  // Group by driver
+  const drivers = [...new Set([
+    ...wkLoads.map(l => l.Driver).filter(Boolean),
+    ...wkFuel.map(f => f.Driver).filter(Boolean),
+    ...wkExtras.map(x => x.Driver).filter(Boolean),
+  ])].sort();
+
+  const list = $("#driversList");
+  if (!drivers.length){
+    list.innerHTML = `<div class="empty">
+      <div style="font-size:30px;margin-bottom:6px">👤</div>
+      <div><b>No driver activity this week.</b></div>
+      <div style="margin-top:6px">Once you assign drivers to loads + fuel receipts, P&L per driver will show here.</div>
+    </div>`;
+    $("#companyTotal").innerHTML = "";
+    return;
+  }
+
+  let totalGross = 0, totalFees = 0, totalFuel = 0, totalPay = 0;
+  list.innerHTML = drivers.map(name => {
+    const loads = wkLoads.filter(l => l.Driver === name);
+    const fuel  = wkFuel.filter(f => f.Driver === name);
+    const extras = wkExtras.filter(x => x.Driver === name);
+
+    const gross    = loads.reduce((a,l) => a + (Number(l.Rate)||0), 0);
+    const fees     = loads.reduce((a,l) => a + brokerFee(l.Broker, Number(l.Rate)||0), 0);
+    const netRev   = gross - fees;
+    const fuelCost = fuel.reduce((a,f) => a + (Number(f.TotalAmount)||0), 0);
+    const loadPay  = loads.reduce((a,l) => a + (Number(l.DriverPay)||0), 0);
+    const xPay     = extras.reduce((a,x) => a + (Number(x.Amount)||0), 0);
+    const driverPay = loadPay + xPay;
+    const netToHCH = netRev - fuelCost - driverPay;
+    const margin   = gross > 0 ? (netToHCH/gross)*100 : 0;
+    totalGross += gross; totalFees += fees; totalFuel += fuelCost; totalPay += driverPay;
+
+    const marginPill = gross > 0
+      ? `<span class="margin-pill ${margin>40?"":margin>15?"warn":"bad"}">${margin.toFixed(1)}%</span>`
+      : "";
+    const summaryBits = [
+      loads.length + " load" + (loads.length===1?"":"s"),
+      fuel.length + " fuel receipt" + (fuel.length===1?"":"s"),
+      extras.length>0 ? extras.length + " extra" + (extras.length===1?"":"s") : null,
+    ].filter(Boolean).join(" · ");
+
+    // Show fee breakdown by broker for transparency
+    const feeByBroker = {};
+    loads.forEach(l => {
+      const f = brokerFee(l.Broker, Number(l.Rate)||0);
+      if (f > 0) feeByBroker[l.Broker] = (feeByBroker[l.Broker]||0) + f;
+    });
+    const feeBreakdown = Object.keys(feeByBroker).length
+      ? Object.entries(feeByBroker).map(([b,a]) => `${b} ${feeLabel(b)}`).join(", ")
+      : "—";
+
+    return `
+      <div class="driver-card">
+        <div class="name">${escapeHtml(name)}${marginPill}</div>
+        <div class="summary">${summaryBits}</div>
+        <div class="pnl-row gross"><span class="label">Gross (broker rate)</span><span class="amt">${fmt$(gross)}</span></div>
+        <div class="pnl-row cost"><span class="label">− Broker fees<span style="color:var(--muted);font-weight:400;font-size:11px;display:block">${escapeHtml(feeBreakdown)}</span></span><span class="amt">−${fmt$(fees)}</span></div>
+        <div class="pnl-row" style="font-weight:700;color:var(--text);border-top:1px dashed var(--border);padding-top:8px;margin-top:4px"><span class="label">Net revenue</span><span class="amt">${fmt$(netRev)}</span></div>
+        <div class="pnl-row cost"><span class="label">− Fuel</span><span class="amt">−${fmt$(fuelCost)}</span></div>
+        <div class="pnl-row cost"><span class="label">− Driver pay${xPay>0?" (incl. extras)":""}</span><span class="amt">−${fmt$(driverPay)}</span></div>
+        <div class="pnl-row net divider ${netToHCH<0?"negative":""}"><span class="label">HCH profit</span><span class="amt">${fmt$(netToHCH)}</span></div>
+      </div>
+    `;
+  }).join("");
+
+  // Company total — fuel covers ALL receipts in the week (even ones with no driver assigned).
+  const companyFuelCost = wkFuel.reduce((a,f) => a + (Number(f.TotalAmount)||0), 0);
+
+  // AJX settlement = HCH owes AJX for Victor's loads (full rate − quickpay − Victor's pay).
+  // Subtract from HCH profit because HCH transfers that money to AJX.
+  const victorLoads = wkLoads.filter(l => l.Driver === "Victor");
+  const ajxGross   = victorLoads.reduce((a,l) => a + (Number(l.Rate)||0), 0);
+  const ajxFees    = victorLoads.reduce((a,l) => a + brokerFee(l.Broker, Number(l.Rate)||0), 0);
+  const victorPay  = victorLoads.reduce((a,l) => a + (Number(l.DriverPay)||0), 0);
+  const ajxSettlement = Math.max(0, ajxGross - ajxFees - victorPay);
+
+  const companyNetRev = totalGross - totalFees;
+  const companyNet = companyNetRev - companyFuelCost - totalPay - ajxSettlement;
+  const companyMargin = totalGross > 0 ? (companyNet/totalGross)*100 : 0;
+  $("#companyTotal").innerHTML = `
+    <div class="title">Whole company — ${fmtWeekLabel(STATE.drvWeekStart)}</div>
+    <div class="pnl-row gross"><span class="label">Gross (broker rate)</span><span class="amt">${fmt$(totalGross)}</span></div>
+    <div class="pnl-row cost"><span class="label">− Broker fees</span><span class="amt">−${fmt$(totalFees)}</span></div>
+    <div class="pnl-row" style="font-weight:700;color:var(--text);border-top:1px dashed var(--border);padding-top:8px;margin-top:4px"><span class="label">Net revenue</span><span class="amt">${fmt$(companyNetRev)}</span></div>
+    <div class="pnl-row cost"><span class="label">− Fuel <span style="color:var(--muted);font-weight:400;font-size:11px">(${wkFuel.length} receipt${wkFuel.length===1?"":"s"})</span></span><span class="amt">−${fmt$(companyFuelCost)}</span></div>
+    <div class="pnl-row cost"><span class="label">− Driver payouts</span><span class="amt">−${fmt$(totalPay)}</span></div>
+    ${ajxSettlement>0 ? `<div class="pnl-row cost"><span class="label">− AJX settlement <span style="color:var(--muted);font-weight:400;font-size:11px">(${victorLoads.length} Victor load${victorLoads.length===1?"":"s"})</span></span><span class="amt">−${fmt$(ajxSettlement)}</span></div>` : ""}
+    <div class="pnl-row net divider ${companyNet<0?"negative":""}">
+      <span class="label">HCH PROFIT ${totalGross>0?'<span class="margin-pill '+(companyMargin>40?"":companyMargin>15?"warn":"bad")+'">'+companyMargin.toFixed(1)+'% margin</span>':''}</span>
+      <span class="amt">${fmt$(companyNet)}</span>
+    </div>
+  `;
+}
+
+function openExtraModal(extra){
+  const f = $("#extraForm");
+  f.reset();
+  const today = new Date().toISOString().slice(0,10);
+  f.elements.Date.value      = extra?.Date || today;
+  f.elements.Amount.value    = extra?.Amount ?? "";
+  f.elements.Note.value      = extra?.Note || "";
+  f.elements.ExtraID.value   = extra?.ExtraID || "";
+  f.elements.Driver.value    = STATE.payDriver || "";
+  $("#extraTitle").textContent = extra?.ExtraID ? "Edit entry" : "Add compensation";
+  $("#modalExtra").classList.add("open");
+}
+function closeExtraModal(){ $("#modalExtra").classList.remove("open"); }
+
+/* ---------------- Events ---------------- */
+function bind(){
+  $("#btnAdd").addEventListener("click", ()=> {
+    if (STATE.view === "fuel") openFuelModal(null);
+    else openEdit(null);
+  });
+  $("#btnSettings").addEventListener("click", openSettings);
+  $("#btnRefresh").addEventListener("click", ()=> { fetchLoads(); showToast("Refreshing…"); });
+
+  // Language toggle (EN ↔ ES). Persists across sessions in localStorage.
+  $("#btnLang").addEventListener("click", ()=> {
+    STATE.lang = STATE.lang === "es" ? "en" : "es";
+    localStorage.setItem(LS_KEY_LANG, STATE.lang);
+    applyLang();
+    showToast(STATE.lang === "es" ? "Idioma: Español" : "Language: English");
+  });
+
+  // Translator modal: Spanish in (voice-to-text via phone keyboard mic), English out
+  const trModal = $("#modalTranslate");
+  const trIn   = $("#trInputEs");
+  const trOut  = $("#trOutputEn");
+  const trStatus = $("#trStatus");
+  $("#btnTranslate").addEventListener("click", ()=> {
+    trModal.classList.add("open");
+    setTimeout(()=> trIn.focus(), 100);
+  });
+  $("#closeTranslate").addEventListener("click", ()=> trModal.classList.remove("open"));
+  $("#btnTrClose").addEventListener("click", ()=> trModal.classList.remove("open"));
+  $("#btnTrClear").addEventListener("click", ()=> {
+    trIn.value = ""; trOut.value = ""; trStatus.textContent = "";
+    trIn.focus();
+  });
+  $("#btnDoTranslate").addEventListener("click", async ()=> {
+    const text = (trIn.value || "").trim();
+    if (!text){ trStatus.textContent = "Escribe algo en español primero."; return; }
+    trStatus.textContent = "Traduciendo…";
+    try {
+      const r = await fetch(STATE.apiUrl, {
+        method: "POST",
+        body: JSON.stringify({ action: "translate", text, from: "es", to: "en", token: STATE.apiToken || "" })
+      });
+      const data = await r.json();
+      if (!data.ok){ trStatus.textContent = "Error: " + (data.error || "translate failed"); return; }
+      // Light tone polish — strip stilted/AI-sounding intros, keep it short and casual
+      let out = String(data.translated || "").trim();
+      out = out.replace(/^(?:Dear|Greetings|Hello there|To whom it may concern)[,:\s]+/i, "Hey ");
+      out = out.replace(/(?:Sincerely|Best regards|Yours truly|Kind regards),?\s*$/i, "Thanks");
+      out = out.replace(/\b(I am writing to inform you that|Please be advised that|Kindly be informed that)\b/gi, "");
+      trOut.value = out;
+      trStatus.textContent = "✓ Listo. Toca \"Copiar inglés\" para usar.";
+    } catch(e){
+      trStatus.textContent = "Error: " + e.message;
+    }
+  });
+  $("#btnTrCopy").addEventListener("click", async ()=> {
+    if (!trOut.value){ trStatus.textContent = "Nada para copiar."; return; }
+    try {
+      await navigator.clipboard.writeText(trOut.value);
+      trStatus.textContent = "✓ Copiado al portapapeles.";
+      showToast("Copied to clipboard");
+    } catch(e){
+      // Fallback: select the text so user can Cmd-C / long-press copy
+      trOut.select();
+      trStatus.textContent = "Selecciona y copia manualmente (Cmd-C / mantén presionado).";
+    }
+  });
+  // Auto-translate on Enter (Cmd/Ctrl+Enter) for power users
+  trIn.addEventListener("keydown", e => {
+    if ((e.metaKey || e.ctrlKey) && e.key === "Enter"){
+      e.preventDefault();
+      $("#btnDoTranslate").click();
+    }
+  });
+
+  // ===== Microphone (Web Speech API) =====
+  // Tap mic → record Spanish → live transcribe into the input box → polish
+  // grammar (capitalize first letter, add period, fix common dictation
+  // quirks) → optionally auto-translate. Requires HTTPS (works on
+  // GitHub Pages, fails on file://).
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const micBtn = $("#btnTrMic");
+  const micIcon = $("#trMicIcon");
+  const micLabel = $("#trMicLabel");
+  let recognition = null;
+  let isListening = false;
+  let recBaseText = "";  // text already in the box when recording started
+
+  function polishSpanish(s){
+    if (!s) return s;
+    let t = String(s).trim();
+    // Common dictation quirks: "punto" → ".", "coma" → ",", "signo de pregunta" → "?", "nueva linea" → "\n"
+    t = t.replace(/\s*\bpunto y aparte\b\s*/gi, ".\n");
+    t = t.replace(/\s*\bpunto y coma\b\s*/gi, "; ");
+    t = t.replace(/\s*\bpunto\b\s*/gi, ". ");
+    t = t.replace(/\s*\bcoma\b\s*/gi, ", ");
+    t = t.replace(/\s*\bsigno de interrogación\b\s*/gi, "? ");
+    t = t.replace(/\s*\bsigno de pregunta\b\s*/gi, "? ");
+    t = t.replace(/\s*\bnueva línea\b\s*/gi, "\n");
+    t = t.replace(/\s*\bnueva linea\b\s*/gi, "\n");
+    t = t.replace(/\s+/g, " ").replace(/\s+\n/g, "\n").replace(/\n\s+/g, "\n");
+    // Capitalize first letter
+    t = t.charAt(0).toUpperCase() + t.slice(1);
+    // Capitalize after period + space
+    t = t.replace(/(\.\s+)([a-zñáéíóúü])/g, (m, p, c) => p + c.toUpperCase());
+    // Add final period if missing terminal punctuation
+    if (!/[.!?…]\s*$/.test(t)) t += ".";
+    return t.trim();
+  }
+
+  function setMicUi(listening){
+    isListening = listening;
+    if (listening){
+      micIcon.textContent = "⏺";
+      micLabel.textContent = "Parar";
+      micBtn.style.background = "#ff3b30";
+      micBtn.style.animation = "micPulse 1s ease-in-out infinite";
+      trStatus.textContent = "🎤 Escuchando… habla en español.";
+    } else {
+      micIcon.textContent = "🎤";
+      micLabel.textContent = "Hablar";
+      micBtn.style.background = "var(--danger)";
+      micBtn.style.animation = "";
+    }
+  }
+
+  if (!SR){
+    // Browser doesn't support Web Speech — hide the mic button gracefully
+    micBtn.style.display = "none";
+  } else {
+    micBtn.addEventListener("click", () => {
+      if (isListening){
+        try { recognition && recognition.stop(); } catch(e){}
+        return;
+      }
+      // Start a new recognition session
+      recognition = new SR();
+      recognition.lang = "es-ES";  // Spanish (Spain) — Google's es-MX would also work
+      recognition.continuous = true;     // Keep listening until user taps Parar
+      recognition.interimResults = true; // Show partial transcripts as user speaks
+      recBaseText = trIn.value;
+      recognition.onstart = () => setMicUi(true);
+      recognition.onerror = (e) => {
+        setMicUi(false);
+        let msg = e.error || "error";
+        if (msg === "not-allowed") msg = "Permiso de micrófono denegado. Habilítalo en la configuración del navegador.";
+        else if (msg === "no-speech") msg = "No escuché nada. Intenta de nuevo.";
+        else if (msg === "audio-capture") msg = "No encontré micrófono.";
+        else msg = "Error: " + msg;
+        trStatus.textContent = msg;
+      };
+      recognition.onend = () => {
+        setMicUi(false);
+        // Polish the final transcript
+        const polished = polishSpanish(trIn.value);
+        if (polished !== trIn.value) trIn.value = polished;
+        if (trIn.value.trim() && trIn.value.trim() !== recBaseText.trim()){
+          trStatus.textContent = "✓ Listo. Toca \"Traducir →\" o vuelve a hablar.";
+          // Auto-translate after a brief pause so the user can see the polished Spanish first
+          setTimeout(() => $("#btnDoTranslate").click(), 600);
+        }
+      };
+      recognition.onresult = (event) => {
+        // Build the running transcript: keep base text, append all final + interim results
+        let finalText = "";
+        let interimText = "";
+        for (let i = event.resultIndex; i < event.results.length; i++){
+          const res = event.results[i];
+          if (res.isFinal) finalText += res[0].transcript + " ";
+          else interimText += res[0].transcript;
+        }
+        const combined = (recBaseText ? recBaseText + " " : "") + finalText + interimText;
+        trIn.value = combined.trim();
+      };
+      try {
+        recognition.start();
+      } catch(e){
+        setMicUi(false);
+        trStatus.textContent = "No pude iniciar el micrófono: " + e.message;
+      }
+    });
+  }
+
+  $("#closeEdit").addEventListener("click", closeEdit);
+  $("#btnCancelEdit").addEventListener("click", closeEdit);
+  $("#closeDetail").addEventListener("click", closeDetail);
+  $("#btnCloseDetail").addEventListener("click", closeDetail);
+  $("#closeSettings").addEventListener("click", closeSettings);
+
+  $$(".modal-bg").forEach(bg => bg.addEventListener("click", (e)=> {
+    if (e.target === bg) bg.classList.remove("open");
+  }));
+
+  $("#editForm").addEventListener("submit", async (e)=> {
+    e.preventDefault();
+    const fd = new FormData(e.currentTarget);
+    const obj = Object.fromEntries(fd.entries());
+    if (obj.OriginState) obj.OriginState = obj.OriginState.toUpperCase();
+    if (obj.DestState)   obj.DestState   = obj.DestState.toUpperCase();
+    if (obj.Rate) obj.Rate = Number(obj.Rate);
+    if (obj.DriverPay !== "") obj.DriverPay = Number(obj.DriverPay); else obj.DriverPay = "";
+    closeEdit();
+    await saveLoad(obj);
+  });
+
+  $("#btnDelete").addEventListener("click", ()=> {
+    const id = $("#editForm").elements["LoadID"].value;
+    if (id){ closeEdit(); deleteLoad(id); }
+  });
+
+  // Loadboard week nav + NEW toggle
+  $("#btnLbWeekPrev").addEventListener("click", ()=> {
+    if (!STATE.lbWeekStart) STATE.lbWeekStart = weekStartFri(new Date());
+    const d = new Date(STATE.lbWeekStart); d.setDate(d.getDate()-7);
+    STATE.lbWeekStart = d; STATE.lbShowOnlyNew = false; renderLoadboard();
+  });
+  $("#btnLbWeekNext").addEventListener("click", ()=> {
+    if (!STATE.lbWeekStart) STATE.lbWeekStart = weekStartFri(new Date());
+    const d = new Date(STATE.lbWeekStart); d.setDate(d.getDate()+7);
+    STATE.lbWeekStart = d; STATE.lbShowOnlyNew = false; renderLoadboard();
+  });
+  $("#btnLbWeekToday").addEventListener("click", ()=> {
+    STATE.lbWeekStart = weekStartFri(new Date()); STATE.lbShowOnlyNew = false; renderLoadboard();
+  });
+  $("#btnLbNewFilter").addEventListener("click", ()=> {
+    STATE.lbShowOnlyNew = !STATE.lbShowOnlyNew; renderLoadboard();
+  });
+
+  // Close status popover on outside click
+  document.addEventListener("click", e => {
+    const pop = $("#statusPopover");
+    if (!pop.classList.contains("open")) return;
+    if (e.target.closest("#statusPopover") || e.target.closest("[data-status-pick]")) return;
+    closeStatusPopover();
+  });
+
+  $("#btnSaveSettings").addEventListener("click", ()=> {
+    STATE.apiUrl = $("#apiUrl").value.trim();
+    STATE.apiToken = $("#apiToken").value.trim();
+    localStorage.setItem(LS_KEY_API, STATE.apiUrl);
+    localStorage.setItem(LS_KEY_TOKEN, STATE.apiToken);
+    closeSettings(); showToast("Settings saved");
+    fetchLoads();
+  });
+
+  // View switch
+  $$(".view-switch .vtab").forEach(tab => tab.addEventListener("click", ()=> {
+    $$(".view-switch .vtab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    STATE.view = tab.dataset.view;
+    render();
+  }));
+
+  // Week navigation (payroll)
+  $("#btnWeekPrev").addEventListener("click", ()=> {
+    const d = new Date(STATE.payWeekStart); d.setDate(d.getDate() - 7);
+    STATE.payWeekStart = d; renderPayroll();
+  });
+  $("#btnWeekNext").addEventListener("click", ()=> {
+    const d = new Date(STATE.payWeekStart); d.setDate(d.getDate() + 7);
+    STATE.payWeekStart = d; renderPayroll();
+  });
+  $("#btnWeekToday").addEventListener("click", ()=> {
+    STATE.payWeekStart = weekStartFri(new Date()); renderPayroll();
+  });
+
+  // Extras modal
+  $("#btnAddExtra").addEventListener("click", ()=> {
+    if (!STATE.payDriver){ showToast("Pick a driver first", true); return; }
+    openExtraModal(null);
+  });
+  $("#btnPrint").addEventListener("click", ()=> window.print());
+
+  // Fuel modal events
+  $("#closeFuel").addEventListener("click", closeFuelModal);
+  $("#btnCancelFuel").addEventListener("click", closeFuelModal);
+  $("#fuelGal").addEventListener("input", updateFuelPpgPreview);
+  $("#fuelTotal").addEventListener("input", updateFuelPpgPreview);
+  $("#fuelForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const fd = new FormData(e.currentTarget);
+    const o = Object.fromEntries(fd.entries());
+    if (o.Gallons) o.Gallons = Number(o.Gallons);
+    if (o.TotalAmount) o.TotalAmount = Number(o.TotalAmount);
+    if (o.Gallons > 0 && o.TotalAmount > 0) o.PricePerGallon = Math.round((o.TotalAmount/o.Gallons)*1000)/1000;
+    closeFuelModal();
+    await saveFuel(o);
+  });
+  $("#btnDeleteFuel").addEventListener("click", ()=> {
+    const id = $("#fuelForm").elements.ReceiptID.value;
+    if (id){ closeFuelModal(); deleteFuelReceipt(id); }
+  });
+
+  // Fuel week nav
+  $("#btnFuelWeekPrev").addEventListener("click", ()=> {
+    const d = new Date(STATE.fuelWeekStart); d.setDate(d.getDate()-7);
+    STATE.fuelWeekStart = d; renderFuel();
+  });
+  $("#btnFuelWeekNext").addEventListener("click", ()=> {
+    const d = new Date(STATE.fuelWeekStart); d.setDate(d.getDate()+7);
+    STATE.fuelWeekStart = d; renderFuel();
+  });
+  $("#btnFuelWeekToday").addEventListener("click", ()=> {
+    STATE.fuelWeekStart = weekStartFri(new Date()); renderFuel();
+  });
+
+  // Drivers (P&L) week nav
+  $("#btnDrvWeekPrev").addEventListener("click", ()=> {
+    const d = new Date(STATE.drvWeekStart); d.setDate(d.getDate()-7);
+    STATE.drvWeekStart = d; renderDrivers();
+  });
+  $("#btnDrvWeekNext").addEventListener("click", ()=> {
+    const d = new Date(STATE.drvWeekStart); d.setDate(d.getDate()+7);
+    STATE.drvWeekStart = d; renderDrivers();
+  });
+  $("#btnDrvWeekToday").addEventListener("click", ()=> {
+    STATE.drvWeekStart = weekStartFri(new Date()); renderDrivers();
+  });
+  $("#closeExtra").addEventListener("click", closeExtraModal);
+  $("#btnCancelExtra").addEventListener("click", closeExtraModal);
+  $("#extraForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const fd = new FormData(e.currentTarget);
+    const o = Object.fromEntries(fd.entries());
+    o.Amount = Number(o.Amount);
+    closeExtraModal();
+    await saveExtra(o);
+  });
+
+  $("#btnTestConn").addEventListener("click", async ()=> {
+    const url = $("#apiUrl").value.trim();
+    const tok = $("#apiToken").value.trim();
+    $("#testResult").textContent = "Testing…";
+    if (!url){ $("#testResult").textContent = "Enter a URL first."; return; }
+    try {
+      const res = await fetch(url, { method: "POST",
+        headers: {"Content-Type":"text/plain;charset=utf-8"},
+        body: JSON.stringify({ action:"ping", token: tok })});
+      const json = await res.json();
+      if (json.ok){ $("#testResult").textContent = "✅ Connected! " + (json.message || ""); }
+      else { $("#testResult").textContent = "⚠️ " + (json.error || "unknown error"); }
+    } catch(e){ $("#testResult").textContent = "❌ " + e.message; }
+  });
+}
+
+bind();
+applyLang();   // Apply saved language preference (EN/ES) on page load
+fetchLoads();
+</script>
+</body>
+</html>
