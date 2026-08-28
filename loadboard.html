@@ -2923,7 +2923,9 @@ function cmpGroup(a,b){
 async function consolidateGroup(label){
   label = String(label || "").trim().toUpperCase();
   if (!label) return;
-  const members = STATE.loads.filter(l => String(l.PayrollGroup || "").trim().toUpperCase() === label);
+  // Scope to the CURRENT driver — the same label ("1", "2"…) is reused across
+  // drivers, so never touch another driver's loads.
+  const members = STATE.loads.filter(l => l.Driver === STATE.payDriver && String(l.PayrollGroup || "").trim().toUpperCase() === label);
   if (members.length < 2) return; // a group of one — nothing to combine
   const sorted = [...members].sort(cmpGroup);
   const head = sorted[0];
@@ -2994,13 +2996,12 @@ function payGroupRowHtml(loads, groupKey){
   const destStr   = lane.map(s => s.split(" → ")[1]).join(" + ");
   const commentsBits = sortedLoads.map(l => l.DriverComments || "").filter(Boolean);
   const comments = commentsBits.join(" / ");
-  // Combined pay = SUM of every member of this group (across the whole board,
-  // not just the visible week) so it never blanks out when you change weeks or
-  // flip the order. Editing writes to ONE stable anchor (lowest LoadID) and
-  // zeros the rest, so it can never double-count.
-  const _grpKey = String(groupKey || "").trim().toUpperCase();
-  const _allMembers = STATE.loads.filter(l => String(l.PayrollGroup || "").trim().toUpperCase() === _grpKey);
-  const _grpMembers = _allMembers.length ? _allMembers : sortedLoads;
+  // Combined pay = SUM of just the loads in THIS row (already scoped to this
+  // one driver + week). We do NOT scan the whole board by label — labels like
+  // "1"/"2" are reused across drivers/weeks, which was adding up unrelated
+  // loads into huge numbers. Editing writes to ONE stable anchor (lowest
+  // LoadID) and zeros the rest, so it can never double-count.
+  const _grpMembers = sortedLoads;
   const _sumPay = _grpMembers.reduce((a,l) => a + (Number(l.DriverPay)||0), 0);
   const payVal = _sumPay ? _sumPay : "";
   const payAnchorId = [..._grpMembers].sort((a,b) => String(a.LoadID).localeCompare(String(b.LoadID)))[0].LoadID;
