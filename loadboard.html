@@ -2828,8 +2828,12 @@ function renderPayroll(){
         for (const lid of memberIds){
           const load = STATE.loads.find(x => x.LoadID === lid);
           if (!load) continue;
-          load.PayrollGroup = "";
-          load.GroupSeq = "";
+          // Use a single space, not "" — the backend keeps existing values when
+          // you send an empty string, so clearing to "" never saved and the
+          // group snapped back on refresh. A space persists and reads as "no
+          // group" everywhere (every check does .trim()).
+          load.PayrollGroup = " ";
+          load.GroupSeq = " ";
           const stash = localStorage.getItem("hch.grouppay." + lid);
           if (stash !== null){
             load.DriverPay = (stash === "") ? "" : Number(stash);
@@ -2927,9 +2931,6 @@ async function consolidateGroup(label){
   // drivers, so never touch another driver's loads.
   const members = STATE.loads.filter(l => l.Driver === STATE.payDriver && String(l.PayrollGroup || "").trim().toUpperCase() === label);
   if (members.length < 2) return; // a group of one — nothing to combine
-  // Pay holder = the STABLE lowest-LoadID load (same one the row displays and
-  // edits). Never changes with order/flip, so the pay can't jump around.
-  const anchor = [...members].sort((a,b) => String(a.LoadID).localeCompare(String(b.LoadID)))[0];
   // Stash each member's original pay once so ungroup can restore it.
   members.forEach(l => {
     if (localStorage.getItem("hch.grouppay." + l.LoadID) === null){
@@ -2937,15 +2938,25 @@ async function consolidateGroup(label){
         (l.DriverPay === "" || l.DriverPay == null) ? "" : String(l.DriverPay));
     }
   });
-  // Pay is PER DAY, not per load — do NOT sum. Keep one day's pay on the anchor
-  // (its own if set, otherwise the first member that has one) and zero the rest.
-  let pay = Number(anchor.DriverPay) || 0;
-  if (!pay){ const nz = members.find(m => (Number(m.DriverPay)||0) > 0); if (nz) pay = Number(nz.DriverPay); }
-  for (const l of members){
-    if (l.LoadID === anchor.LoadID) continue;
+  // PER-DAY pay: keep ONE paid load per unique pickup DAY; zero any EXTRA loads
+  // on the SAME day. Different days each keep their own $350. So two same-day
+  // loads = one day's pay; a Sun+Mon pair = two days' pay.
+  const keeperByDay = {};
+  const sorted = [...members].sort((a,b) => String(a.LoadID).localeCompare(String(b.LoadID)));
+  for (const l of sorted){
+    const dk = _dayKey_(l.PickupDate);
+    if (!keeperByDay[dk]){ keeperByDay[dk] = l; continue; }
+    const keeper = keeperByDay[dk];
+    if ((Number(keeper.DriverPay)||0) === 0 && (Number(l.DriverPay)||0) > 0){
+      keeper.DriverPay = Number(l.DriverPay); await saveLoadSilently(keeper);
+    }
     if (Number(l.DriverPay||0) !== 0){ l.DriverPay = 0; await saveLoadSilently(l); }
   }
-  if ((Number(anchor.DriverPay)||0) !== pay){ anchor.DriverPay = pay; await saveLoadSilently(anchor); }
+}
+// Normalized calendar-day key so different date string formats match.
+function _dayKey_(v){
+  const d = parseLocalDate(v);
+  return d ? (d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate()) : String(v || "");
 }
 
 function payRowHtml(l){
