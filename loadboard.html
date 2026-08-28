@@ -2927,19 +2927,25 @@ async function consolidateGroup(label){
   // drivers, so never touch another driver's loads.
   const members = STATE.loads.filter(l => l.Driver === STATE.payDriver && String(l.PayrollGroup || "").trim().toUpperCase() === label);
   if (members.length < 2) return; // a group of one — nothing to combine
-  const sorted = [...members].sort(cmpGroup);
-  const head = sorted[0];
+  // Pay holder = the STABLE lowest-LoadID load (same one the row displays and
+  // edits). Never changes with order/flip, so the pay can't jump around.
+  const anchor = [...members].sort((a,b) => String(a.LoadID).localeCompare(String(b.LoadID)))[0];
+  // Stash each member's original pay once so ungroup can restore it.
   members.forEach(l => {
     if (localStorage.getItem("hch.grouppay." + l.LoadID) === null){
       localStorage.setItem("hch.grouppay." + l.LoadID,
         (l.DriverPay === "" || l.DriverPay == null) ? "" : String(l.DriverPay));
     }
   });
-  const sum = members.reduce((a,l) => a + (Number(l.DriverPay)||0), 0);
-  for (const l of sorted.slice(1)){
+  // Pay is PER DAY, not per load — do NOT sum. Keep one day's pay on the anchor
+  // (its own if set, otherwise the first member that has one) and zero the rest.
+  let pay = Number(anchor.DriverPay) || 0;
+  if (!pay){ const nz = members.find(m => (Number(m.DriverPay)||0) > 0); if (nz) pay = Number(nz.DriverPay); }
+  for (const l of members){
+    if (l.LoadID === anchor.LoadID) continue;
     if (Number(l.DriverPay||0) !== 0){ l.DriverPay = 0; await saveLoadSilently(l); }
   }
-  if ((Number(head.DriverPay)||0) !== sum){ head.DriverPay = sum; await saveLoadSilently(head); }
+  if ((Number(anchor.DriverPay)||0) !== pay){ anchor.DriverPay = pay; await saveLoadSilently(anchor); }
 }
 
 function payRowHtml(l){
@@ -3005,7 +3011,13 @@ function payGroupRowHtml(loads, groupKey){
   const _sumPay = _grpMembers.reduce((a,l) => a + (Number(l.DriverPay)||0), 0);
   const payVal = _sumPay ? _sumPay : "";
   const payAnchorId = [..._grpMembers].sort((a,b) => String(a.LoadID).localeCompare(String(b.LoadID)))[0].LoadID;
-  const childIds = _grpMembers.map(l => l.LoadID).filter(id => id !== payAnchorId).join(",");
+  // Two different "children" lists:
+  //  - groupChildIds: everyone EXCEPT the group-cell's load (head) — used to
+  //    ungroup ALL members so clearing the label fully separates them.
+  //  - payChildIds: everyone EXCEPT the pay anchor — used to zero the rest when
+  //    the combined pay is edited.
+  const groupChildIds = _grpMembers.map(l => l.LoadID).filter(id => id !== head.LoadID).join(",");
+  const payChildIds   = _grpMembers.map(l => l.LoadID).filter(id => id !== payAnchorId).join(",");
   // Build a stacked date display showing EVERY date in the group so the
   // printed PDF reads "Mon 04/22 + Wed 04/24" instead of hiding dates behind
   // a "+1 MORE" tag.
@@ -3037,10 +3049,10 @@ function payGroupRowHtml(loads, groupKey){
         <div style="display:flex;gap:6px;align-items:center">
           <input type="text" class="cell-input note-cell" data-id="${head.LoadID}" value="${escapeHtml(comments)}" placeholder="" style="flex:1;min-width:0" />
           <button type="button" class="flip-btn no-print" data-order="${escapeHtml(orderIds)}" title="Flip which load is first" style="width:26px;flex:0 0 auto;padding:6px 0;font-size:14px;line-height:1;background:rgba(163,230,53,.15);border:1px solid rgba(255,255,255,.15);border-radius:6px;color:var(--text);cursor:pointer">⇅</button>
-          <input type="text" class="cell-input group-cell no-print" data-id="${head.LoadID}" data-children="${escapeHtml(childIds)}" value="${escapeHtml(groupKey)}" title="Combined route — clear this label on any load to ungroup it" style="width:38px;text-align:center;padding:6px 4px;font-size:11px;text-transform:uppercase;background:rgba(163,230,53,.15)" maxlength="6" />
+          <input type="text" class="cell-input group-cell no-print" data-id="${head.LoadID}" data-children="${escapeHtml(groupChildIds)}" value="${escapeHtml(groupKey)}" title="Combined route — clear this label to ungroup it" style="width:38px;text-align:center;padding:6px 4px;font-size:11px;text-transform:uppercase;background:rgba(163,230,53,.15)" maxlength="6" />
         </div>
       </td>
-      <td class="amount-col"><input type="number" step="0.01" inputmode="decimal" class="cell-input pay-cell" data-id="${payAnchorId}" data-children="${escapeHtml(childIds)}" value="${payVal}" placeholder="0.00" title="Combined pay for ${sortedLoads.length} loads in group ${escapeHtml(groupKey)}" /></td>
+      <td class="amount-col"><input type="number" step="0.01" inputmode="decimal" class="cell-input pay-cell" data-id="${payAnchorId}" data-children="${escapeHtml(payChildIds)}" value="${payVal}" placeholder="0.00" title="Combined pay for ${sortedLoads.length} loads in group ${escapeHtml(groupKey)}" /></td>
     </tr>
   `;
 }
