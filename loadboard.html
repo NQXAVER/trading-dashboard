@@ -2822,6 +2822,7 @@ function renderPayroll(){
           const load = STATE.loads.find(x => x.LoadID === lid);
           if (!load) continue;
           load.PayrollGroup = "";
+          load.GroupSeq = "";
           const stash = localStorage.getItem("hch.grouppay." + lid);
           if (stash !== null){
             load.DriverPay = (stash === "") ? "" : Number(stash);
@@ -2839,6 +2840,20 @@ function renderPayroll(){
           }
         }
         await consolidateGroup(newVal);
+      }
+      renderPayroll();
+    });
+  });
+  // Flip button — manually set which load in a combined row is first.
+  // Reverses the current order and remembers it (GroupSeq) so it sticks.
+  $$(".pay-table .flip-btn").forEach(btn => {
+    btn.addEventListener("click", async e => {
+      const ids = (e.currentTarget.dataset.order || "").split(",").filter(Boolean);
+      if (ids.length < 2) return;
+      const rev = ids.slice().reverse();
+      for (let i = 0; i < rev.length; i++){
+        const l = STATE.loads.find(x => x.LoadID === rev[i]);
+        if (l){ l.GroupSeq = i + 1; await saveLoadSilently(l); }
       }
       renderPayroll();
     });
@@ -2879,6 +2894,16 @@ function cmpLoads(a,b){
       || (a.CreatedAt||"").localeCompare(b.CreatedAt||"")
       || String(a.LoadNumber||"").localeCompare(String(b.LoadNumber||""));
 }
+// Order WITHIN a combined group: honor a manual order (GroupSeq, set by the
+// flip button) when present; otherwise fall back to chronological order.
+function cmpGroup(a,b){
+  const sa=a.GroupSeq, sb=b.GroupSeq;
+  const ha=(sa!==undefined&&sa!==null&&sa!==""), hb=(sb!==undefined&&sb!==null&&sb!=="");
+  if (ha&&hb) return Number(sa)-Number(sb);
+  if (ha) return -1;
+  if (hb) return 1;
+  return cmpLoads(a,b);
+}
 
 // Combine the pay of every load sharing a payroll-group label onto the FIRST
 // (earliest) load and zero the others, so all totals count the group's pay once.
@@ -2889,7 +2914,7 @@ async function consolidateGroup(label){
   if (!label) return;
   const members = STATE.loads.filter(l => String(l.PayrollGroup || "").trim().toUpperCase() === label);
   if (members.length < 2) return; // a group of one — nothing to combine
-  const sorted = [...members].sort(cmpLoads);
+  const sorted = [...members].sort(cmpGroup);
   const head = sorted[0];
   members.forEach(l => {
     if (localStorage.getItem("hch.grouppay." + l.LoadID) === null){
@@ -2941,7 +2966,7 @@ function payRowHtml(l){
 // stays correct (single combined number from the parent + 0 from siblings).
 function payGroupRowHtml(loads, groupKey){
   if (!loads || !loads.length) return "";
-  const sortedLoads = [...loads].sort(cmpLoads);
+  const sortedLoads = [...loads].sort(cmpGroup);
   const head = sortedLoads[0];
   const d = parseLocalDate(head.PickupDate) || new Date(head.CreatedAt || Date.now());
   const dow = d.toLocaleDateString(undefined,{weekday:"long"});
@@ -2980,6 +3005,7 @@ function payGroupRowHtml(loads, groupKey){
     const dd2 = dx.getDate().toString().padStart(2,"0");
     return `<div style="margin:2px 0"><b>${day}</b><br>${m}/${dd2}</div>`;
   }).join('<div style="font-size:10px;color:var(--muted);margin:2px 0">+</div>');
+  const orderIds = sortedLoads.map(l => l.LoadID).join(",");
   return `
     <tr class="group-row" data-group="${escapeHtml(groupKey)}">
       <td class="date-col">${dateLines}</td>
@@ -2989,6 +3015,7 @@ function payGroupRowHtml(loads, groupKey){
       <td>
         <div style="display:flex;gap:6px;align-items:center">
           <input type="text" class="cell-input note-cell" data-id="${head.LoadID}" value="${escapeHtml(comments)}" placeholder="" style="flex:1;min-width:0" />
+          <button type="button" class="flip-btn no-print" data-order="${escapeHtml(orderIds)}" title="Flip which load is first" style="width:26px;flex:0 0 auto;padding:6px 0;font-size:14px;line-height:1;background:rgba(163,230,53,.15);border:1px solid rgba(255,255,255,.15);border-radius:6px;color:var(--text);cursor:pointer">⇅</button>
           <input type="text" class="cell-input group-cell no-print" data-id="${head.LoadID}" data-children="${escapeHtml(childIds)}" value="${escapeHtml(groupKey)}" title="Combined route — clear this label on any load to ungroup it" style="width:38px;text-align:center;padding:6px 4px;font-size:11px;text-transform:uppercase;background:rgba(163,230,53,.15)" maxlength="6" />
         </div>
       </td>
