@@ -2391,7 +2391,7 @@ function renderLoadboard(){
     if (!f.Date) return false;
     const d = parseLocalDate(f.Date); return d >= fri && d <= thu;
   }).reduce((a,f) => a + (Number(f.TotalAmount)||0), 0);
-  const driverPay = weekLoads.reduce((a,l) => a + (Number(l.DriverPay)||0), 0)
+  const driverPay = sumDriverPay(weekLoads)
     + STATE.extras.filter(x => {
         if (!x.Date) return false;
         const d = parseLocalDate(x.Date); return d >= fri && d <= thu;
@@ -2400,7 +2400,7 @@ function renderLoadboard(){
   const victorLoads = weekLoads.filter(l => l.Driver === "Victor");
   const ajxGross   = victorLoads.reduce((a,l) => a + (Number(l.Rate)||0), 0);
   const ajxFees    = victorLoads.reduce((a,l) => a + brokerFee(l.Broker, Number(l.Rate)||0), 0);
-  const victorPay  = victorLoads.reduce((a,l) => a + (Number(l.DriverPay)||0), 0);
+  const victorPay  = sumDriverPay(victorLoads);
   const ajxSettle  = Math.max(0, ajxGross - ajxFees - victorPay);
 
   const netProfit = gross - fees - diesel - driverPay - ajxSettle;
@@ -2662,6 +2662,24 @@ function fullDriverName(d){
   return DRIVER_FULL_NAMES[d] || d;
 }
 
+// Sum driver pay, counting each combined GROUP once — the lowest-LoadID load in
+// the group holds the amount you typed. Ungrouped loads count individually.
+function sumDriverPay(loads){
+  let total = 0;
+  const counted = {};
+  for (const l of loads){
+    const g = String(l.PayrollGroup || "").trim().toUpperCase();
+    if (!g){ total += Number(l.DriverPay) || 0; continue; }
+    const key = (l.Driver || "") + "|" + g;
+    if (counted[key]) continue;
+    counted[key] = true;
+    const members = loads.filter(x => (x.Driver||"") === (l.Driver||"") && String(x.PayrollGroup||"").trim().toUpperCase() === g);
+    const anchor = members.reduce((a,b) => String(a.LoadID) <= String(b.LoadID) ? a : b);
+    total += Number(anchor.DriverPay) || 0;
+  }
+  return total;
+}
+
 function renderPayroll(){
   if (!STATE.payWeekStart) STATE.payWeekStart = weekStartFri(new Date());
   $("#weekLabel").textContent = fmtWeekLabel(STATE.payWeekStart);
@@ -2789,15 +2807,10 @@ function renderPayroll(){
       const id = e.currentTarget.dataset.id;
       const load = STATE.loads.find(x => x.LoadID === id);
       if (!load) return;
+      // Just save exactly what YOU typed on this one load. We don't touch any
+      // other load's pay — the total counts each group once (sumDriverPay).
       load.DriverPay = e.currentTarget.value === "" ? "" : Number(e.currentTarget.value);
       await saveLoadSilently(load);
-      // For a combined row, keep the pay on this ONE load and zero the rest of
-      // the group so the total can never double-count.
-      const childIds = (e.currentTarget.dataset.children || "").split(",").filter(Boolean);
-      for (const cid of childIds){
-        const child = STATE.loads.find(x => x.LoadID === cid);
-        if (child && Number(child.DriverPay || 0) !== 0){ child.DriverPay = 0; await saveLoadSilently(child); }
-      }
       renderPayroll();
     });
   });
@@ -2824,7 +2837,8 @@ function renderPayroll(){
       const memberIds = [headId, ...childIds];
       const newVal = String(e.currentTarget.value || "").trim().toUpperCase();
       if (newVal === ""){
-        // UNGROUP every member of this row and put back each load's pre-group pay.
+        // UNGROUP every member of this row. We do NOT change any prices — each
+        // load keeps whatever pay it currently has (only YOU set prices).
         for (const lid of memberIds){
           const load = STATE.loads.find(x => x.LoadID === lid);
           if (!load) continue;
@@ -2834,15 +2848,12 @@ function renderPayroll(){
           // group" everywhere (every check does .trim()).
           load.PayrollGroup = " ";
           load.GroupSeq = " ";
-          const stash = localStorage.getItem("hch.grouppay." + lid);
-          if (stash !== null){
-            load.DriverPay = (stash === "") ? "" : Number(stash);
-            localStorage.removeItem("hch.grouppay." + lid);
-          }
+          localStorage.removeItem("hch.grouppay." + lid);
           await saveLoadSilently(load);
         }
       } else {
-        // Apply the label to every member of this row, then consolidate the pay.
+        // Just apply the label to every member of this row. We do NOT touch the
+        // price — the driver pay is whatever YOU type into the combined row.
         for (const lid of memberIds){
           const load = STATE.loads.find(x => x.LoadID === lid);
           if (load && String(load.PayrollGroup || "").trim().toUpperCase() !== newVal){
@@ -2850,7 +2861,6 @@ function renderPayroll(){
             await saveLoadSilently(load);
           }
         }
-        await consolidateGroup(newVal);
       }
       renderPayroll();
     });
@@ -2862,14 +2872,11 @@ function renderPayroll(){
       const ids = (e.currentTarget.dataset.order || "").split(",").filter(Boolean);
       if (ids.length < 2) return;
       const rev = ids.slice().reverse();
-      let grp = "";
       for (let i = 0; i < rev.length; i++){
         const l = STATE.loads.find(x => x.LoadID === rev[i]);
-        if (l){ l.GroupSeq = i + 1; grp = l.PayrollGroup || grp; await saveLoadSilently(l); }
+        if (l){ l.GroupSeq = i + 1; await saveLoadSilently(l); }
       }
-      // Re-anchor the combined pay onto the NEW first load so it never
-      // double-counts after a flip.
-      if (grp) await consolidateGroup(grp);
+      // Flip only changes the display order — it never touches the price.
       renderPayroll();
     });
   });
@@ -2891,7 +2898,7 @@ function renderPayroll(){
   $$("#extrasList .x-btn").forEach(b => b.addEventListener("click", ()=> deleteExtra(b.dataset.id)));
 
   // Grand total
-  const loadPay = weekLoads.reduce((a,l) => a + (Number(l.DriverPay)||0), 0);
+  const loadPay = sumDriverPay(weekLoads);
   const extrasPay = wkExtras.reduce((a,x) => a + (Number(x.Amount)||0), 0);
   $("#payGrandTotal").textContent = fmt$(loadPay + extrasPay);
 }
@@ -2918,6 +2925,13 @@ function cmpGroup(a,b){
   if (ha) return -1;
   if (hb) return 1;
   return cmpLoads(a,b);
+}
+// AJX-view order: by day, then a manual per-day order (DaySeq, set by the ⇅
+// swap button), then chronological. Lets you flip same-day loads.
+function cmpAjx(a,b){
+  return (a.PickupDate||"").localeCompare(b.PickupDate||"")
+      || (Number(a.DaySeq||0) - Number(b.DaySeq||0))
+      || cmpLoads(a,b);
 }
 
 // Combine the pay of every load sharing a payroll-group label onto the FIRST
@@ -3018,15 +3032,15 @@ function payGroupRowHtml(loads, groupKey){
   // "1"/"2" are reused across drivers/weeks, which was adding up unrelated
   // loads into huge numbers. Editing writes to ONE stable anchor (lowest
   // LoadID) and zeros the rest, so it can never double-count.
+  // The combined pay lives on ONE stable load (lowest LoadID) — exactly the
+  // amount YOU typed. We never sum or auto-fill it. Totals count this once (see
+  // sumDriverPay), so the other loads in the group don't add to it.
   const _grpMembers = sortedLoads;
-  const _sumPay = _grpMembers.reduce((a,l) => a + (Number(l.DriverPay)||0), 0);
-  const payVal = _sumPay ? _sumPay : "";
-  const payAnchorId = [..._grpMembers].sort((a,b) => String(a.LoadID).localeCompare(String(b.LoadID)))[0].LoadID;
-  // Two different "children" lists:
-  //  - groupChildIds: everyone EXCEPT the group-cell's load (head) — used to
-  //    ungroup ALL members so clearing the label fully separates them.
-  //  - payChildIds: everyone EXCEPT the pay anchor — used to zero the rest when
-  //    the combined pay is edited.
+  const _anchor = [..._grpMembers].sort((a,b) => String(a.LoadID).localeCompare(String(b.LoadID)))[0];
+  const payAnchorId = _anchor.LoadID;
+  const payVal = (_anchor.DriverPay != null && _anchor.DriverPay !== "") ? _anchor.DriverPay : "";
+  // groupChildIds: everyone EXCEPT the group-cell's load (head) — used to
+  // ungroup ALL members so clearing the label fully separates them.
   const groupChildIds = _grpMembers.map(l => l.LoadID).filter(id => id !== head.LoadID).join(",");
   const payChildIds   = _grpMembers.map(l => l.LoadID).filter(id => id !== payAnchorId).join(",");
   // Build a stacked date display showing EVERY date in the group so the
@@ -3090,10 +3104,13 @@ function extraRowHtml(x){
    are summed (positive = bonus to AJX, negative = deduction) and folded into the
    final AJX take-home so the grand total stays accurate. */
 function renderAjxSettlement(){
-  // Victor's loads in current pay week
+  // Victor's loads in current pay week (manual order via the ⇅ swap button)
   const weekLoads = STATE.loads
     .filter(l => l.Driver === "Victor" && inWeek(l, STATE.payWeekStart))
-    .sort((a,b) => (a.PickupDate||"").localeCompare(b.PickupDate||""));
+    .sort(cmpAjx);
+  // Count loads per day so the ⇅ swap button only shows when a day has 2+.
+  const _ajxDayCounts = {};
+  weekLoads.forEach(l => { const k = _dayKey_(l.PickupDate); _ajxDayCounts[k] = (_ajxDayCounts[k]||0) + 1; });
 
   // AJX extras (manual entries) for this week
   const [_ajxFri, _ajxThu] = weekRange(STATE.payWeekStart);
@@ -3149,9 +3166,10 @@ function renderAjxSettlement(){
     const drv = Number(l.DriverPay) || 0;
     const ajx = gross - qp - drv;
     totalGross += gross; totalQp += qp; totalDriver += drv;
+    const _canSwap = _ajxDayCounts[_dayKey_(l.PickupDate)] >= 2;
     return `
       <tr>
-        <td class="date-col"><b>${dow}</b><br>${mm}/${dd}</td>
+        <td class="date-col"><b>${dow}</b><br>${mm}/${dd}${_canSwap ? `<br><button type="button" class="ajx-flip no-print" data-id="${l.LoadID}" title="Swap this load's order with the other load on this day" style="margin-top:4px;width:26px;padding:3px 0;font-size:13px;line-height:1;background:rgba(163,230,53,.15);border:1px solid rgba(255,255,255,.15);border-radius:5px;color:var(--text);cursor:pointer">⇅</button>` : ""}</td>
         <td>${escapeHtml(carrier || "—")}</td>
         <td>${escapeHtml(lane)}</td>
         <td class="amount-col" style="color:var(--muted)">−${fmt$(qp)}<br><span style="font-size:11px">${escapeHtml(feeLabel(l.Broker))}</span></td>
@@ -3166,6 +3184,26 @@ function renderAjxSettlement(){
 
   // Wire up the × delete buttons for any extras rows we just rendered in the AJX table
   $$(".pay-table .x-cell-btn").forEach(b => b.addEventListener("click", () => deleteExtra(b.dataset.id)));
+
+  // ⇅ swap — flip a load's order with the other load(s) on the same day.
+  $$(".pay-table .ajx-flip").forEach(btn => {
+    btn.addEventListener("click", async e => {
+      const id = e.currentTarget.dataset.id;
+      const load = STATE.loads.find(x => x.LoadID === id);
+      if (!load) return;
+      const dk = _dayKey_(load.PickupDate);
+      const sameDay = weekLoads.filter(x => _dayKey_(x.PickupDate) === dk).sort(cmpAjx);
+      if (sameDay.length < 2) return;
+      const i = sameDay.findIndex(x => x.LoadID === id);
+      const j = (i < sameDay.length - 1) ? i + 1 : i - 1; // swap with next (or previous if last)
+      [sameDay[i], sameDay[j]] = [sameDay[j], sameDay[i]];
+      for (let k = 0; k < sameDay.length; k++){
+        sameDay[k].DaySeq = k + 1;
+        await saveLoadSilently(sameDay[k]);
+      }
+      renderAjxSettlement();
+    });
+  });
 
   // Grand total = AJX take-home from Victor's loads − fuel + manual extras (signed)
   const totalAjx = totalGross - totalQp - totalDriver - totalFuel + totalExtras;
@@ -3384,7 +3422,7 @@ function renderDrivers(){
     const fees     = loads.reduce((a,l) => a + brokerFee(l.Broker, Number(l.Rate)||0), 0);
     const netRev   = gross - fees;
     const fuelCost = fuel.reduce((a,f) => a + (Number(f.TotalAmount)||0), 0);
-    const loadPay  = loads.reduce((a,l) => a + (Number(l.DriverPay)||0), 0);
+    const loadPay  = sumDriverPay(loads);
     const xPay     = extras.reduce((a,x) => a + (Number(x.Amount)||0), 0);
     const driverPay = loadPay + xPay;
     const netToHCH = netRev - fuelCost - driverPay;
@@ -3432,7 +3470,7 @@ function renderDrivers(){
   const victorLoads = wkLoads.filter(l => l.Driver === "Victor");
   const ajxGross   = victorLoads.reduce((a,l) => a + (Number(l.Rate)||0), 0);
   const ajxFees    = victorLoads.reduce((a,l) => a + brokerFee(l.Broker, Number(l.Rate)||0), 0);
-  const victorPay  = victorLoads.reduce((a,l) => a + (Number(l.DriverPay)||0), 0);
+  const victorPay  = sumDriverPay(victorLoads);
   const ajxSettlement = Math.max(0, ajxGross - ajxFees - victorPay);
 
   const companyNetRev = totalGross - totalFees;
